@@ -1,0 +1,17 @@
+{
+  "name": "TeachMeJEE",
+  "short_name": "TeachMeJEE",
+  "description": "Game-style roadmap for JEE Main, Advanced and NEET — quests, PYQs, 3D labs, offline tutor.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#151109",
+  "theme_color": "#f2a33c",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%23f2a33c'/%3E%3Cpath d='M256 122 L392 338 L120 338 Z' fill='%23151109'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "users": {
+    "qa193199": {
+      "username": "qa193199",
+      "salt": "1852f11794ff7d8e5da2a2ebec82fa89",
+      "hash": "9cb04ecc85e012e7ed457756a1ee22a7778f87ceeaff2dc506a32a6f2acd1b207894b853b7deb377744ee1bb801c4f5fd389e900f02fb394243d65c22289ed9e",
+      "xp": 777,
+      "chapters": 12,
+      "bestQuiz": 8,
+      "streak": 4,
+      "mocks": 2,
+      "created": 1787468693882,
+      "updated": 1787468694271
+    }
+  }
+}
