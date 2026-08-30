@@ -777,7 +777,10 @@ export function RoadmapView(root) {
 
 export function ChapterView(root, id) {
   disposeActiveSim();
-  const c = CONCEPTS[id];
+  const [cleanId, qStr] = id.split("?"); const c = CONCEPTS[cleanId]; const _variantParams = new URLSearchParams(qStr||"");
+  const variantSim = _variantParams.get("sim"); const variantIdx = _variantParams.get("variant");
+  if (variantSim && variantSim !== "undefined" && variantIdx != null && variantIdx !== "null") window.__SIM_VARIANT__ = { sim: variantSim, idx: variantIdx };
+  else delete window.__SIM_VARIANT__;
   if (!c) {
     root.innerHTML = "";
     root.append(page("Not found", "This chapter does not exist.", h("a", { class: "btn", href: "#/roadmap" }, "Back to roadmap")));
@@ -788,8 +791,8 @@ export function ChapterView(root, id) {
   const completed = new Set(prevCompleted);
   const st = nodeStatus(c, completed);
   const unmet = c.prereq.filter((p) => !completed.has(p));
-  setLastChapter(id);
-  markSeen(id);
+  setLastChapter(cleanId);
+  markSeen(cleanId);
 
   const meta = h("div", { class: "chapter-meta" },
     subjectTag(c.subject),
@@ -851,21 +854,6 @@ export function ChapterView(root, id) {
     const subWrap=h("div",{class:"card", style:"margin-top:14px"});
     subWrap.append(h("h3",{}, `📚 Deep Subtopics — ${subs.length} lenses`), h("p",{class:"small muted"},"465 sub-notes total (93×5) — each a chapter-specific deep dive with trap, visual, and cross-link."));
     const grid=h("div",{class:"labs-grid2", style:"margin-top:8px"});
-    subs.forEach(st=>{
-      const card=h("div",{class:"card", style:"padding:10px;background:var(--bg)"},
-        h("div",{style:"font-weight:700;font-size:13px"}, st.title),
-        h("div",{class:"small faint", style:"margin-top:2px"}, st.lens),
-        h("div",{style:"margin-top:6px", html: st.body}),
-        h("div",{class:"small faint", style:"margin-top:6px"}, st.simHint));
-      // html string needs innerHTML
-      const bodyDiv=card.querySelector("[html]") || card.lastChild; // fallback
-      // actually set innerHTML for the body
-      const htmlHolder=h("div",{class:"small", style:"margin-top:6px"}); htmlHolder.innerHTML=st.body; card.insertBefore(htmlHolder, card.lastChild);
-      // remove the html placeholder we added via attribute
-      grid.append(card);
-    });
-    // rebuild correctly: we double-added, so simplify: recreate cards properly
-    grid.innerHTML="";
     subs.forEach(st=>{
       const holder=h("div",{class:"small", style:"margin-top:6px"}); holder.innerHTML=st.body;
       const card=h("div",{class:"card", style:"padding:10px;background:var(--bg)"},
@@ -967,7 +955,8 @@ function tabsView(c) {
     tabEls.push(t);
   });
 
-  switchTab(hasDeep ? "Full Notes" : tabs[0]);
+  const variantTab = window.__SIM_VARIANT__ && window.__SIM_VARIANT__.sim ? "Simulation" : "";
+  switchTab(variantTab || (hasDeep ? "Full Notes" : tabs[0]));
   return h("div", {}, h("div", { class: "tabs" }, ...tabEls), paneWrap);
 }
 
@@ -1052,26 +1041,46 @@ function simPane(c) {
     h("div", { class: "sim-tools" },
       h("button", { title: "Reset view", html: "&#8635;" }),
       h("button", { title: "Fullscreen", html: "&#9974;" })),
-    h("div", { class: "sim-tag" }, "3D · drag rotate · scroll zoom · right-drag pan"));
+    h("div", { class: "sim-tag" }, "3D · drag rotate · scroll zoom · right-drag pan"),
+    h("div", { class: "sim-variant", style: "display:none" }, "◆ Generative variant"));
   const ctrlWrap = h("div", { class: "sim-panel", hidden: true });
   let sim = null;
 
-  import("./sim/index.js").then(({ mountSim, CONCEPT_SIM_MAP }) => {
-    const simId = c.sim || (CONCEPT_SIM_MAP && CONCEPT_SIM_MAP[c.id]);
-    if (!simId) {
-      const loading = shell.querySelector(".sim-loading");
-      if (loading) loading.textContent = "No dedicated lab for this chapter yet — notes, formulas and the PYQ bank cover it.";
-      return;
+  import("./sim/index.js").then(async ({ mountSim, hasSim, CONCEPT_SIM_MAP }) => {
+    const variantInfo = window.__SIM_VARIANT__;
+    let simId = (variantInfo && variantInfo.sim) || c.sim || (CONCEPT_SIM_MAP && CONCEPT_SIM_MAP[c.id]);
+    if (!simId || !hasSim(simId)) {
+      try{
+        const { randomVariant } = await import("./sim/factory.js");
+        const v = randomVariant(); simId = v.sim;
+        const loading = shell.querySelector(".sim-loading");
+        if (loading) loading.textContent = `No dedicated lab — showing ${simId} variant (factory).`;
+      }catch{
+        const loading = shell.querySelector(".sim-loading");
+        if (loading) loading.textContent = "No dedicated lab for this chapter yet — notes, formulas and the PYQ bank cover it.";
+        return;
+      }
     }
     try {
       sim = mountSim(shell.querySelector("canvas"), simId);
       ownSim(sim);
+      // apply Atlas variant — uses the sim's REAL control keys/ranges
+      if (variantInfo && variantInfo.idx != null) {
+        try {
+          const { variantForControls } = await import("./sim/factory.js");
+          const presets = variantForControls(parseInt(variantInfo.idx, 10), sim.controls);
+          Object.entries(presets).forEach(([k, val]) => { try { sim.setControl(k, val); } catch {} });
+          sim.controls.forEach((ctrl) => { if (presets[ctrl.key] !== undefined) ctrl.value = presets[ctrl.key]; });
+          const chip = shell.querySelector(".sim-variant");
+          if (chip) { chip.textContent = `◆ Generative variant #${variantInfo.idx} — ${simId} (parametric controls applied)`; chip.style.display = "block"; }
+        } catch {}
+      }
       const loading = shell.querySelector(".sim-loading");
       if (loading) loading.remove();
       renderControls();
     } catch (err) {
       const loading = shell.querySelector(".sim-loading");
-      if (loading) loading.textContent = "Could not start 3D (WebGL unavailable). Notes & formulas still work.";
+      if (loading) loading.textContent = `Could not start ${simId} (${err.message.slice(0,60)}). Try another chapter or reload.`;
     }
   });
 

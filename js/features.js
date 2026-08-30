@@ -68,22 +68,28 @@ export const FEATURE_COUNT = allFeatures().length; // 1053 real
 export const VIRTUAL_FEATURE_COUNT = 100000000;
 export const VIRTUAL_TOTAL = VIRTUAL_FEATURE_COUNT + FEATURE_COUNT;
 export function virtualFeatureAt(idx){
-  // idx >= FEATURE_COUNT → generative variant
   const vIdx = idx - FEATURE_COUNT;
   const chapter = ALL_CONCEPTS[vIdx % ALL_CONCEPTS.length];
   const type = TYPES[vIdx % TYPES.length];
   const variant = Math.floor(vIdx / ALL_CONCEPTS.length) % 1000;
+  // for sim type, bind to chapter's actual sim name for correct variant
+  if(type.k==="sim" && chapter.sim){
+    return {
+      id: `virt::${idx}`,
+      name: `${chapter.name} · ${type.label} · Variant ${variant}`,
+      icon: type.icon,
+      route: `#/chapter/${chapter.id}?sim=${chapter.sim}&variant=${variant}`,
+      blurb: `${type.blurb} — parametric variant #${variant} (sim: ${chapter.sim})`,
+      subject: chapter.subject, level: chapter.level, chapter: chapter.id, type: type.k, virtual: true,
+    };
+  }
   return {
     id: `virt::${idx}`,
     name: `${chapter.name} · ${type.label} · Variant ${variant}`,
     icon: type.icon,
     route: type.route(chapter.id),
     blurb: `${type.blurb} — parametric variant #${variant} (generative)`,
-    subject: chapter.subject,
-    level: chapter.level,
-    chapter: chapter.id,
-    type: type.k,
-    virtual: true,
+    subject: chapter.subject, level: chapter.level, chapter: chapter.id, type: type.k, virtual: true,
   };
 }
 export function getFeatureAt(idx){ return idx < FEATURE_COUNT ? allFeatures()[idx] : virtualFeatureAt(idx); }
