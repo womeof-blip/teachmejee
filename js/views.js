@@ -4737,8 +4737,10 @@ export function InsightView(root) {
 /* ----------- TOOLS HUB ----------- */
 
 const ALL_TOOLS = [
+  ["#/dashboard", "Dashboard", "Today command-center: dues, strikes and quick actions."],
   ["#/tutor", "Ask Pip", "AI tutor that answers doubts from your own notes."],
   ["#/daily", "Daily Challenge", "One Physics, one Chemistry, one Maths question every day."],
+  ["#/sprint", "PYQ Sprint", "10 real PYQs in 15 minutes with +4/−1 marking."],
   ["#/quiz", "Quiz", "Timed mixed-subject quizzes with instant solutions."],
   ["#/flash", "Flash", "Spaced-repetition flashcards that resurface weak cards."],
   ["#/formulas", "Formulas", "Chapter-wise formula sheets with a last-hour recall mode."],
@@ -4983,5 +4985,181 @@ export function GitJEEView(root) {
           "teachmejee-fabric.json",
           () => Quantum.zeroServerSyncExport(),
           "Download packet")))));
+}
+
+/* ----------- DASHBOARD (today command-center) ----------- */
+
+export function DashboardView(root) {
+  const s = load();
+  const completed = new Set(s.completed);
+  const d = dailyState();
+  const dueCount = srDue().length;
+  const focusToday = s.focusLog[todayISO()] || 0;
+  const challengeDone = !!(d.claimed && d.claimed.challenge);
+
+  const mocks = s.mocks || [];
+  const mockAvg = mocks.length ? Math.round(mocks.reduce((a, m) => a + (m.total > 0 ? (m.score / m.total) * 100 : 0), 0) / mocks.length) : null;
+
+  const start = new Date(PLAN_START + "T00:00:00");
+  const curWeek = Math.min(STUDY_PLAN.length - 1, Math.max(0, Math.floor((Date.now() - start) / (7 * 86400000))));
+  const wk = STUDY_PLAN[curWeek];
+  const wkIds = [...wk.p, ...wk.c, ...wk.m].filter((id) => CONCEPTS[id]);
+  const wkDone = wkIds.filter((id) => completed.has(id) || (s.planProg.ticked || {})[id]).length;
+
+  const focus = ALL_CONCEPTS.filter((c) => !c.id.startsWith("f-") && !completed.has(c.id))
+    .map((c) => {
+      const rec = s.quizByConcept[c.id] || { c: 0, t: 0 };
+      return { c, w: weightInfo(c.id).w, acc: rec.t ? rec.c / rec.t : null };
+    })
+    .filter((x) => x.acc != null)
+    .sort((a, b) => b.w * (1 - b.acc) - a.w * (1 - a.acc))
+    .slice(0, 3);
+
+  function action(href, label, primary) {
+    return h("a", { class: `btn btn-sm${primary ? " btn-primary" : ""}`, href }, label);
+  }
+
+  const todayRows = [
+    [challengeDone ? "done" : "todo", "Daily challenge", challengeDone ? "claimed" : "1 Physics + 1 Chemistry + 1 Maths", "#/daily"],
+    [dueCount ? "todo" : "done", "Revisions due", dueCount ? `${dueCount} waiting` : "all caught up", "#/revisions"],
+    [wkDone >= wkIds.length && wkIds.length ? "done" : "todo", `Mission JEE · Week ${curWeek + 1}`, wkIds.length ? `${wkDone}/${wkIds.length} covered` : "rest week", "#/studyplan"],
+    [focusToday >= 60 ? "done" : "todo", "Focus time today", `${focusToday} min logged`, "#/planner"],
+  ];
+
+  root.innerHTML = "";
+  root.append(page("Dashboard",
+    "Your today-at-a-glance — what is due, what is next, and one-tap actions.",
+    h("div", { class: "stack", style: "gap:14px;margin-top:14px" },
+      h("div", { class: "row", style: "gap:10px;flex-wrap:wrap" },
+        tile(`${getStreak()}d`, "study streak"),
+        tile(`${planStreak()}d`, "plan streak"),
+        tile(`${completed.size}/${ALL_CONCEPTS.length}`, "chapters mastered"),
+        tile(mockAvg == null ? "–" : `${mockAvg}%`, "mock average")),
+      h("div", { class: "card" },
+        h("h3", {}, "Today"),
+        h("div", { class: "stack", style: "gap:6px;margin-top:10px" },
+          ...todayRows.map(([st, name, detail, href]) =>
+            h("a", { class: "prereq-pill", style: "justify-content:space-between", href },
+              h("span", {}, st === "done" ? "✓ " : "○ ", name),
+              h("span", { class: "small faint" }, detail))))),
+      h("div", { class: "card" },
+        h("h3", {}, "Strike first"),
+        h("p", { class: "small muted" }, "Three highest-leverage actions right now."),
+        h("div", { class: "stack", style: "gap:5px;margin-top:10px" },
+          focus.length
+            ? focus.map(({ c, w, acc }) =>
+                h("a", { class: "prereq-pill", style: "justify-content:space-between", href: `#/chapter/${c.id}` },
+                  h("span", {}, c.name),
+                  h("span", { class: "small faint" }, `${w}m · ${Math.round(acc * 100)}% acc`)))
+            : h("span", { class: "small faint" }, "Attempt quizzes to unlock personalised strikes — or start below."))),
+      h("div", { class: "card" },
+        h("h3", {}, "Quick actions"),
+        h("div", { class: "row", style: "gap:8px;margin-top:10px;flex-wrap:wrap" },
+          action("#/daily", challengeDone ? "Review challenge" : "Start daily challenge", !challengeDone),
+          action("#/sprint", "PYQ sprint (15 min)", challengeDone),
+          action("#/flash", "Flash formulas"),
+          action("#/quiz", "Quick quiz"),
+          action("#/studyplan", "Open study plan"))))));
+}
+
+/* ----------- PYQ SPRINT (timed exam mode) ----------- */
+
+const SPRINT_N = 10;
+const SPRINT_SECS = 15 * 60;
+
+export function SprintView(root) {
+  const pool = PYQS.filter((q) => q.opts && q.opts.length >= 2 && q.a != null);
+  const picked = shuffle(pool).slice(0, Math.min(SPRINT_N, pool.length));
+  const answers = new Array(picked.length).fill(null);
+  let remaining = SPRINT_SECS;
+  let iv = null;
+  let over = false;
+
+  const timerEl = h("span", { class: "tag", style: "font-variant-numeric:tabular-nums" }, "15:00");
+  const box = h("div", { style: "margin-top:14px" });
+  onViewCleanup(() => { if (iv) clearInterval(iv); });
+
+  function fmtT(sec) {
+    return `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+  }
+  function tick() {
+    remaining--;
+    timerEl.textContent = fmtT(Math.max(0, remaining));
+    if (remaining <= 0) finish(true);
+  }
+
+  function render() {
+    box.innerHTML = "";
+    picked.forEach((q, i) => {
+      const opts = h("div", { class: "stack", style: "gap:6px;margin-top:8px" });
+      q.opts.forEach((o, k) => {
+        const b = h("button", {
+          class: `quiz-opt${answers[i] === k ? " sel" : ""}`,
+          onclick: () => { if (over) return; answers[i] = k; render(); },
+        }, h("b", { style: "color:var(--faint);margin-right:8px" }, "ABCD"[k]), o);
+        opts.append(b);
+      });
+      box.append(h("div", { class: "card", style: "margin-bottom:12px" },
+        h("div", { class: "chapter-meta", style: "margin:0 0 8px" },
+          h("span", { class: "tag" }, `Q${i + 1}`),
+          h("span", { class: `tag ${q.exam === "adv" ? "tag-math" : "tag-phys"}` }, q.exam === "adv" ? "Advanced" : "Main"),
+          h("span", { class: "tag" }, q.year),
+          subjectTag(q.subject)),
+        h("p", { style: "font-size:14.5px;line-height:1.65;margin-bottom:4px" }, q.q),
+        opts));
+    });
+    box.append(h("div", { class: "row", style: "gap:8px;margin:14px 0 8px;flex-wrap:wrap" },
+      h("button", { class: "btn btn-primary", onclick: () => finish(false) }, "Submit sprint"),
+      h("span", { class: "small faint", style: "align-self:center" }, "+4 correct · −1 wrong · 0 skipped")));
+  }
+
+  function finish(auto) {
+    if (over) return;
+    over = true;
+    if (iv) { clearInterval(iv); iv = null; }
+    let score = 0, correct = 0, wrong = 0, skipped = 0;
+    const rows = picked.map((q, i) => {
+      const a = answers[i];
+      const ok = a === q.a;
+      if (a == null) skipped++;
+      else if (ok) { score += 4; correct++; }
+      else { score -= 1; wrong++; }
+      if (a != null && q.chap && CONCEPTS[q.chap]) recordQuizAnswer(q.chap, ok);
+      return { q, a, ok };
+    });
+    logActivity(3);
+    if (score > 0) addBonusXp(Math.min(60, score * 2));
+    notifySync();
+    box.innerHTML = "";
+    box.append(
+      h("div", { class: "quiz-result card" },
+        h("div", { class: "big" }, `${score} marks`),
+        h("p", { class: "muted" }, auto ? "Time up — auto-submitted." : "Sprint submitted.",
+          ` ${correct} correct · ${wrong} wrong · ${skipped} skipped out of ${picked.length}.`),
+        h("p", { class: "quiz-best" }, score > 0 ? `+${Math.min(60, score * 2)} XP earned` : "No XP this time — go again!"),
+        h("div", { style: "margin-top:14px;display:flex;gap:8px;flex-wrap:wrap" },
+          h("button", { class: "btn btn-primary", onclick: () => SprintView(root) }, "New sprint"),
+          h("a", { class: "btn btn-sm", href: "#/pyq" }, "Browse PYQs"))),
+      h("div", { class: "quiz-review" },
+        h("h2", { style: "margin:16px 0 10px" }, "Review"),
+        ...rows.map(({ q, a, ok }) =>
+          h("div", { class: "card", style: "margin-bottom:10px;padding:14px 16px" },
+            h("p", { style: "font-weight:600;margin-bottom:4px" },
+              a == null ? "○ Skipped" : ok ? "✓ Correct (+4)" : "✗ Wrong (−1)",
+              h("span", { class: "small faint" }, ` · ${q.q}`)),
+            h("p", { class: "small muted", style: "margin:0" }, `Answer: ${q.opts[q.a]} · ${q.why}`),
+            q.chap && CONCEPTS[q.chap] ? h("a", { class: "prereq-pill", href: `#/chapter/${q.chap}`, style: "margin-top:8px" }, "Open chapter") : null))));
+  }
+
+  render();
+  root.innerHTML = "";
+  root.append(page("PYQ Sprint",
+    `${picked.length} real PYQs · ${Math.round(SPRINT_SECS / 60)} minutes · JEE Main marking (+4/−1).`,
+    h("div", {},
+      h("div", { class: "row", style: "gap:8px;align-items:center;margin-bottom:4px" },
+        h("span", { class: "small faint" }, "Time left:"),
+        timerEl),
+      box)));
+  iv = setInterval(tick, 1000);
 }
 
