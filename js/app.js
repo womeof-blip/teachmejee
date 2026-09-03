@@ -11,7 +11,7 @@ import {
   PredictorView, AnalyticsView, QuestsView, LeaderboardView, AuthView,
   NotesView, BookmarksView, WeakAreasView, RevisionsView, ProgressView,
   RecommendationsView, MasteryView, StatsView, AchievementsView, CalendarView,
-  PYQView, NeetView, WelcomeView, TutorView, buildTutorChat, VideosView, FoundationView, LibraryView, refreshXP, disposeActiveSim, ConstellationView, LabsView, PlaygroundView, PeriodicView, DerivationView, AtlasView, MoleculeView, GraphView, BoardView, ThemeView, StudyPlanView,
+  PYQView, NeetView, WelcomeView, TutorView, buildTutorChat, VideosView, FoundationView, LibraryView, refreshXP, disposeActiveSim, ConstellationView, LabsView, PlaygroundView, PeriodicView, DerivationView, AtlasView, MoleculeView, GraphView, BoardView, ThemeView, StudyPlanView, WeightageView, InsightView, ToolsView, FilesView, GitJEEView,
 } from "./views.js";
 import { DuelView, openSettings, zenToggle, feedDuelQuestions } from "./extras.js";
 import { isLoggedIn, getSession, logout, syncProgress } from "./api.js";
@@ -37,6 +37,11 @@ const VIEWS_MAP = {
   board: BoardView,
   theme: ThemeView,
   studyplan: StudyPlanView,
+  weightage: WeightageView,
+  insight: InsightView,
+  tools: ToolsView,
+  files: FilesView,
+  gitjee: GitJEEView,
   flowchart: FlowchartView,
   browse: BrowseView,
   pyq: PYQView,

@@ -1,7 +1,8 @@
 /* TeachMeJEE � view renderers */
 
 import { CONCEPTS, LEVELS, SUBJECTS, ALL_CONCEPTS, TOTAL_XP, weightInfo, weightLabel, SUBJECT_MAX_WEIGHT, DERIVATIONS } from "./data.js";
-import { load, isCompleted, completeConcept, uncompleteConcept, markTask, savePlanner, save, getXP, getTotalXP, getStreak, longestStreak, addBonusXp, logActivity, todayISO, saveNote, toggleStar, isStarred, setGoal, setLastChapter, addMock, removeMock, addEvent, switchUser, recordQuizAnswer, dailyState, claimDailyReward, logFocusMin, srSchedule, srDue, markSeen, setBadgesSeen, extractYouTubeId, addVideo, removeVideo, weekKey, getBoss, recordBossRun, bumpPomodoroCount, pomodorosToday, getNoteProg, toggleNoteSec, setNoteCp, noteRecord, lastNoteId, planTicked, planTick, planStreak, planWeekDone, planWeekCompleteness } from "./store.js";
+import { load, isCompleted, completeConcept, uncompleteConcept, markTask, savePlanner, save, getXP, getTotalXP, getStreak, longestStreak, addBonusXp, logActivity, todayISO, saveNote, toggleStar, isStarred, setGoal, setLastChapter, addMock, removeMock, addEvent, switchUser, recordQuizAnswer, dailyState, claimDailyReward, logFocusMin, srSchedule, srDue, markSeen, setBadgesSeen, extractYouTubeId, addVideo, removeVideo, weekKey, getBoss, recordBossRun, bumpPomodoroCount, pomodorosToday, getNoteProg, toggleNoteSec, setNoteCp, noteRecord, lastNoteId, planTicked, planTick, planStreak, planWeekDone, planWeekCompleteness, exportData, importData } from "./store.js";
+import { saveSnapshot, listSnapshots, restoreSnapshot, storageBytes, STORAGE_QUOTA } from "./settings.js";
 import { DEEP_NOTES, DEEP_NOTE_IDS, noteMinutes } from "./notes/index.js";
 import { daysUntil, fmt, computePhases, generateSchedule, weekTasks, weeklyPlan } from "./planner.js";
 import { QUESTIONS } from "./questions.js";
@@ -4529,5 +4530,458 @@ export function LibraryView(root) {
       gridWrap)));
   paintContinue();
   paintGrid();
+}
+
+/* ----------- WEIGHTAGE & PYQ TRENDS ----------- */
+
+export function WeightageView(root) {
+  let subjectF = "P";
+  const wrap = h("div", { style: "margin-top:16px" });
+  const years = [...new Set(PYQS.map((q) => q.year))].sort((a, b) => a - b);
+
+  function chapterPYQs(cid) { return PYQS.filter((q) => q.chap === cid); }
+  function byYear(cid) {
+    const m = {};
+    for (const y of years) m[y] = 0;
+    for (const q of chapterPYQs(cid)) m[q.year] = (m[q.year] || 0) + 1;
+    return m;
+  }
+  function accuracy(cid) {
+    const rec = load().quizByConcept[cid] || { c: 0, t: 0 };
+    return rec.t ? Math.round((rec.c / rec.t) * 100) : null;
+  }
+
+  function render() {
+    const subs = ["P", "C", "M"];
+    wrap.innerHTML = "";
+    const chapters = ALL_CONCEPTS.filter((c) => c.subject === subjectF);
+    const maxW = Math.max(1, ...chapters.map((c) => weightInfo(c.id).w));
+    const subjectTotPyq = PYQS.filter((q) => q.subject === subjectF).length;
+    const covered = chapters.filter((c) => load().completed.includes(c.id));
+
+    wrap.append(
+      h("div", { class: "row", style: "gap:10px;margin-bottom:14px;flex-wrap:wrap" },
+        tile(subjectTotPyq, `${SUBJECTS[subjectF].name} PYQs in bank`),
+        tile(`${covered.length}/${chapters.length}`, "chapters mastered"),
+        tile(`${chapters.reduce((a, c) => a + weightInfo(c.id).w, 0)}`, "total weightage (marks)")));
+
+    const rows = chapters
+      .slice()
+      .sort((a, b) => weightInfo(b.id).w - weightInfo(a.id).w)
+      .map((c) => {
+        const w = weightInfo(c.id);
+        const yc = byYear(c.id);
+        const maxYC = Math.max(1, ...Object.values(yc));
+        const acc = accuracy(c.id);
+        const mastered = load().completed.includes(c.id);
+        const trend = h("div", { class: "wt-trend", style: `grid-template-columns:repeat(${years.length},1fr)` },
+          ...years.map((y) => h("span", {
+            class: `wt-col${yc[y] ? "" : " muted"}`,
+            style: yc[y] ? `height:${Math.round((yc[y] / maxYC) * 100)}%` : "height:4px",
+            title: `${y}: ${yc[y]} PYQ${yc[y] === 1 ? "" : "s"}`
+          })));
+        return h("div", { class: "wt-row" },
+          h("a", { class: "wt-name", href: `#/chapter/${c.id}`, title: c.summary }, c.name),
+          h("span", { class: "wt-bar" },
+            h("span", { class: "wt-bar-fill", style: `width:${Math.round((w.w / maxW) * 100)}%;background:${SUBJECTS[subjectF].color}` })),
+          h("span", { class: "wt-marks" }, `${w.w}m`),
+          h("span", { class: "wt-pyq" }, `${w.pyq}/5yr`),
+          trend,
+          h("span", { class: `wt-acc${acc == null ? " faint" : acc >= 70 ? " green" : acc >= 45 ? " amber" : " red"}` },
+            acc == null ? "-" : `${acc}%`),
+          mastered ? h("span", { class: "tag", style: "background:var(--green);color:#111" }, "done") : null);
+      });
+    wrap.append(h("div", { class: "wt-grid" }, ...rows,
+      h("div", { class: "wt-legend small faint", style: "margin-top:8px" },
+        "Weightage bar = JEE marks this chapter can carry · PYQ trend = questions per year (older → newer) · Acc = your quiz accuracy")));
+
+    // High-yield priority: high weightage + low accuracy gives the biggest score gains
+    const withData = chapters.filter((c) => accuracy(c.id) != null);
+    if (withData.length) {
+      const priority = withData
+        .map((c) => ({ c, w: weightInfo(c.id).w, acc: accuracy(c.id) }))
+        .filter((x) => !load().completed.includes(x.c.id))
+        .sort((a, b) => (b.w / 100) * (100 - b.acc) - (a.w / 100) * (100 - a.acc))
+        .slice(0, 6);
+      if (priority.length) {
+        wrap.append(h("div", { class: "card", style: "margin-top:18px" },
+          h("h3", {}, "High-yield focus for you"),
+          h("p", { class: "small muted", style: "margin-top:2px" },
+            "Unmastered chapters ranked by weightage × your accuracy gap — the biggest score gains for the least effort."),
+          h("div", { class: "stack", style: "gap:6px;margin-top:10px" },
+            ...priority.map(({ c, w, acc }) =>
+              h("a", { class: "prereq-pill", style: "justify-content:space-between", href: `#/chapter/${c.id}` },
+                h("span", {}, c.name),
+                h("span", { class: "small faint" }, `${w}m · ${acc}% accuracy`))))));
+      }
+    }
+  }
+
+  const tabs = h("div", { class: "filter-tabs" },
+    ...["P", "C", "M"].map((k) => {
+      const b = h("button", { class: `ftab${k === subjectF ? " on" : ""}`, onclick: () => { subjectF = k; [...tabs.children].forEach((x) => x.classList.remove("on")); b.classList.add("on"); render(); } }, SUBJECTS[k].name);
+      return b;
+    }));
+
+  render();
+  root.innerHTML = "";
+  root.append(page("Chapter Weightage & PYQ Trends",
+    "Which chapters carry the most JEE marks, and how often they appear in past papers year by year.",
+    h("div", { class: "stack", style: "gap:8px" }, tabs, wrap)));
+}
+
+/* ----------- JEE INSIGHT ----------- */
+
+export function InsightView(root) {
+  const s = load();
+  const completed = new Set(s.completed);
+  const bySubj = (sub) => ALL_CONCEPTS.filter((c) => c.subject === sub);
+
+  function topWeight(n = 8) {
+    return ALL_CONCEPTS.filter((c) => !c.id.startsWith("f-"))
+      .slice().sort((a, b) => weightInfo(b.id).w - weightInfo(a.id).w).slice(0, n);
+  }
+  function weakestHighWeight(n = 6) {
+    const rows = [];
+    for (const c of ALL_CONCEPTS) {
+      const rec = s.quizByConcept[c.id] || { c: 0, t: 0 };
+      if (!rec.t) continue;
+      const acc = rec.c / rec.t;
+      rows.push({ c, w: weightInfo(c.id).w, acc });
+    }
+    return rows
+      .filter((x) => !completed.has(x.c.id))
+      .sort((a, b) => b.w * (1 - b.acc) - a.w * (1 - a.acc))
+      .slice(0, n);
+  }
+  function noteGap() {
+    const out = [];
+    for (const c of ALL_CONCEPTS) {
+      const rec = getNoteProg(c.id);
+      const secs = DEEP_NOTES[c.id]?.secs?.length || 0;
+      if (!secs) continue;
+      const doneSections = rec ? rec.s.length : 0;
+      if (doneSections > 0 && doneSections < secs) out.push({ c, doneSections, secs });
+    }
+    return out.sort((a, b) => (b.c.xp) - (a.c.xp)).slice(0, 5);
+  }
+  function readTime() {
+    return ALL_CONCEPTS.reduce((a, c) => a + (DEEP_NOTES[c.id] ? noteMinutes(DEEP_NOTES[c.id]) : 0), 0);
+  }
+
+  const cards = h("div", { class: "row", style: "gap:12px;flex-wrap:wrap;margin-bottom:16px" },
+    tile(`${completed.size}/${ALL_CONCEPTS.length}`, "chapters mastered"),
+    tile(`${getStreak()}d`, "current streak"),
+    tile(Math.round(readTime() / 60 / 6) / 60 + "h", "full-notes reading"),
+    tile(`${Math.round(Object.values(s.activity || {}).reduce((a, b) => a + b, 0))}`, "activity points"));
+
+  const high = h("div", { class: "card" },
+    h("h3", {}, "Highest-weightage chapters"),
+    h("p", { class: "small muted" }, "These carry the most JEE marks — prioritise revising them first."),
+    h("div", { class: "stack", style: "gap:5px;margin-top:10px" },
+      ...topWeight().map((c) => {
+        const w = weightInfo(c.id);
+        return h("a", { class: "prereq-pill", style: "justify-content:space-between", href: `#/chapter/${c.id}` },
+          h("span", {}, subjectTag(c.subject), " ", c.name),
+          h("span", { class: "small faint" }, `${w.w}m · ${w.pyq} PYQs/5yr`));
+      })));
+
+  const weak = h("div", { class: "card", style: "margin-top:14px" },
+    h("h3", {}, "Weak high-weight chapters"),
+    h("p", { class: "small muted" }, "High-weight chapters where your quiz accuracy lags — the biggest potential score gains."),
+    h("div", { class: "stack", style: "gap:5px;margin-top:10px" },
+      (() => {
+        const rows = weakestHighWeight();
+        if (!rows.length) return h("span", { class: "small faint" }, "Attempt more quizzes to unlock personalised weak-spot analysis.");
+        return rows.map(({ c, w, acc }) =>
+          h("a", { class: "prereq-pill", style: "justify-content:space-between", href: `#/chapter/${c.id}` },
+            h("span", {}, c.name),
+            h("span", { class: "small faint" }, `${Math.round(acc * 100)}% accuracy · ${w}m weight`)));
+      })()));
+
+  const half = h("div", { class: "card", style: "margin-top:14px" },
+    h("h3", {}, "Revision gaps"),
+    h("p", { class: "small muted" }, "Full-notes chapters you started but haven't finished reading."),
+    (() => {
+      const g = noteGap();
+      return g.length
+        ? h("div", { class: "stack", style: "gap:5px;margin-top:10px" },
+            ...g.map(({ c, doneSections, secs }) =>
+              h("a", { class: "prereq-pill", style: "justify-content:space-between", href: `#/chapter/${c.id}` },
+                h("span", {}, c.name),
+                h("span", { class: "small faint" }, `${doneSections}/${secs} sections`))))
+        : h("p", { class: "small faint", style: "margin-top:8px" }, "No chapters left half-read — nice.");
+    })());
+
+  const subjMix = h("div", { class: "card" },
+    h("h3", {}, "Subject balance"),
+    h("p", { class: "small muted" }, "How your mastered chapters split across Physics, Chemistry and Maths."),
+    h("div", { class: "row", style: "gap:10px;margin-top:10px;flex-wrap:wrap" },
+      ...["P", "C", "M"].map((sub) => {
+        const all = bySubj(sub);
+        const done = all.filter((c) => completed.has(c.id)).length;
+        const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+        return h("div", { class: "insight-mini" },
+          h("div", { class: "wt-bar", style: "flex:1" },
+            h("span", { class: "wt-bar-fill", style: `width:${pct}%;background:${SUBJECTS[sub].color}` })),
+          h("div", { class: "small", style: "margin-top:4px" },
+            h("b", { style: "color:" + SUBJECTS[sub].color }, SUBJECTS[sub].name), ` ${pct}% (${done}/${all.length})`));
+      })));
+
+  root.innerHTML = "";
+  root.append(page("JEE Insight",
+    "A data-driven read on your preparation — what to revise, what's weak, and where your time should go.",
+    h("div", { class: "stack", style: "gap:14px" }, cards, high, weak, half, subjMix)));
+}
+
+/* ----------- TOOLS HUB ----------- */
+
+const ALL_TOOLS = [
+  ["#/tutor", "Ask Pip", "AI tutor that answers doubts from your own notes."],
+  ["#/daily", "Daily Challenge", "One Physics, one Chemistry, one Maths question every day."],
+  ["#/quiz", "Quiz", "Timed mixed-subject quizzes with instant solutions."],
+  ["#/flash", "Flash", "Spaced-repetition flashcards that resurface weak cards."],
+  ["#/formulas", "Formulas", "Chapter-wise formula sheets with a last-hour recall mode."],
+  ["#/pyq", "PYQ Bank", "Real JEE Main & Advanced questions with worked solutions."],
+  ["#/planner", "Planner", "Build a personalised day-by-day study timetable."],
+  ["#/studyplan", "Mission JEE", "Themed 42-week roadmap with per-week progress tracking."],
+  ["#/weightage", "Weightage", "Which chapters carry the most marks + PYQ trends."],
+  ["#/insight", "Insight", "Weak high-weight chapters, revision gaps, subject balance."],
+  ["#/analytics", "Analytics", "Mock-test averages, trends and performance charts."],
+  ["#/predictor", "Predictor", "Estimate your JEE percentile and rank from mock scores."],
+  ["#/roadmap", "Roadmap", "Prerequisite-gated chapter journey from basics to Advanced."],
+  ["#/library", "Notes Library", "All 93 full-textbook chapters with per-section progress."],
+  ["#/browse", "Browse Chapters", "Filter every chapter by subject, level and status."],
+  ["#/flowchart", "Flowchart", "Visual concept maps of how chapters connect."],
+  ["#/constellation", "Constellation", "Interactive 3D graph of the whole syllabus."],
+  ["#/graph", "Graph", "2D dependency graph of chapters and prerequisites."],
+  ["#/molecules", "Molecules 3D", "Rotatable 3D molecule models for Chemistry."],
+  ["#/periodic", "Periodic Table", "Searchable element table with trends."],
+  ["#/derivations", "Derivations", "Step-by-step Physics derivations."],
+  ["#/playground", "Playground", "Sandbox simulations for core concepts."],
+  ["#/labs", "Labs · Future", "Experimental tools: duels, ghosts, certificates, exports."],
+  ["#/atlas", "Atlas", "100M-variant concept atlas with simulation variants."],
+  ["#/videos", "Lectures", "Curated 18-channel lecture index per chapter."],
+  ["#/duel", "1v1 Duel", "Challenge a friend to a live quiz duel."],
+  ["#/leaderboard", "Leaderboard", "Top learners by XP (login to compete)."],
+  ["#/quests", "Quests", "Streak and mastery quests with bonus XP."],
+  ["#/weak", "Weak Areas", "Chapters where your accuracy needs work."],
+  ["#/mastery", "Mastery", "Per-chapter mastery levels at a glance."],
+  ["#/revisions", "Revisions", "Spaced-revision queue for what you have learned."],
+  ["#/recommendations", "Recommended", "What to study next, personalised."],
+  ["#/stats", "Statistics", "Your totals: XP, quizzes, mocks, streaks."],
+  ["#/achievements", "Achievements", "Badges for milestones across the app."],
+  ["#/calendar", "Calendar", "Activity heatmap of your study days."],
+  ["#/progress", "Progress", "Overall syllabus completion dashboard."],
+  ["#/notes", "Notes", "Your personal per-chapter notes."],
+  ["#/bookmarks", "Bookmarks", "Starred chapters and PYQs in one place."],
+  ["#/board", "Board", "Sketch-pad whiteboard with PNG export."],
+  ["#/theme", "Theme", "Light, dark and accent customisation."],
+  ["#/foundation", "Class 9-10", "Foundation bridge tracks before Level 1."],
+  ["#/neet", "NEET Hub", "NEET-model rounds for Biology-adjacent prep."],
+  ["#/files", "Files", "Backups, snapshots and data exports."],
+  ["#/gitjee", "GitJEE", "Open-source hub: contribute notes and fixes."],
+  ["#/welcome", "Welcome Tour", "First-run guided tour of the app."],
+];
+
+export function ToolsView(root) {
+  let query = "";
+  const grid = h("div", { class: "labs-grid2", style: "margin-top:14px" });
+  const searchIn = h("input", {
+    class: "lib-search", type: "text", placeholder: "Search tools… (e.g. quiz, 3D, plan)", autocomplete: "off",
+    oninput: (ev) => { query = ev.target.value.toLowerCase(); paint(); },
+  });
+  function paint() {
+    grid.innerHTML = "";
+    const shown = ALL_TOOLS.filter(([r, n, d]) => !query || n.toLowerCase().includes(query) || d.toLowerCase().includes(query));
+    for (const [route, name, blurb] of shown) {
+      grid.append(h("a", { class: "card lab-card", href: route, style: "text-decoration:none;color:inherit" },
+        h("div", { style: "font-weight:700;font-size:13.5px" }, name),
+        h("div", { class: "small muted", style: "margin-top:2px" }, blurb),
+        h("span", { class: "small faint" }, route)));
+    }
+    if (!shown.length) grid.append(h("p", { class: "muted" }, "No tools match that search."));
+  }
+  paint();
+  root.innerHTML = "";
+  root.append(page("Tools",
+    `${ALL_TOOLS.length} tools in one hub — planners, revision aids, 3D labs and trackers.`,
+    h("div", { class: "stack", style: "gap:10px" }, searchIn, grid)));
+}
+
+/* ----------- FILES / EXPORT CENTER ----------- */
+
+function downloadBlob(text, filename, type = "application/json") {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+export function FilesView(root) {
+  const snapWrap = h("div", {});
+  const used = storageBytes();
+  const pct = Math.min(100, Math.round((used / STORAGE_QUOTA) * 100));
+
+  function paintSnaps() {
+    snapWrap.innerHTML = "";
+    const snaps = listSnapshots();
+    if (!snaps.length) {
+      snapWrap.append(h("p", { class: "small faint" }, "No snapshots yet — save one before a big revision push."));
+      return;
+    }
+    for (const sn of snaps) {
+      snapWrap.append(h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:8px;margin-top:6px" },
+        h("span", { class: "small" }, `${sn.label} · ${sn.chapters} chapters`),
+        h("button", {
+          class: "btn btn-sm", onclick: () => {
+            if (restoreSnapshot(sn.slot)) { makeToast("Snapshot restored — reloading", true); setTimeout(() => location.reload(), 700); }
+            else makeToast("Restore failed");
+          },
+        }, "Restore")));
+    }
+  }
+  paintSnaps();
+
+  const importIn = h("input", { type: "file", accept: ".json,application/json", style: "display:none" });
+  importIn.addEventListener("change", () => {
+    const f = importIn.files && importIn.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        if (importData(String(rd.result)) !== false) { makeToast("Progress imported — reloading", true); setTimeout(() => location.reload(), 700); }
+        else makeToast("Import failed: bad file");
+      } catch { makeToast("Import failed: bad file"); }
+    };
+    rd.readAsText(f);
+    importIn.value = "";
+  });
+
+  function card(title, blurb, ...controls) {
+    return h("div", { class: "card lab-card" },
+      h("h3", {}, title), h("p", { class: "small muted" }, blurb),
+      h("div", { class: "lab-demo", style: "display:flex;gap:8px;flex-wrap:wrap" }, ...controls));
+  }
+
+  root.innerHTML = "";
+  root.append(page("Files",
+    "Your data, portable — backups, snapshots and one-click exports. Everything stays offline in your browser.",
+    h("div", { class: "stack", style: "gap:14px;margin-top:14px" },
+      h("div", { class: "labs-grid2" },
+        card("Progress backup",
+          "Download your full progress as JSON, or restore it on any device.",
+          h("button", {
+            class: "btn btn-primary btn-sm", onclick: () => {
+              downloadBlob(exportData(), `teachmejee-backup-${new Date().toISOString().slice(0, 10)}.json`);
+              makeToast("Backup downloaded", true);
+            },
+          }, "Download backup"),
+          h("button", { class: "btn btn-sm", onclick: () => importIn.click() }, "Import backup")),
+        card("Snapshots",
+          "Two rotating local slots — quick save before mocks or syllabus resets.",
+          h("button", {
+            class: "btn btn-sm", onclick: () => { const s = saveSnapshot(); makeToast(`Snapshot saved (${s})`, true); paintSnaps(); },
+          }, "Save snapshot now")),
+        card("Fabric packet",
+          "Shareable insight packet for nearby tabs and study groups.",
+          h("button", {
+            class: "btn btn-sm", onclick: () => {
+              downloadBlob(Quantum.zeroServerSyncExport(), `teachmejee-fabric-${new Date().toISOString().slice(0, 10)}.json`);
+              makeToast("Fabric packet exported", true);
+            },
+          }, "Export packet")),
+        card("Study journal",
+          "Your activity as a Markdown journal you can keep or print.",
+          h("button", {
+            class: "btn btn-sm", onclick: () => {
+              downloadBlob(Quantum.generateJournalMarkdown(), "TeachMeJEE-Journal.md", "text/markdown");
+              makeToast("Journal exported", true);
+            },
+          }, "Export Journal.md")),
+        card("Analytics sandbox",
+          "Raw analytics JSON for your own spreadsheets and plots.",
+          h("button", {
+            class: "btn btn-sm", onclick: () => {
+              downloadBlob(JSON.stringify(Quantum.analyticsExport(), null, 2), "analytics-sandbox.json");
+              makeToast("Analytics exported", true);
+            },
+          }, "Export sandbox")),
+        card("Print",
+          "Clean print CSS is built in — notes print without clutter.",
+          h("button", { class: "btn btn-sm", onclick: () => window.print() }, "Print this page"))),
+      h("div", { class: "card" },
+        h("h3", {}, "Snapshots"),
+        snapWrap,
+        h("div", { style: "margin-top:12px" },
+          h("div", { class: "small faint" }, `Local storage used: ${Math.round(used / 1024)} KB of ${Math.round(STORAGE_QUOTA / 1024 / 1024)} MB (${pct}%)`),
+          h("div", { class: "wt-bar", style: "margin-top:6px" },
+            h("span", { class: "wt-bar-fill", style: `width:${pct}%;background:var(--accent)` })))),
+      importIn)));
+}
+
+/* ----------- GITJEE (OPEN-SOURCE HUB) ----------- */
+
+const GITJEE_REPO = "https://github.com/womeof-blip/teachmejee";
+const GITJEE_SITE = "https://womeof-blip.github.io/teachmejee/";
+
+export function GitJEEView(root) {
+  const s = load();
+  const noteCount = Object.keys(s.notes || {}).length;
+  const chapters = ALL_CONCEPTS.length;
+  const fullNotes = DEEP_NOTE_IDS.length;
+
+  function kitCard(title, blurb, filename, payload, cta) {
+    return h("div", { class: "card lab-card" },
+      h("h3", {}, title), h("p", { class: "small muted" }, blurb),
+      h("div", { class: "lab-demo" },
+        h("button", {
+          class: "btn btn-sm", onclick: () => { downloadBlob(payload(), filename); makeToast(`${cta} downloaded`, true); },
+        }, cta)));
+  }
+
+  root.innerHTML = "";
+  root.append(page("GitJEE",
+    "TeachMeJEE is open source — fix a typo, add a formula, or propose a question via GitHub PR.",
+    h("div", { class: "stack", style: "gap:14px;margin-top:14px" },
+      h("div", { class: "row", style: "gap:10px;margin-top:0;flex-wrap:wrap" },
+        tile(`${chapters}`, "chapters tracked"),
+        tile(`${fullNotes}`, "full-note chapters"),
+        tile(`${FEATURE_COUNT}`, "micro-features"),
+        tile(`${noteCount}`, "your personal notes")),
+      h("div", { class: "labs-grid2" },
+        h("div", { class: "card lab-card" },
+          h("h3", {}, "Repository"),
+          h("p", { class: "small muted" }, "Source, Pages workflow and issue tracker live here."),
+          h("div", { class: "lab-demo", style: "display:flex;gap:8px;flex-wrap:wrap" },
+            h("a", { class: "btn btn-primary btn-sm", href: GITJEE_REPO, target: "_blank", rel: "noopener" }, "Open repo"),
+            h("a", { class: "btn btn-sm", href: GITJEE_SITE, target: "_blank", rel: "noopener" }, "Live site"))),
+        h("div", { class: "card lab-card" },
+          h("h3", {}, "How to contribute"),
+          h("div", { class: "small muted", style: "line-height:1.7" },
+            "1 · Fork the repo. 2 · Edit data, notes or questions. 3 · Attach your export below as proof. 4 · Open a PR."),
+          h("div", { class: "lab-demo" },
+            h("button", { class: "btn btn-sm", onclick: () => makeToast("Submit a PR at " + GITJEE_REPO, true) }, "Contribution guide"))),
+        kitCard("Export my notes",
+          "Your per-chapter notes as JSON — attach to a PR that fixes content.",
+          "teachmejee-my-notes.json",
+          () => JSON.stringify(s.notes || {}, null, 2),
+          "Download notes"),
+        kitCard("Export my progress",
+          "Full local state — helps maintainers reproduce a bug you report.",
+          "teachmejee-debug-state.json",
+          () => exportData(),
+          "Download state"),
+        kitCard("Export quiz misses",
+          "Your last 200 answers — gold for proposing better traps and hints.",
+          "teachmejee-answer-log.json",
+          () => JSON.stringify(s.answerLog || [], null, 2),
+          "Download misses"),
+        kitCard("Export fabric packet",
+          "Broadcast-format insights other contributors can import.",
+          "teachmejee-fabric.json",
+          () => Quantum.zeroServerSyncExport(),
+          "Download packet")))));
 }
 

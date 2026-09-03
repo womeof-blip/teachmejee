@@ -620,7 +620,8 @@ export function importData(json) {
     if (typeof state.lastBackupAt !== 'number') state.lastBackupAt = 0;
   if (!state.foundation || typeof state.foundation !== 'object') state.foundation = { done: {}, checks: {}, celebrated: false };
   if (!state.boss || typeof state.boss !== 'object') state.boss = {};
-    if (!state.noteProg || typeof state.noteProg !== 'object') state.noteProg = {};
+    if (!state.noteProg || typeof state.noteProg !== "object") state.noteProg = {};
+    if (!state.planProg || typeof state.planProg !== "object") state.planProg = { ticked: {}, streak: 0, lastCheck: null, weeks: {} };
     if (!("lastNote" in state)) state.lastNote = null;
     save();
     return true;

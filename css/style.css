@@ -1983,3 +1983,24 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
 .plan-bar-pct { position:absolute; right:6px; top:50%; transform:translateY(-50%); font-size:9.5px; font-weight:700; color:var(--faint); }
 @media (max-width:640px){ .plan-cols { grid-template-columns:1fr; } }
 
+/* ─────────── Weightage & PYQ trends ─────────── */
+.wt-grid { display:flex; flex-direction:column; gap:7px; }
+.wt-row { display:grid; grid-template-columns:minmax(130px,1.6fr) minmax(120px,2fr) 34px 52px 120px 44px 40px; align-items:center; gap:10px; padding:8px 6px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+.wt-name { font-size:13px; font-weight:600; color:var(--text); text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.wt-name:hover { color:var(--accent); }
+.wt-bar { height:9px; border-radius:5px; background:var(--bg); border:1px solid var(--border); overflow:hidden; }
+.wt-bar-fill { display:block; height:100%; border-radius:5px; }
+.wt-marks { font-size:12px; font-weight:700; color:var(--text); }
+.wt-pyq { font-size:11.5px; color:var(--muted); text-align:center; }
+.wt-trend { display:grid; grid-template-columns:repeat(10,1fr); align-items:end; gap:2px; height:26px; padding:0 2px; }
+.wt-col { display:block; border-radius:2px 2px 0 0; background:var(--accent); opacity:.85; }
+.wt-col.muted { background:var(--surface-3); height:4px !important; }
+.wt-acc { font-size:12px; font-weight:700; text-align:center; }
+.wt-acc.green { color:var(--green); } .wt-acc.amber { color:var(--amber); } .wt-acc.red { color:var(--red); } .wt-acc.faint { color:var(--faint); }
+.wt-legend { color:var(--faint); line-height:1.5; }
+.insight-mini { flex:1; min-width:150px; padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--surface); }
+@media (max-width:760px){
+  .wt-row { grid-template-columns:minmax(110px,1.2fr) minmax(90px,1.3fr) 30px 44px 40px; }
+  .wt-trend { display:none; }
+}
+
