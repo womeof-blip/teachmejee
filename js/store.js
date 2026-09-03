@@ -161,6 +161,11 @@ export function load() {
   if (typeof state.lastBackupAt !== "number") state.lastBackupAt = 0;
   if (!state.foundation || typeof state.foundation !== "object") state.foundation = { done: {}, checks: {}, celebrated: false };
   if (!state.noteProg || typeof state.noteProg !== "object") state.noteProg = {};
+  if (!state.planProg || typeof state.planProg !== "object") state.planProg = { ticked: {}, streak: 0, lastCheck: null, weeks: {} };
+  if (!state.planProg.ticked || typeof state.planProg.ticked !== "object") state.planProg.ticked = {};
+  if (!("streak" in state.planProg) || typeof state.planProg.streak !== "number") state.planProg.streak = 0;
+  if (!("weeks" in state.planProg) || typeof state.planProg.weeks !== "object") state.planProg.weeks = {};
+  if (!("lastCheck" in state.planProg)) state.planProg.lastCheck = null;
   if (!("lastNote" in state)) state.lastNote = null;
   return state;
 }
@@ -216,6 +221,46 @@ export function toggleStar(id) {
 
 export function isStarred(id) {
   return load().starred.includes(id);
+}
+
+export function planTicked(id) {
+  return !!load().planProg.ticked[id];
+}
+
+export function planTick(id, weekIdx, weekIds) {
+  const s = load();
+  const p = s.planProg;
+  p.ticked[id] = !p.ticked[id];
+  const t = todayISO();
+  if (p.lastCheck !== t) {
+    const yest = new Date(t + "T12:00:00");
+    yest.setDate(yest.getDate() - 1);
+    const yKey = `${yest.getFullYear()}-${String(yest.getMonth() + 1).padStart(2, "0")}-${String(yest.getDate()).padStart(2, "0")}`;
+    p.streak = p.lastCheck === yKey || !p.lastCheck ? p.streak + 1 : 1;
+    p.lastCheck = t;
+    logActivity(1);
+  }
+  if (weekIdx != null && Array.isArray(weekIds) && weekIds.length) {
+    const own = weekIds.every((wid) => p.ticked[wid] || s.completed.includes(wid));
+    p.weeks[weekIdx] = own;
+    if (own) logActivity(4);
+  }
+  save();
+  return p.ticked[id];
+}
+
+export function planStreak() {
+  return load().planProg.streak;
+}
+
+export function planWeekDone(weekIdx) {
+  return load().planProg.weeks[weekIdx] === true;
+}
+
+export function planWeekCompleteness() {
+  const p = load().planProg;
+  const c = Object.keys(p.weeks).filter((k) => p.weeks[k] === true).length;
+  return c;
 }
 
 export function setGoal(n) {
