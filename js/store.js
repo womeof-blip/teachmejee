@@ -160,9 +160,9 @@ export function load() {
   if (!state.pomoCount || typeof state.pomoCount !== "object") state.pomoCount = {};
   if (typeof state.lastBackupAt !== "number") state.lastBackupAt = 0;
   if (!state.foundation || typeof state.foundation !== "object") state.foundation = { done: {}, checks: {}, celebrated: false };
-  if (!state.noteProg || typeof state.noteProg !== "object") state.noteProg = {};
-  if (!state.planProg || typeof state.planProg !== "object") state.planProg = { ticked: {}, streak: 0, lastCheck: null, weeks: {} };
-  if (!state.planProg.ticked || typeof state.planProg.ticked !== "object") state.planProg.ticked = {};
+    if (!state.noteProg || typeof state.noteProg !== "object") state.noteProg = {};
+    if (!state.planProg || typeof state.planProg !== "object") state.planProg = { ticked: {}, streak: 0, lastCheck: null, weeks: {} };
+    if (!Array.isArray(state.userCards)) state.userCards = [];
   if (!("streak" in state.planProg) || typeof state.planProg.streak !== "number") state.planProg.streak = 0;
   if (!("weeks" in state.planProg) || typeof state.planProg.weeks !== "object") state.planProg.weeks = {};
   if (!("lastCheck" in state.planProg)) state.planProg.lastCheck = null;
@@ -562,6 +562,29 @@ export function srDue() {
   return Object.keys(s.srQueue).filter((id) => s.srQueue[id].due <= today);
 }
 
+/* User-created flashcards: {id, front, back, subject} — reviewed in Flash. */
+export function addUserCard(front, back, subject) {
+  const s = load();
+  const card = {
+    id: "u" + Date.now().toString(36) + Math.floor(Math.random() * 1e4).toString(36),
+    front: String(front || "").trim().slice(0, 300),
+    back: String(back || "").trim().slice(0, 800),
+    subject: ["P", "C", "M"].includes(subject) ? subject : "M",
+  };
+  if (!card.front || !card.back) return null;
+  s.userCards.push(card);
+  logActivity(1);
+  save();
+  return card;
+}
+
+export function removeUserCard(id) {
+  const s = load();
+  s.userCards = s.userCards.filter((c) => c.id !== id);
+  if (s.srQueue[id]) delete s.srQueue[id];
+  save();
+}
+
 export function markSeen(id) {
   const s = load();
   s.seen[id] = todayISO();
@@ -622,6 +645,7 @@ export function importData(json) {
   if (!state.boss || typeof state.boss !== 'object') state.boss = {};
     if (!state.noteProg || typeof state.noteProg !== "object") state.noteProg = {};
     if (!state.planProg || typeof state.planProg !== "object") state.planProg = { ticked: {}, streak: 0, lastCheck: null, weeks: {} };
+    if (!Array.isArray(state.userCards)) state.userCards = [];
     if (!("lastNote" in state)) state.lastNote = null;
     save();
     return true;

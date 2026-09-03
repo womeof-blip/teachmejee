@@ -1,7 +1,7 @@
 /* TeachMeJEE — view renderers */
 
 import { CONCEPTS, LEVELS, SUBJECTS, ALL_CONCEPTS, TOTAL_XP, weightInfo, weightLabel, SUBJECT_MAX_WEIGHT, DERIVATIONS } from "./data.js";
-import { load, isCompleted, completeConcept, uncompleteConcept, markTask, savePlanner, save, getXP, getTotalXP, getStreak, longestStreak, addBonusXp, logActivity, todayISO, saveNote, toggleStar, isStarred, setGoal, setLastChapter, addMock, removeMock, addEvent, switchUser, recordQuizAnswer, dailyState, claimDailyReward, logFocusMin, srSchedule, srDue, markSeen, setBadgesSeen, extractYouTubeId, addVideo, removeVideo, weekKey, getBoss, recordBossRun, bumpPomodoroCount, pomodorosToday, getNoteProg, toggleNoteSec, setNoteCp, noteRecord, lastNoteId, planTicked, planTick, planStreak, planWeekDone, planWeekCompleteness, exportData, importData } from "./store.js";
+import { load, isCompleted, completeConcept, uncompleteConcept, markTask, savePlanner, save, getXP, getTotalXP, getStreak, longestStreak, addBonusXp, logActivity, todayISO, saveNote, toggleStar, isStarred, setGoal, setLastChapter, addMock, removeMock, addEvent, switchUser, recordQuizAnswer, dailyState, claimDailyReward, logFocusMin, srSchedule, srDue, markSeen, setBadgesSeen, extractYouTubeId, addVideo, removeVideo, weekKey, getBoss, recordBossRun, bumpPomodoroCount, pomodorosToday, getNoteProg, toggleNoteSec, setNoteCp, noteRecord, lastNoteId, planTicked, planTick, planStreak, planWeekDone, planWeekCompleteness, exportData, importData, addUserCard, removeUserCard } from "./store.js";
 import { saveSnapshot, listSnapshots, restoreSnapshot, storageBytes, STORAGE_QUOTA } from "./settings.js";
 import { DEEP_NOTES, DEEP_NOTE_IDS, noteMinutes } from "./notes/index.js";
 import { daysUntil, fmt, computePhases, generateSchedule, weekTasks, weeklyPlan } from "./planner.js";
@@ -2310,10 +2310,17 @@ export function QuizView(root) {
   if (isBoss) { timedMode = true; }
 
   const bank = QUESTIONS.filter((q) => completedSet.has(q.c));
-  const pool = bank.length >= 5 ? bank : QUESTIONS;
+  const fullPool = bank.length >= 5 ? bank : QUESTIONS;
+  let weakOnly = false;
+  function currentPool() {
+    if (!weakOnly) return fullPool;
+    const weakIds = new Set(getWeakAreas(25).map((w) => w.c.id));
+    const wp = fullPool.filter((q) => weakIds.has(q.c));
+    return wp.length >= 3 ? wp : fullPool;
+  }
 
   let quizLen = 8;
-  if (isBoss) quizLen = Math.min(16, pool.length);
+  if (isBoss) quizLen = Math.min(16, fullPool.length);
   const lenSel = h("select", { title: "Number of questions" },
     h("option", { value: "8" }, "Quick — 8"),
     h("option", { value: "16" }, "Full — 16"));
@@ -2348,13 +2355,19 @@ export function QuizView(root) {
   function renderStart() {
     box.innerHTML = "";
     const timedCb = h("input", { type: "checkbox", onchange: (ev) => { timedMode = ev.target.checked; }, checked: isBoss, disabled: isBoss });
+    const weakCount = getWeakAreas(25).length;
+    const weakCb = h("input", {
+      type: "checkbox", checked: weakOnly, disabled: isBoss || !weakCount,
+      title: weakCount ? "Questions only from chapters under 80% accuracy" : "Attempt quizzes first — weak chapters appear here under 80% accuracy",
+      onchange: (ev) => { weakOnly = ev.target.checked; },
+    });
     if (isBoss) {
       box.append(h("div", { class: "card boss-banner", style: "margin-bottom:14px;border-color:color-mix(in srgb,var(--red) 45%,transparent)" },
         h("div", { class: "row", style: "justify-content:space-between;align-items:center" },
           h("div", {},
             h("h2", { style: "color:var(--red)" }, "Boss battle"),
             h("p", { class: "small muted", style: "margin:4px 0 0" }, `${quizLen} questions · 10 minutes · score 12+ to clear the week.`)),
-          h("span", { class: "boss-glyph", style: "font-size:30px" }, "?"))));
+          h("span", { class: "boss-glyph", style: "font-size:30px" }, "♛"))));
     }
     box.append(
       h("div", { class: "card" },
@@ -2365,6 +2378,8 @@ export function QuizView(root) {
             : `Only ${bank.length} unlocked yet — using the full bank.`),
         h("label", { style: "display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13.5px;color:var(--muted);cursor:pointer" },
           timedCb, "Timed mode — 90 seconds for the whole set"),
+        h("label", { style: "display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13.5px;color:var(--muted);cursor:pointer" },
+          weakCb, weakCount ? `Weak spots only — ${weakCount} chapters under 80%` : "Weak spots only — unlocks after quiz attempts"),
         h("div", { style: "margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center" },
           lenSel,
           h("button", { class: "btn btn-primary", onclick: () => renderQ(0) }, "Start quiz"),
@@ -2391,7 +2406,7 @@ export function QuizView(root) {
   function renderQ(i) {
     idx = i;
     if (i === 0) {
-      quiz = shuffle(pool).slice(0, quizLen);
+      quiz = shuffle(currentPool()).slice(0, quizLen);
       score = 0; streak = 0; results.length = 0;
       startTimer();
     }
@@ -2500,9 +2515,16 @@ export function QuizView(root) {
 /* ----------- FORMULA FLASH (spaced repetition) ----------- */
 
 export function FlashView(root) {
-  const allCards = ALL_CONCEPTS
-    .filter((c) => c.formulas.length)
-    .flatMap((c) => c.formulas.map((f) => ({ ...f, cid: c.id, cname: c.name, subject: c.subject })));
+  function userCards() {
+    return (load().userCards || []).map((u) => ({ n: u.front, f: u.back, d: null, cid: u.id, cname: "My cards", subject: u.subject }));
+  }
+  function formulaCards() {
+    return ALL_CONCEPTS
+      .filter((c) => c.formulas.length)
+      .flatMap((c) => c.formulas.map((f) => ({ ...f, cid: c.id, cname: c.name, subject: c.subject })));
+  }
+  let allCards = formulaCards().concat(userCards());
+  function refreshCards() { allCards = formulaCards().concat(userCards()); }
   const dueIds = new Set(srDue());
   let mode = "all";
   let deck = [], idx = 0, flipped = false, known = 0, total = 0, dueRun = false;
@@ -2622,9 +2644,49 @@ export function FlashView(root) {
     render();
   }
 
+  const mineWrap = h("div", {});
+  function paintMine() {
+    mineWrap.innerHTML = "";
+    const mine = load().userCards || [];
+    const frontIn = h("input", { type: "text", placeholder: "Front — question or cue", style: "flex:2;min-width:140px" });
+    const backIn = h("input", { type: "text", placeholder: "Back — answer", style: "flex:2;min-width:140px" });
+    const subjSel = h("select", { title: "Subject" },
+      ...["P", "C", "M"].map((s) => h("option", { value: s }, SUBJECTS[s].name)));
+    const addBtn = h("button", {
+      class: "btn btn-primary btn-sm", onclick: () => {
+        const card = addUserCard(frontIn.value, backIn.value, subjSel.value);
+        if (!card) { makeToast("Write both sides first"); return; }
+        makeToast("Card added to your deck", true);
+        refreshCards(); buildPills(); paintMine(); rebuild();
+      },
+    }, "Add card");
+    mineWrap.append(
+      h("div", { class: "row", style: "gap:8px;flex-wrap:wrap;margin-bottom:10px" }, frontIn, backIn, subjSel, addBtn));
+    if (!mine.length) {
+      mineWrap.append(h("p", { class: "small faint", style: "margin:0" }, "No custom cards yet — formulas above already work; add your own traps and mnemonics."));
+      return;
+    }
+    mineWrap.append(h("div", { class: "stack", style: "gap:6px" },
+      ...mine.map((u) => h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:8px" },
+        h("span", { class: "small" }, subjectTag(u.subject), " ", u.front,
+          h("span", { class: "faint" }, ` → ${u.back.slice(0, 60)}${u.back.length > 60 ? "…" : ""}`)),
+        h("button", {
+          class: "btn btn-sm", title: "Delete card", onclick: () => {
+            removeUserCard(u.id); refreshCards(); buildPills(); paintMine(); rebuild();
+          },
+        }, "✕")))));
+  }
+  paintMine();
+
   buildPills();
   root.innerHTML = "";
-  root.append(page("Formula flash", "Flip through every formula like a deck of cards. Missed cards resurface on a spaced schedule.", h("div", {}, pills, cardBox)));
+  root.append(page("Formula flash", "Flip through every formula like a deck of cards. Missed cards resurface on a spaced schedule.", h("div", {},
+    pills,
+    cardBox,
+    h("div", { class: "card", style: "margin-top:18px" },
+      h("h3", {}, "My cards"),
+      h("p", { class: "small muted", style: "margin-top:2px" }, `${(load().userCards || []).length} custom cards — reviewed together with formulas.`),
+      mineWrap))));
   rebuild();
 }
 
@@ -2635,8 +2697,20 @@ export function PYQView(root) {
   let examF = "all";
   let yearF = "all";
   let specialF = "all";
+  let chapF = "all";
 
   const years = [...new Set(PYQS.map((q) => q.year))].sort((a, b) => b - a);
+  const chapIds = [...new Set(PYQS.map((q) => q.chap).filter(Boolean))].sort((a, b) => {
+    const ca = CONCEPTS[a], cb = CONCEPTS[b];
+    const sa = ca ? ca.subject : "Z", sb = cb ? cb.subject : "Z";
+    if (sa !== sb) return sa.localeCompare(sb);
+    return (ca ? ca.name : a).localeCompare(cb ? cb.name : b);
+  });
+  const chapNameOf = (id) => {
+    const hit = PYQS.find((q) => q.chap === id);
+    if (hit && hit.chapName) return hit.chapName;
+    return CONCEPTS[id] ? CONCEPTS[id].name : id;
+  };
   const wrap = h("div", { style: "margin-top:16px" });
 
   const difficultyOf = (q) => (q.exam === "adv" ? "hard" : q.year >= 2023 ? "med" : "easy");
@@ -2646,6 +2720,7 @@ export function PYQView(root) {
       (subjectF === "all" || q.subject === subjectF) &&
       (examF === "all" || q.exam === examF) &&
       (yearF === "all" || String(q.year) === yearF) &&
+      (chapF === "all" || q.chap === chapF) &&
       (specialF === "all"
         || (specialF === "starred" && load().pyqStarred.includes(q.id))
         || (specialF === "hard" && difficultyOf(q) === "hard")));
@@ -2659,7 +2734,7 @@ export function PYQView(root) {
     if (!list.length) { wrap.append(h("div", { class: "empty" }, mascotSVG(60), h("p", { style: "margin-top:6px" }, "Nothing matches these filters."))); return; }
     for (const q of shuffle(list)) {
       const starred = () => load().pyqStarred.includes(q.id);
-      const starBtn = h("button", { class: `star-btn small${starred() ? " on" : ""}`, title: "Bookmark this PYQ", "aria-label": "Bookmark PYQ" }, "?");
+      const starBtn = h("button", { class: `star-btn small${starred() ? " on" : ""}`, title: "Bookmark this PYQ", "aria-label": "Bookmark PYQ" }, "★");
       starBtn.addEventListener("click", () => {
         const on = togglePyqStar(q.id);
         starBtn.classList.toggle("on", on);
@@ -2669,7 +2744,7 @@ export function PYQView(root) {
       const sol = h("div", { class: "stack", style: "gap:8px;margin-top:12px", hidden: true },
         ...q.opts.map((o, k) =>
           h("div", { class: `modal-row${k === q.a ? "" : ""}`, style: k === q.a ? "border-color:color-mix(in srgb,var(--green) 50%,transparent)" : "" },
-            h("b", { style: "color:var(--faint)" }, "ABCD"[k]), o, k === q.a ? h("span", { class: "small", style: "color:var(--green);font-weight:700" }, " ? correct") : null)),
+            h("b", { style: "color:var(--faint)" }, "ABCD"[k]), o, k === q.a ? h("span", { class: "small", style: "color:var(--green);font-weight:700" }, " ✓ correct") : null)),
         h("div", { class: "quiz-why" }, q.why),
         CONCEPTS[q.chap] ? h("a", { class: "prereq-pill", href: `#/chapter/${q.chap}` }, "Open related chapter") : null);
       const revealBtn = h("button", { class: "btn btn-sm", onclick: () => { sol.hidden = false; revealBtn.remove(); } }, "Reveal answer & solution");
@@ -2704,6 +2779,9 @@ export function PYQView(root) {
     h("option", { value: "all" }, "Everything"),
     h("option", { value: "starred" }, "Bookmarked"),
     h("option", { value: "hard" }, "Hard only"));
+  const chapSel = h("select", { title: "Filter by chapter", onchange: (ev) => { chapF = ev.target.value; render(); } },
+    h("option", { value: "all" }, "All chapters"),
+    ...chapIds.map((id) => h("option", { value: id }, chapNameOf(id))));
 
   render();
   root.innerHTML = "";
@@ -2712,7 +2790,7 @@ export function PYQView(root) {
     h("div", {},
       h("div", { class: "row", style: "align-items:center;gap:10px" },
         subjTabs,
-        h("div", { style: "display:flex;gap:8px;margin-left:auto;flex-wrap:wrap" }, examSel, yearSel, specialSel)),
+        h("div", { style: "display:flex;gap:8px;margin-left:auto;flex-wrap:wrap" }, examSel, yearSel, chapSel, specialSel)),
       wrap)));
 }
 
