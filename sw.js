@@ -2,7 +2,7 @@
    - Network-first for HTML/JS/CSS so updates always land (cache = offline fallback)
    - Stale-while-revalidate for other same-origin assets
    - Version bump + skipWaiting + clients claim => no stale mixed-version ghosts */
-const CACHE = "tmj-v17";
+const CACHE = "tmj-v18";
 const CORE = [
   "./",
   "./index.html",

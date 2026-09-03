@@ -1398,7 +1398,9 @@ function renderConstellation(container, completed, starred, state) {
   container.append(wrap);
 
   let vz={}, vvy={}, draggingNode=null;
-  const kRepel=2200, kSpring=0.045, kFriction=0.85;
+  const elRefs = {}; const edgeRefs = [];
+  const kRepel=900, kSpring=0.06, kGravity=0.012, kFriction=0.85, VMAX=14;
+  const BOUND_X = 430, BOUND_Y = 330;
 
   function nodeRadius(n,z){ const base = n.level===0?7 : n.level>=4?6:5.5; return base*z; }
   function nodeColor(n){ return SUBJECTS[n.subject]?.color || "#999"; }
@@ -1421,6 +1423,8 @@ function renderConstellation(container, completed, starred, state) {
     const z = zoom/100;
     const visible = new Set(allNodes.filter(matches).map(n=>n.id));
     edgesG.innerHTML=""; nodesG.innerHTML=""; labelsG.innerHTML="";
+    for (const k in elRefs) delete elRefs[k];
+    edgeRefs.length = 0;
     for(const e of allEdges){
       if(!visible.has(e.from) || !visible.has(e.to)) continue;
       const a=positions[e.from], b=positions[e.to]; if(!a||!b) continue;
@@ -1435,6 +1439,7 @@ function renderConstellation(container, completed, starred, state) {
       path.setAttribute("opacity", dim?"0.08": allDone?"0.9": eitherDone?"0.55":"0.22");
       if(showArrows) path.setAttribute("marker-end","url(#obsArrow)");
       edgesG.append(path);
+      edgeRefs.push({ path, from: e.from, to: e.to });
     }
     for(const n of allNodes){
       if(!visible.has(n.id)) continue;
@@ -1456,20 +1461,44 @@ function renderConstellation(container, completed, starred, state) {
       circ.style.cursor="pointer"; circ.style.opacity = Math.min(fade, localFade);
       if(n.isStarred){ circ.setAttribute("stroke-dasharray","3 2"); }
       nodesG.append(circ);
+      let glowEl = null;
       if(n.status==="completed"){
         const glow=document.createElementNS(svgNS,"circle");
         glow.setAttribute("cx",p.x); glow.setAttribute("cy",p.y); glow.setAttribute("r", r+7);
         glow.setAttribute("fill","none"); glow.setAttribute("stroke","var(--green)"); glow.setAttribute("stroke-width","2"); glow.setAttribute("opacity", String(0.5*Math.min(fade,localFade))); glow.setAttribute("filter","blur(2px)");
         nodesG.insertBefore(glow, circ);
+        glowEl = glow;
       }
       if(showLabels){
         const lbl=document.createElementNS(svgNS,"text");
         lbl.setAttribute("x",p.x); lbl.setAttribute("y", p.y + r + 16);
         lbl.setAttribute("text-anchor","middle"); lbl.setAttribute("font-size", Math.max(8, 11*z));
         lbl.setAttribute("fill","var(--muted)"); lbl.setAttribute("opacity", String((n.status==="completed"?0.85:0.5)*Math.min(fade,localFade)));
-        lbl.textContent = n.name.length>18 ? n.name.slice(0,18)+"�" : n.name;
+        lbl.textContent = n.name.length>18 ? n.name.slice(0,18)+"…" : n.name;
         labelsG.append(lbl);
+        elRefs[n.id] = { circ, glow: glowEl, lbl, r };
+      } else {
+        elRefs[n.id] = { circ, glow: glowEl, lbl: null, r };
       }
+    }
+    paint();
+  }
+
+  function paint(){
+    const z = zoom/100;
+    for(const { path, from, to } of edgeRefs){
+      const a=positions[from], b=positions[to]; if(!a||!b) continue;
+      path.setAttribute("d", `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} L ${b.x.toFixed(1)} ${b.y.toFixed(1)}`);
+    }
+    for(const n of allNodes){
+      const ref = elRefs[n.id]; if(!ref) continue;
+      const p = positions[n.id]; if(!p) continue;
+      const isSel = selectedId===n.id;
+      ref.circ.setAttribute("cx", p.x.toFixed(1)); ref.circ.setAttribute("cy", p.y.toFixed(1));
+      const r = nodeRadius(n, z) + (isSel?3:0);
+      ref.circ.setAttribute("r", r);
+      if(ref.glow){ ref.glow.setAttribute("cx", p.x.toFixed(1)); ref.glow.setAttribute("cy", p.y.toFixed(1)); ref.glow.setAttribute("r", r + 7); }
+      if(ref.lbl){ ref.lbl.setAttribute("x", p.x.toFixed(1)); ref.lbl.setAttribute("y", (p.y + r + 16).toFixed(1)); }
     }
   }
 
@@ -1477,13 +1506,16 @@ function renderConstellation(container, completed, starred, state) {
     if(!physicsOn) return;
     const z=zoom/100; const repel=kRepel/(z*z);
     for(const a of allNodes){ let fx=0,fy=0; for(const b of allNodes){ if(a.id===b.id) continue; const dx=positions[a.id].x-positions[b.id].x, dy=positions[a.id].y-positions[b.id].y; let d2=dx*dx+dy*dy+1; if(d2<1) d2=1; const f=repel/d2; fx+=(dx/Math.sqrt(d2))*f; fy+=(dy/Math.sqrt(d2))*f; }
-      for(const p of a.prereqs){ const t=positions[p]; if(!t) continue; fx+=(positions[a.id].x-t.x)*kSpring*z; fy+=(positions[a.id].y-t.y)*kSpring*z; }
+      for(const p of a.prereqs){ const t=positions[p]; if(!t) continue; fx+=(t.x-positions[a.id].x)*kSpring*z; fy+=(t.y-positions[a.id].y)*kSpring*z; }
+      fx+=-positions[a.id].x*kGravity; fy+=-positions[a.id].y*kGravity;
       vz[a.id]=(vz[a.id]||0)+fx; vvy[a.id]=(vvy[a.id]||0)+fy;
     }
-    for(const a of allNodes){ if(draggingNode===a.id) continue; positions[a.id].x+=vz[a.id]; positions[a.id].y+=vvy[a.id]; vz[a.id]*=kFriction; vvy[a.id]*=kFriction; }
-    redraw();
+    for(const a of allNodes){ if(draggingNode===a.id) continue; vz[a.id]=Math.max(-VMAX,Math.min(VMAX,vz[a.id])); vvy[a.id]=Math.max(-VMAX,Math.min(VMAX,vvy[a.id])); positions[a.id].x=Math.max(-BOUND_X,Math.min(BOUND_X,positions[a.id].x+vz[a.id])); positions[a.id].y=Math.max(-BOUND_Y,Math.min(BOUND_Y,positions[a.id].y+vvy[a.id])); vz[a.id]*=kFriction; vvy[a.id]*=kFriction; }
+    paint();
   }
-  let running=true; function run(){ if(!running) return; step(); requestAnimationFrame(run); } run();
+  let running=true; function run(){ if(!running) return; step(); requestAnimationFrame(run); }
+  onViewCleanup(()=>{ running=false; });
+  run();
 
   svg.addEventListener("mousedown",(ev)=>{
     const c=ev.target; if(c.classList.contains("const-node")){ draggingNode=c.getAttribute("data-id"); selectedId=draggingNode; if(localMode) redraw(); ev.preventDefault(); return; }
@@ -1491,8 +1523,8 @@ function renderConstellation(container, completed, starred, state) {
   });
   svg.addEventListener("mousemove",(ev)=>{
     if(draggingNode){
-      const ctm=svg.getScreenCTM(); const dx=(ev.movementX||0)/(ctm.a||1), dy=(ev.movementY||0)/(ctm.d||1);
-      positions[draggingNode].x+=dx; positions[draggingNode].y+=dy; vz[draggingNode]=0; vvy[draggingNode]=0; return;
+      const ctm=svg.getScreenCTM(); const dx=(ev.movementX||0)/((ctm&&ctm.a)||1), dy=(ev.movementY||0)/((ctm&&ctm.d)||1);
+      positions[draggingNode].x=Math.max(-BOUND_X,Math.min(BOUND_X,positions[draggingNode].x+dx)); positions[draggingNode].y=Math.max(-BOUND_Y,Math.min(BOUND_Y,positions[draggingNode].y+dy)); vz[draggingNode]=0; vvy[draggingNode]=0; paint(); return;
     }
     const t=ev.target;
     if(t.classList.contains("const-node")){
@@ -1508,7 +1540,7 @@ function renderConstellation(container, completed, starred, state) {
   });
   svg.addEventListener("mouseup",()=>{ draggingNode=null; });
   svg.addEventListener("mouseleave",()=>{ draggingNode=null; tooltip.style.display="none"; });
-  svg.addEventListener("wheel",(ev)=>{ ev.preventDefault(); zoom=Math.min(200,Math.max(45, zoom - ev.deltaY*0.001*zoom)); redraw(); });
+  svg.addEventListener("wheel",(ev)=>{ ev.preventDefault(); zoom=Math.min(200,Math.max(45, zoom - ev.deltaY*0.001*zoom)); redraw(); }, { passive: false });
   svg.addEventListener("dblclick",()=>{ zoom=100; redraw(); });
   container.addEventListener("click",(ev)=>{
     const node=ev.target.closest?.(".const-node");
@@ -4758,6 +4790,7 @@ const ALL_TOOLS = [
   ["#/constellation", "Constellation", "Interactive 3D graph of the whole syllabus."],
   ["#/graph", "Graph", "2D dependency graph of chapters and prerequisites."],
   ["#/molecules", "Molecules 3D", "Rotatable 3D molecule models for Chemistry."],
+  ["#/desmos", "Desmos", "Graphing calculator: plot functions, pan, zoom, trace."],
   ["#/periodic", "Periodic Table", "Searchable element table with trends."],
   ["#/derivations", "Derivations", "Step-by-step Physics derivations."],
   ["#/playground", "Playground", "Sandbox simulations for core concepts."],
@@ -5161,5 +5194,346 @@ export function SprintView(root) {
         timerEl),
       box)));
   iv = setInterval(tick, 1000);
+}
+
+/* ----------- DESMOS-STYLE GRAPHING CALCULATOR ----------- */
+
+const DESMOS_COLORS = ["#60a5fa", "#34d399", "#fbbf24", "#e86f52", "#c084fc", "#69d8d2"];
+const DESMOS_KEY = "tmj_desmos";
+
+function desmosCompile(src) {
+  const FUNCS = {
+    sin: Math.sin, cos: Math.cos, tan: Math.tan,
+    asin: Math.asin, acos: Math.acos, atan: Math.atan,
+    sqrt: (x) => x < 0 ? NaN : Math.sqrt(x),
+    cbrt: (x) => Math.cbrt ? Math.cbrt(x) : Math.pow(x, 1 / 3),
+    abs: Math.abs, exp: Math.exp, floor: Math.floor, ceil: Math.ceil, round: Math.round,
+    ln: (x) => x <= 0 ? NaN : Math.log(x),
+    log: (x) => x <= 0 ? NaN : Math.log10 ? Math.log10(x) : Math.log(x) / Math.LN10,
+  };
+  const CONSTS = { pi: Math.PI, e: Math.E };
+  let s = String(src || "").replace(/\s+/g, "").toLowerCase().replace(/÷/g, "/").replace(/×/g, "*").replace(/−/g, "-");
+  if (!s) return { error: "empty" };
+  if (/\(\)/.test(s)) return { error: "empty brackets" };
+  // tokenize
+  const toks = [];
+  let i = 0;
+  while (i < s.length) {
+    const ch = s[i];
+    if (/[0-9.]/.test(ch)) {
+      let j = i, dot = false;
+      while (j < s.length && /[0-9.]/.test(s[j])) { if (s[j] === ".") { if (dot) break; dot = true; } j++; }
+      const num = parseFloat(s.slice(i, j));
+      if (!isFinite(num)) return { error: "bad number" };
+      toks.push({ t: "num", v: num }); i = j;
+    } else if (/[a-z]/.test(ch)) {
+      let j = i;
+      while (j < s.length && /[a-z]/.test(s[j])) j++;
+      const word = s.slice(i, j);
+      if (word === "x") toks.push({ t: "x" });
+      else if (CONSTS[word] != null) toks.push({ t: "num", v: CONSTS[word] });
+      else if (FUNCS[word]) toks.push({ t: "fn", v: word });
+      else return { error: `unknown "${word}"` };
+      i = j;
+    } else if ("+-*/^()".includes(ch)) {
+      toks.push({ t: ch === "(" || ch === ")" ? "par" : "op", v: ch }); i++;
+    } else {
+      return { error: `bad character "${ch}"` };
+    }
+  }
+  // implicit multiplication: A in {num,x,)} B in {num,x,(,fn} -> insert *
+  const out = [];
+  const isA = (t) => t.t === "num" || t.t === "x" || (t.t === "par" && t.v === ")");
+  const isB = (t) => t.t === "num" || t.t === "x" || t.t === "fn" || (t.t === "par" && t.v === "(");
+  for (let k = 0; k < toks.length; k++) {
+    out.push(toks[k]);
+    if (k + 1 < toks.length && isA(toks[k]) && isB(toks[k + 1])) out.push({ t: "op", v: "*" });
+  }
+  // shunting-yard with unary minus.
+  // Unary minus never pops the stack (binds to the next operand), and sits
+  // below ^ so that -x^2 = -(x^2) while 2^-3 still parses as 2^(-3).
+  const rpn = [];
+  const stack = [];
+  const prec = { "+": 1, "-": 1, "*": 2, "/": 2, "^": 3, "u-": 2.5 };
+  let expectOperand = true;
+  for (const tk of out) {
+    if (tk.t === "num" || tk.t === "x") { rpn.push(tk); expectOperand = false; }
+    else if (tk.t === "fn") { stack.push(tk); expectOperand = true; }
+    else if (tk.t === "op") {
+      let op = tk.v;
+      if ((op === "-" || op === "+") && expectOperand) {
+        if (op === "+") continue;
+        stack.push({ t: "op", v: "u-" });
+        continue;
+      }
+      while (stack.length) {
+        const top = stack[stack.length - 1];
+        if (top.t === "fn") { rpn.push(stack.pop()); continue; }
+        if (top.t === "op" && ((op === "^" && prec[top.v] > prec[op]) || (op !== "^" && prec[top.v] >= prec[op]))) { rpn.push(stack.pop()); continue; }
+        break;
+      }
+      stack.push({ t: "op", v: op });
+      expectOperand = true;
+    } else if (tk.t === "par" && tk.v === "(") { stack.push(tk); expectOperand = true; }
+    else if (tk.t === "par" && tk.v === ")") {
+      let found = false;
+      while (stack.length) {
+        const top = stack.pop();
+        if (top.t === "par" && top.v === "(") { found = true; break; }
+        rpn.push(top);
+      }
+      if (!found) return { error: "mismatched bracket" };
+      if (stack.length && stack[stack.length - 1].t === "fn") rpn.push(stack.pop());
+      expectOperand = false;
+    }
+  }
+  while (stack.length) {
+    const top = stack.pop();
+    if (top.t === "par") return { error: "mismatched bracket" };
+    rpn.push(top);
+  }
+  function fn(x) {
+    const st = [];
+    for (const tk of rpn) {
+      if (tk.t === "num") st.push(tk.v);
+      else if (tk.t === "x") st.push(x);
+      else if (tk.t === "fn") {
+        if (!st.length) return NaN;
+        const v = FUNCS[tk.v](st.pop());
+        st.push(v);
+      } else if (tk.t === "op") {
+        if (tk.v === "u-") { if (!st.length) return NaN; st.push(-st.pop()); continue; }
+        if (st.length < 2) return NaN;
+        const b = st.pop(), a = st.pop();
+        let r = NaN;
+        if (tk.v === "+") r = a + b;
+        else if (tk.v === "-") r = a - b;
+        else if (tk.v === "*") r = a * b;
+        else if (tk.v === "/") r = b === 0 ? NaN : a / b;
+        else if (tk.v === "^") {
+          if (a < 0 && !Number.isInteger(b)) r = NaN;
+          else { r = Math.pow(a, b); }
+        }
+        st.push(r);
+      }
+    }
+    return st.length === 1 ? st[0] : NaN;
+  }
+  return { fn };
+}
+
+function desmosNiceStep(pxPerUnit) {
+  const target = 80;
+  const raw = target / pxPerUnit;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  const nice = norm >= 5 ? 5 : norm >= 2 ? 2 : 1;
+  return nice * mag;
+}
+
+export function DesmosView(root) {
+  let exprs;
+  try {
+    exprs = JSON.parse(localStorage.getItem(DESMOS_KEY) || "null") || [{ e: "x^2", on: true }, { e: "sin(x)", on: true }];
+  } catch { exprs = [{ e: "x^2", on: true }, { e: "sin(x)", on: true }]; }
+  const view = { cx: 0, cy: 0, scale: 46 };
+  let mouse = null;
+  let compiled = [];
+
+  const listBox = h("div", { class: "desmos-list" });
+  const canvas = document.createElement("canvas");
+  canvas.className = "desmos-canvas";
+  const errBar = h("div", { class: "small", style: "min-height:18px;color:var(--red);margin-top:6px" });
+
+  function persist() {
+    try { localStorage.setItem(DESMOS_KEY, JSON.stringify(exprs)); } catch {}
+  }
+  function compileAll() {
+    compiled = exprs.map((row, i) => {
+      if (!row.on || !row.e.trim()) return null;
+      const r = desmosCompile(row.e);
+      return r.error ? { error: r.error, idx: i } : { fn: r.fn, idx: i };
+    });
+    const bad = compiled.find((c) => c && c.error);
+    errBar.textContent = bad ? `y${bad.idx + 1}: ${bad.error}` : "";
+  }
+
+  function draw() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = canvas.clientWidth, hgt = canvas.clientHeight;
+    if (!w || !hgt) return;
+    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(hgt * dpr)) {
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(hgt * dpr);
+    }
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim() || "#151109";
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, hgt);
+    const X = (mx) => view.cx + (mx - w / 2) / view.scale;
+    const Y = (my) => view.cy - (my - hgt / 2) / view.scale;
+    const PX = (x) => w / 2 + (x - view.cx) * view.scale;
+    const PY = (y) => hgt / 2 - (y - view.cy) * view.scale;
+    // grid
+    const step = desmosNiceStep(view.scale);
+    const faint = "rgba(127,127,127,0.16)", mid = "rgba(127,127,127,0.32)";
+    ctx.lineWidth = 1;
+    const x0 = Math.ceil(X(0) / step) * step, x1 = X(w);
+    for (let gx = x0; gx <= x1; gx += step) {
+      const px = Math.round(PX(gx)) + 0.5;
+      const major = Math.abs(gx / step - Math.round(gx / step)) < 1e-9;
+      ctx.strokeStyle = major ? mid : faint;
+      ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, hgt); ctx.stroke();
+    }
+    const y0 = Math.ceil(Y(hgt) / step) * step, y1 = Y(0);
+    for (let gy = y0; gy <= y1; gy += step) {
+      const py = Math.round(PY(gy)) + 0.5;
+      ctx.strokeStyle = mid;
+      ctx.beginPath(); ctx.moveTo(0, py); ctx.lineTo(w, py); ctx.stroke();
+    }
+    // axes
+    const ax = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#f2a33c";
+    ctx.strokeStyle = ax; ctx.lineWidth = 1.4;
+    const ox = Math.round(PX(0)) + 0.5, oy = Math.round(PY(0)) + 0.5;
+    if (ox >= 0 && ox <= w) { ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, hgt); ctx.stroke(); }
+    if (oy >= 0 && oy <= hgt) { ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke(); }
+    // axis labels
+    ctx.fillStyle = "rgba(140,140,140,0.9)"; ctx.font = "10px system-ui";
+    for (let gx = x0; gx <= x1; gx += step) {
+      if (Math.abs(gx) < step / 2) continue;
+      ctx.fillText(String(Math.round(gx * 100) / 100), PX(gx) + 3, oy >= 0 && oy <= hgt ? Math.min(hgt - 3, oy - 4) : hgt - 4);
+    }
+    for (let gy = y0; gy <= y1; gy += step) {
+      if (Math.abs(gy) < step / 2) continue;
+      ctx.fillText(String(Math.round(gy * 100) / 100), ox >= 0 && ox <= w ? Math.min(w - 24, ox + 4) : 4, PY(gy) - 3);
+    }
+    // curves
+    compiled.forEach((c) => {
+      if (!c || c.error) return;
+      const color = DESMOS_COLORS[c.idx % DESMOS_COLORS.length];
+      ctx.strokeStyle = color; ctx.lineWidth = 2.2; ctx.lineJoin = "round";
+      ctx.beginPath();
+      let pen = false, prevPy = 0;
+      for (let px = 0; px <= w; px++) {
+        const y = c.fn(X(px));
+        if (!isFinite(y)) { pen = false; continue; }
+        const py = PY(y);
+        if (pen && Math.abs(py - prevPy) > hgt * 1.5) { pen = false; }
+        if (!pen) { ctx.moveTo(px, py); pen = true; }
+        else ctx.lineTo(px, py);
+        prevPy = py;
+      }
+      ctx.stroke();
+    });
+    // trace on hover: first enabled curve
+    if (mouse) {
+      const c = compiled.find((x) => x && !x.error);
+      if (c) {
+        const r = canvas.getBoundingClientRect();
+        const mx = mouse.x - r.left;
+        const xv = X(mx), yv = c.fn(xv);
+        if (isFinite(yv)) {
+          const py = PY(yv);
+          if (py >= -20 && py <= hgt + 20) {
+            const color = DESMOS_COLORS[c.idx % DESMOS_COLORS.length];
+            ctx.fillStyle = color;
+            ctx.beginPath(); ctx.arc(mx, Math.max(0, Math.min(hgt, py)), 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = "#fff"; ctx.font = "11px system-ui";
+            const label = `(${Math.round(xv * 100) / 100}, ${Math.round(yv * 100) / 100})`;
+            ctx.fillText(label, Math.min(w - 110, mx + 10), Math.max(12, Math.min(hgt - 4, py - 10)));
+          }
+        }
+      }
+    }
+  }
+
+  function renderList() {
+    listBox.innerHTML = "";
+    exprs.forEach((row, i) => {
+      const color = DESMOS_COLORS[i % DESMOS_COLORS.length];
+      const inp = h("input", {
+        type: "text", value: row.e, placeholder: "y = …  (e.g. x^2, sin(x), 2x+1)",
+        class: "desmos-input", style: "flex:1;min-width:0",
+      });
+      inp.addEventListener("input", () => { row.e = inp.value; compileAll(); persist(); draw(); });
+      const dot = h("button", {
+        class: `desmos-dot${row.on ? " on" : ""}`, title: row.on ? "Hide" : "Show",
+        style: `--dc:${color}`,
+        onclick: () => { row.on = !row.on; persist(); renderList(); compileAll(); draw(); },
+      });
+      const del = h("button", { class: "btn btn-sm", title: "Delete", onclick: () => { exprs.splice(i, 1); persist(); renderList(); compileAll(); draw(); } }, "✕");
+      listBox.append(h("div", { class: "desmos-row" },
+        h("span", { class: "small faint", style: "min-width:26px" }, `y${i + 1}`),
+        dot, inp, del));
+    });
+  }
+
+  function zoomAt(f, cxPx, cyPx) {
+    const w = canvas.clientWidth, hgt = canvas.clientHeight;
+    const x = cxPx == null ? w / 2 : cxPx, y = cyPx == null ? hgt / 2 : cyPx;
+    const mx = view.cx + (x - w / 2) / view.scale;
+    const my = view.cy - (y - hgt / 2) / view.scale;
+    view.scale = Math.max(4, Math.min(900, view.scale * f));
+    view.cx = mx - (x - w / 2) / view.scale;
+    view.cy = my + (y - hgt / 2) / view.scale;
+    draw();
+  }
+
+  // pan
+  let panning = null;
+  canvas.addEventListener("pointerdown", (ev) => { panning = { x: ev.clientX, y: ev.clientY, cx: view.cx, cy: view.cy }; canvas.setPointerCapture(ev.pointerId); });
+  canvas.addEventListener("pointermove", (ev) => {
+    mouse = { x: ev.clientX, y: ev.clientY };
+    if (panning) {
+      view.cx = panning.cx - (ev.clientX - panning.x) / view.scale;
+      view.cy = panning.cy + (ev.clientY - panning.y) / view.scale;
+    }
+    draw();
+  });
+  const endPan = () => { panning = null; mouse = null; draw(); };
+  canvas.addEventListener("pointerup", endPan);
+  canvas.addEventListener("pointerleave", endPan);
+  canvas.addEventListener("wheel", (ev) => { ev.preventDefault(); zoomAt(ev.deltaY < 0 ? 1.18 : 1 / 1.18, ev.offsetX, ev.offsetY); }, { passive: false });
+
+  const onResize = () => draw();
+  window.addEventListener("resize", onResize);
+  onViewCleanup(() => window.removeEventListener("resize", onResize));
+
+  const examples = [["x^2", "Parabola"], ["sin(x)", "Sine"], ["(1/2)^x", "Decay"], ["x^3-3x", "Cubic"], ["1/x", "Hyperbola"], ["sqrt(x)", "Root"]];
+  renderList(); compileAll();
+  root.innerHTML = "";
+  root.append(page("Desmos · Graphing Calculator",
+    "Type functions of x — drag to pan, scroll to zoom, hover to trace. Works fully offline.",
+    h("div", { class: "desmos-wrap" },
+      h("div", { class: "desmos-side" },
+        listBox,
+        h("div", { class: "row", style: "gap:8px;margin-top:10px;flex-wrap:wrap" },
+          h("button", {
+            class: "btn btn-primary btn-sm", onclick: () => {
+              if (exprs.length >= 6) { makeToast("Max 6 expressions"); return; }
+              exprs.push({ e: "", on: true }); persist(); renderList(); compileAll(); draw();
+              const last = listBox.querySelector(".desmos-row:last-child input");
+              if (last) last.focus();
+            },
+          }, "+ Add"),
+          h("button", {
+            class: "btn btn-sm", onclick: () => { view.cx = 0; view.cy = 0; view.scale = 46; draw(); },
+          }, "Reset view")),
+        h("div", { class: "small faint", style: "margin-top:10px" }, "Try:"),
+        h("div", { class: "row", style: "gap:6px;flex-wrap:wrap;margin-top:4px" },
+          ...examples.map(([e, label]) => h("button", {
+            class: "chip", title: e, onclick: () => {
+              if (exprs.length >= 6) exprs.shift();
+              exprs.push({ e, on: true }); persist(); renderList(); compileAll(); draw();
+            },
+          }, label))),
+        h("div", { class: "small faint", style: "margin-top:10px;line-height:1.7" },
+          "Supports + − × ÷ ^, brackets, 2x-style multiplication, sin cos tan, asin acos atan, sqrt cbrt abs, ln log exp, floor ceil round, π e."),
+        errBar),
+      h("div", { class: "desmos-stage" },
+        canvas,
+        h("div", { class: "desmos-zoom" },
+          h("button", { class: "btn btn-sm", onclick: () => zoomAt(1.35) }, "+"),
+          h("button", { class: "btn btn-sm", onclick: () => zoomAt(1 / 1.35) }, "−"))))));
+  requestAnimationFrame(draw);
 }
 
