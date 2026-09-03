@@ -1,4 +1,4 @@
-/* TeachMeJEE � view renderers */
+/* TeachMeJEE — view renderers */
 
 import { CONCEPTS, LEVELS, SUBJECTS, ALL_CONCEPTS, TOTAL_XP, weightInfo, weightLabel, SUBJECT_MAX_WEIGHT, DERIVATIONS } from "./data.js";
 import { load, isCompleted, completeConcept, uncompleteConcept, markTask, savePlanner, save, getXP, getTotalXP, getStreak, longestStreak, addBonusXp, logActivity, todayISO, saveNote, toggleStar, isStarred, setGoal, setLastChapter, addMock, removeMock, addEvent, switchUser, recordQuizAnswer, dailyState, claimDailyReward, logFocusMin, srSchedule, srDue, markSeen, setBadgesSeen, extractYouTubeId, addVideo, removeVideo, weekKey, getBoss, recordBossRun, bumpPomodoroCount, pomodorosToday, getNoteProg, toggleNoteSec, setNoteCp, noteRecord, lastNoteId, planTicked, planTick, planStreak, planWeekDone, planWeekCompleteness, exportData, importData } from "./store.js";
@@ -134,7 +134,7 @@ function ringSVG(pct, cls, size = 116, stroke = 10, fontSize = 22, label = null)
 
 function progressRing(pct) { return ringSVG(pct, "progress-ring"); }
 
-/* Professor Pip � the study-buddy owl, drawn inline so it works offline. */
+/* Professor Pip — the study-buddy owl, drawn inline so it works offline. */
 function mascotSVG(size = 96, mood = "happy") {
   const eyeY = mood === "cheer" ? 62 : 66;
   return h("span", { class: "pip", style: `width:${size}px;height:${size * 1.08}px;display:inline-block`, html: `
@@ -166,18 +166,18 @@ function BADGES(s, completedCount) {
   const focusTotal = Object.values(s.focusLog || {}).reduce((a, b) => a + b, 0);
   const total = ALL_CONCEPTS.length;
   return [
-    { id: "first", g: "?", t: "First Steps", d: "Master your first chapter", ok: completedCount >= 1 },
-    { id: "ten", g: "?", t: "Ten Club", d: "Master 10 chapters", ok: completedCount >= 10 },
-    { id: "half", g: "?", t: "Halfway There", d: `Reach 50% of the roadmap`, ok: completedCount >= total / 2 },
-    { id: "all", g: "?", t: "Roadmap Master", d: "Complete every chapter", ok: completedCount >= total },
-    { id: "fire", g: "?", t: "On Fire", d: "Hold a 3-day streak", ok: streak >= 3 },
-    { id: "blaze", g: "?", t: "Unstoppable", d: "Hold a 7-day streak", ok: streak >= 7 },
-    { id: "sharp", g: "?", t: "Sharpshooter", d: "Practice 50 questions", ok: practiced >= 50 },
-    { id: "ace", g: "?", t: "Quiz Ace", d: "Score 8/8 in a session", ok: best >= 8 },
-    { id: "scribe", g: "?", t: "Scribe", d: "Write a custom note", ok: Object.keys(s.notes).length >= 1 },
-    { id: "curator", g: "?", t: "Curator", d: "Star your first chapter", ok: s.starred.length >= 1 },
-    { id: "focus", g: "?", t: "Deep Work", d: "Log 120 focus minutes", ok: focusTotal >= 120 },
-    { id: "analyst", g: "?", t: "Analyst", d: "Log 5 mock tests", ok: (s.mocks || []).length >= 5 },
+    { id: "first", g: "●", t: "First Steps", d: "Master your first chapter", ok: completedCount >= 1 },
+    { id: "ten", g: "■", t: "Ten Club", d: "Master 10 chapters", ok: completedCount >= 10 },
+    { id: "half", g: "◐", t: "Halfway There", d: `Reach 50% of the roadmap`, ok: completedCount >= total / 2 },
+    { id: "all", g: "★", t: "Roadmap Master", d: "Complete every chapter", ok: completedCount >= total },
+    { id: "fire", g: "▲", t: "On Fire", d: "Hold a 3-day streak", ok: streak >= 3 },
+    { id: "blaze", g: "◆", t: "Unstoppable", d: "Hold a 7-day streak", ok: streak >= 7 },
+    { id: "sharp", g: "►", t: "Sharpshooter", d: "Practice 50 questions", ok: practiced >= 50 },
+    { id: "ace", g: "✦", t: "Quiz Ace", d: "Score 8/8 in a session", ok: best >= 8 },
+    { id: "scribe", g: "≡", t: "Scribe", d: "Write a custom note", ok: Object.keys(s.notes).length >= 1 },
+    { id: "curator", g: "☆", t: "Curator", d: "Star your first chapter", ok: s.starred.length >= 1 },
+    { id: "focus", g: "◑", t: "Deep Work", d: "Log 120 focus minutes", ok: focusTotal >= 120 },
+    { id: "analyst", g: "◈", t: "Analyst", d: "Log 5 mock tests", ok: (s.mocks || []).length >= 5 },
   ];
 }
 
@@ -193,9 +193,9 @@ function checkCelebrations(prevCompleted, prevRankIdx) {
   if (newlyUnlocked.length) {
     confettiBurst();
     showModal({
-      icon: "?",
+      icon: "★",
       title: newlyUnlocked.length === 1 ? "New chapter unlocked!" : `${newlyUnlocked.length} new chapters unlocked!`,
-      rows: newlyUnlocked.slice(0, 5).map((c) => h("span", {}, "? ", c.name)),
+      rows: newlyUnlocked.slice(0, 5).map((c) => h("span", {}, "", c.name)),
       cta: newlyUnlocked.length > 5 ? `Open roadmap (${newlyUnlocked.length - 5} more)` : "Open roadmap",
     });
   }
@@ -205,7 +205,7 @@ function checkCelebrations(prevCompleted, prevRankIdx) {
     const isDone = inLevel.every((c) => now.has(c.id));
     if (isDone && !wasDone) {
       showModal({
-        icon: "?",
+        icon: "◆",
         title: `${lv.title} cleared!`,
         rows: [h("span", {}, "Every chapter in this stage is mastered. The path ahead opens up.")],
         cta: "Continue the journey",
@@ -216,7 +216,7 @@ function checkCelebrations(prevCompleted, prevRankIdx) {
   const newIdx = rankIndex(newXp);
   if (newIdx > prevRankIdx) {
     showModal({
-      icon: "?",
+      icon: "▲",
       title: `Rank up: ${rankName(newXp)}!`,
       rows: [h("span", {}, "Your growing mastery is showing. Keep the streak alive.")],
       cta: "Nice",
@@ -275,7 +275,7 @@ function getRecommendations(limit = 6) {
   return frontier.slice(0, limit).map((c, i) => ({
     c,
     priority: i < 3 ? "high" : "normal",
-    reason: i < 3 ? "High-yield next step" : `~${weightInfo(c.id).w} marks � L${c.level}`,
+    reason: i < 3 ? "High-yield next step" : `~${weightInfo(c.id).w} marks — L${c.level}`,
   }));
 }
 
@@ -335,9 +335,9 @@ function heatmapCells(s) {
 }
 
 const DAILY_DEFS = [
-  { id: "chapters", icon: "?", t: "Master chapters", target: () => Math.max(1, load().goal || 1), key: "chapters", reward: 10 },
-  { id: "focus", icon: "?", t: "Focus minutes", target: () => 25, key: "focusMin", reward: 10 },
-  { id: "quiz", icon: "?", t: "Correct answers", target: () => 5, key: "quiz", reward: 15 },
+  { id: "chapters", icon: "●", t: "Master chapters", target: () => Math.max(1, load().goal || 1), key: "chapters", reward: 10 },
+  { id: "focus", icon: "◑", t: "Focus minutes", target: () => 25, key: "focusMin", reward: 10 },
+  { id: "quiz", icon: "►", t: "Correct answers", target: () => 5, key: "quiz", reward: 15 },
 ];
 
 function dailiesPanel() {
@@ -392,27 +392,27 @@ export function HomeView(root) {
     h("div", { class: "quantum-banner" },
       h("div", { class: "qb-glow" }),
       h("div", { class: "qb-inner" },
-        h("span", { class: "qb-badge" }, "? QUANTUM EDITION � THE FUTURE OF LEARNING"),
+        h("span", { class: "qb-badge" }, "QUANTUM EDITION — THE FUTURE OF LEARNING"),
         h("h1", { class: "qb-title" }, "Learn Today. Ace Tomorrow."),
-        h("p", { class: "qb-sub" }, "A cognitive prosthetic for 1.5M minds � where textbook meets telepathy."),
-        h("div", { class: "small faint", style:"margin-top:6px"}, `${featureStats().total} micro-features � 93�11 + globals � `, h("a",{href:"#/atlas", style:"color:var(--accent)"}, "explore Atlas ?")),
+        h("p", { class: "qb-sub" }, "A cognitive prosthetic for 1.5M minds — where textbook meets telepathy."),
+        h("div", { class: "small faint", style:"margin-top:6px"}, `${featureStats().total} micro-features — 93×11 + globals — `, h("a",{href:"#/atlas", style:"color:var(--accent)"}, "explore Atlas →")),
         h("div", { class: "qb-actions" },
-          h("a", { class: "btn btn-primary btn-sm", href: "#/constellation" }, "Explore Constellation ?"),
+          h("a", { class: "btn btn-primary btn-sm", href: "#/constellation" }, "Explore Constellation →"),
           h("a", { class: "btn btn-sm", href: "#/library" }, "Open Library")))),
     h("div", { class: "hero", style: "margin-top:12px" },
       h("h1", {}, "Your roadmap to JEE Main & Advanced"),
-      h("p", {}, "Every chapter is a node on a quest map. Master the basics to unlock the harder tiers � notes, formulas and 3D labs at every stop.")),
+      h("p", {}, "Every chapter is a node on a quest map. Master the basics to unlock the harder tiers — notes, formulas and 3D labs at every stop.")),
 
 
     h("div", { class: "countdown-grid" },
       h("div", { class: "countdown" },
-        h("div", { class: "top" }, h("span", { class: "muted small" }, "JEE Main � Session 1"), h("span", { class: "small faint" }, fmt(s.planner.mainDate))),
-        h("div", { class: "days" }, dMain >= 0 ? `${dMain}` : "�", " ", h("small", {}, "days")),
+        h("div", { class: "top" }, h("span", { class: "muted small" }, "JEE Main — Session 1"), h("span", { class: "small faint" }, fmt(s.planner.mainDate))),
+        h("div", { class: "days" }, dMain >= 0 ? `${dMain}` : "—", " ", h("small", {}, "days")),
         h("div", { class: "detail" }, dMain >= 0 ? "left to unlock your first rank" : "set a new date in the Planner")),
       h("div", { class: "countdown adv" },
         h("div", { class: "top" }, h("span", { class: "muted small" }, "JEE Advanced"), h("span", { class: "small faint" }, fmt(s.planner.advDate))),
-        h("div", { class: "days" }, dAdv >= 0 ? `${dAdv}` : "�", " ", h("small", {}, "days")),
-        h("div", { class: "detail" }, "the real test � beyond JEE Main"))),
+        h("div", { class: "days" }, dAdv >= 0 ? `${dAdv}` : "—", " ", h("small", {}, "days")),
+        h("div", { class: "detail" }, "the real test — beyond JEE Main"))),
 
     h("div", { class: "stat-grid" },
       stat(`${getTotalXP(ALL_CONCEPTS)}`, "XP earned", false),
@@ -425,24 +425,24 @@ export function HomeView(root) {
       h("div", { class: "rank-line" },
         h("span", { class: "rank-name" }, rank.name),
         rank.next
-          ? h("span", { class: "small faint" }, `${Math.round(rank.frac * 100)}% to ${rank.next} � ${rank.nextXp - getTotalXP(ALL_CONCEPTS)} XP to go`)
+          ? h("span", { class: "small faint" }, `${Math.round(rank.frac * 100)}% to ${rank.next} · ${rank.nextXp - getTotalXP(ALL_CONCEPTS)} XP to go`)
           : h("span", { class: "small faint" }, "Max rank reached")),
       h("div", { class: "rank-bar" }, h("i", { style: `width:${Math.round(rank.frac * 100)}%` }))),
 
     h("div", { class: "card labs-card" },
       h("div", { class: "labs-head" },
-        h("span", { class: "qb-badge", style: "background:color-mix(in srgb,#60a5fa 14%,transparent);border-color:color-mix(in srgb,#60a5fa 22%,transparent);color:#60a5fa" }, "? FUTURE LAB � 110 FEATURES LIVE"),
+        h("span", { class: "qb-badge", style: "background:color-mix(in srgb,#60a5fa 14%,transparent);border-color:color-mix(in srgb,#60a5fa 22%,transparent);color:#60a5fa" }, "FUTURE LAB — 110 FEATURES LIVE"),
         h("h3", { style: "margin:8px 0 4px" }, "The future is already installed"),
         h("p", { class: "muted small", style: "margin:0" }, "Constellation Map live. Quantum Edition protocols in beta. Hover to reveal.")),
       h("div", { class: "labs-grid" },
-        h("a", { class: "lab-pill live", href: "#/constellation" }, "? Constellation Map � LIVE"),
-        h("span", { class: "lab-pill" }, "?? ANPE � beta"),
-        h("span", { class: "lab-pill" }, "?? Quantum Web � beta"),
-        h("span", { class: "lab-pill" }, "?? STI Tutor � beta"),
-        h("span", { class: "lab-pill proto" }, "?? DKF P2P � protocol"),
-        h("span", { class: "lab-pill proto" }, "?? Mastery Cert � protocol"),
-        h("span", { class: "lab-pill" }, "?? ALC Companion � beta"),
-        h("span", { class: "lab-pill" }, "?? Focus Flow � beta"))),
+        h("a", { class: "lab-pill live", href: "#/constellation" }, "Constellation Map · LIVE"),
+        h("span", { class: "lab-pill" }, "ANPE — beta"),
+        h("span", { class: "lab-pill" }, "Quantum Web — beta"),
+        h("span", { class: "lab-pill" }, "STI Tutor — beta"),
+        h("span", { class: "lab-pill proto" }, "DKF P2P — protocol"),
+        h("span", { class: "lab-pill proto" }, "Mastery Cert — protocol"),
+        h("span", { class: "lab-pill" }, "ALC Companion — beta"),
+        h("span", { class: "lab-pill" }, "Focus Flow — beta"))),
 
     h("div", { class: "divider" }),
 
@@ -450,8 +450,8 @@ export function HomeView(root) {
       h("div", {},
         h("h2", { style: "margin:0 0 4px" }, "Full textbook notes"),
         h("p", { class: "muted small", style: "margin:0" },
-          `${ALL_CONCEPTS.filter((x) => DEEP_NOTES[x.id]).length} chapters rewritten as complete study notes � theory, derivations, worked examples, checkpoints & flashcards. Export any chapter as PDF.`)),
-      h("span", { class: "btn btn-primary btn-sm" }, "Open library ?")),
+          `${ALL_CONCEPTS.filter((x) => DEEP_NOTES[x.id]).length} chapters rewritten as complete study notes — theory, derivations, worked examples, checkpoints & flashcards. Export any chapter as PDF.`)),
+      h("span", { class: "btn btn-primary btn-sm" }, "Open library →")),
 
     h("div", { class: "row" },
       h("div", { class: "col" },
@@ -487,24 +487,24 @@ export function HomeView(root) {
 
     h("div", { class: "card heatmap-card", style: "margin-top:12px" },
       h("div", { style: "display:flex;justify-content:space-between;align-items:center;gap:8px" },
-        h("h3", {}, "?? 56-Day Heatmap"),
-        h("button", { class: "btn btn-sm", title:"Ambient focus � white noise", onclick: ()=>{
+        h("h3", {}, "56-Day Heatmap"),
+        h("button", { class: "btn btn-sm", title:"Ambient focus — white noise", onclick: ()=>{
           try{
             const ctx=new (window.AudioContext||window.webkitAudioContext)();
             const buf=ctx.createBuffer(1, ctx.sampleRate*2, ctx.sampleRate);
             for(let i=0;i<buf.length;i++) buf.getChannelData(0)[i]=(Math.random()*2-1)*0.12;
             const src=ctx.createBufferSource(); src.buffer=buf; src.loop=true;
             const gain=ctx.createGain(); gain.gain.value=0.14; src.connect(gain).connect(ctx.destination); src.start();
-            makeToast("?? Ambient on � 30s focus", true); setTimeout(()=>{ try{src.stop(); ctx.close();}catch{} },30000);
-          }catch{ makeToast("Audio blocked � enable sound", true); }
-        }}, "?? Ambient")),
+            makeToast("Ambient on — 30s focus", true); setTimeout(()=>{ try{src.stop(); ctx.close();}catch{} },30000);
+          }catch{ makeToast("Audio blocked — enable sound", true); }
+        }}, "Ambient")),
       heatmapCells(s),
-      h("p", { class: "small faint", style:"margin-top:8px" }, "Darker = more activity � keep the chain unbroken")),
+      h("p", { class: "small faint", style:"margin-top:8px" }, "Darker = more activity — keep the chain unbroken")),
 
     h("div", { class: "card", style: "margin-top:16px" },
       h("div", { style: "display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline" },
         h("h2", {}, "Next to unlock"),
-        next.length > 4 ? h("span", { class: "hint" }, `${next.length} ready � showing 4`) : null),
+        next.length > 4 ? h("span", { class: "hint" }, `${next.length} ready — showing 4`) : null),
       next.length
         ? h("div", { class: "stack", style: "gap:8px;margin-top:12px" },
             ...next.slice(0, 4).map((c) =>
@@ -590,12 +590,12 @@ function personalRecords(s) {
   const bestDay = Object.keys(s.activity).length ? Math.max(...Object.values(s.activity)) : 0;
   const focusTotal = Object.values(s.focusLog || {}).reduce((a, b) => a + b, 0);
   return [
-    tile(bestQuiz ? `${bestQuiz}/8` : "�", "best quiz session"),
+    tile(bestQuiz ? `${bestQuiz}/8` : "—", "best quiz session"),
     tile(practiced, "questions practiced"),
-    tile(bestMock === null ? "�" : `${bestMock}%`, "best mock score"),
+    tile(bestMock === null ? "—" : `${bestMock}%`, "best mock score"),
     tile(bestDay, "most items in a day"),
     tile(`${longestStreak()}d`, "longest streak"),
-    tile(focusTotal ? `${focusTotal}m` : "�", "focus time logged"),
+    tile(focusTotal ? `${focusTotal}m` : "—", "focus time logged"),
   ];
 }
 
@@ -638,7 +638,7 @@ export function DailyChallengeView(root) {
             ? h("div", { class: "chapter-meta", style: "justify-content:center" },
                 ...challenge.prereq.map((pid) => {
                   const pr = CONCEPTS[pid];
-                  return h("a", { class: `prereq-pill${completed.has(pid) ? " done" : ""}`, href: `#/chapter/${pid}` }, completed.has(pid) ? "? " : "", pr.name);
+                  return h("a", { class: `prereq-pill${completed.has(pid) ? " done" : ""}`, href: `#/chapter/${pid}` }, completed.has(pid) ? "" : "", pr.name);
                 }))
             : null,
           h("div", { style: "display:flex;gap:9px;justify-content:center;margin-top:18px;flex-wrap:wrap" },
@@ -662,7 +662,7 @@ export function DailyChallengeView(root) {
                     h("span", {}, d.getDate()),
                     n ? h("span", { class: "faint", style: "font-size:8.5px;color:var(--accent-ink)" }, `+${n}`) : null));
               })),
-            h("p", { class: "hint", style: "margin-top:10px" }, "Active days this week � fill every box.")),
+            h("p", { class: "hint", style: "margin-top:10px" }, "Active days this week — fill every box.")),
           h("div", { class: "col card" },
             h("h3", { style: "margin-bottom:10px" }, "Streak"),
             h("div", { class: "stat-grid", style: "margin-top:0" },
@@ -708,8 +708,8 @@ export function RoadmapView(root) {
       h("div", { class: "gate-icon" }, open ? "?" : "?"),
       h("div", { class: "gate-text" },
         open
-          ? h("b", {}, `${levelName(nextLvl)} gate open � every prerequisite chain is clear.`)
-          : h("span", {}, h("b", {}, `${levelName(nextLvl)} gate`), ` � clear ${locked.length} more prerequisite${locked.length === 1 ? "" : "s"} to open it.`)),
+          ? h("b", {}, `${levelName(nextLvl)} gate open — every prerequisite chain is clear.`)
+          : h("span", {}, h("b", {}, `${levelName(nextLvl)} gate`), ` — clear ${locked.length} more prerequisite${locked.length === 1 ? "" : "s"} to open it.`)),
       h("div", { class: "gate-bar" }, h("i", { style: `width:${pct}%` })));
   }
 
@@ -735,7 +735,7 @@ export function RoadmapView(root) {
           h("div", { class: "stage-chips" },
             h("span", { class: "tag" }, `${doneCount}/${nodes.length} mastered`),
             state === "locked" ? h("span", { class: "tag", style: "color:var(--faint)" }, "locked") : null,
-            state === "done" ? h("span", { class: "tag", style: "color:var(--green)" }, "cleared ?") : null)),
+            state === "done" ? h("span", { class: "tag", style: "color:var(--green)" }, "cleared ✓") : null)),
         shown.length
           ? h("div", { class: "path" }, ...shown)
           : h("p", { class: "hint", style: "padding:2px" }, hideDone ? "Everything here is mastered." : "Nothing matches this filter.")));
@@ -803,8 +803,8 @@ const STUDY_PLAN = [
   { theme: "Lab Rats", p: ["P-thermal"], c: ["C-electro"], m: ["M-vectors"] },
   { theme: "Modern Times", p: ["A-modern"], c: ["C-bio"], m: ["M-diffeq"] },
   { theme: "Full Syllabus, Full Send", p: [], c: [], m: [] },
-  { theme: "Session 1 � Stay Sharp", p: [], c: [], m: [] },
-  { theme: "Session 1 � Finish Strong", p: [], c: [], m: [] },
+  { theme: "Session 1 — Stay Sharp", p: [], c: [], m: [] },
+  { theme: "Session 1 — Finish Strong", p: [], c: [], m: [] },
   { theme: "Mechanics, Round Two", p: ["A-mech"], c: ["C-orgbasic", "C-hydrocarbons"], m: ["M-conics"] },
   { theme: "Fields, Round Two", p: ["A-em"], c: ["C-halo"], m: ["M-diffeq"] },
   { theme: "Modern, Round Two", p: ["A-modern"], c: ["C-alcohol", "C-carbonyl"], m: ["M-integ"] },
@@ -813,8 +813,8 @@ const STUDY_PLAN = [
   { theme: "Weak-Spot Week", p: [], c: [], m: [] },
   { theme: "PYQ Marathon I", p: [], c: [], m: [] },
   { theme: "PYQ Marathon II", p: [], c: [], m: [] },
-  { theme: "Session 2 � Stay Sharp", p: [], c: [], m: [] },
-  { theme: "Session 2 � Finish Strong", p: [], c: [], m: [] },
+  { theme: "Session 2 — Stay Sharp", p: [], c: [], m: [] },
+  { theme: "Session 2 — Finish Strong", p: [], c: [], m: [] },
   { theme: "Advanced Arc I", p: ["A-circuits"], c: ["C-electro"], m: ["A-algebra"] },
   { theme: "Advanced Arc II", p: ["A-optics"], c: ["C-dblock"], m: ["A-calc"] },
   { theme: "Advanced Arc III", p: ["A-thermo"], c: ["C-pblock"], m: ["A-geom"] },
@@ -952,14 +952,14 @@ export function ChapterView(root, id) {
     h("span", { class: "tag" }, levelName(c.level)),
     h("span", { class: "tag", title: "JEE Main importance", style: "color:var(--accent)" }, weightLabel(c.id)),
     h("span", { class: "tag", style: "color:var(--amber)" }, `+${c.xp} XP`),
-    h("span", { class: "tag" }, st === "completed" ? "? mastered" : st === "unlocked" ? "ready" : "locked"));
+    h("span", { class: "tag" }, st === "completed" ? "mastered" : st === "unlocked" ? "ready" : "locked"));
 
   const head = h("div", { style: "margin-top:14px" },
     h("div", { class: "breadcrumb" },
       h("a", { href: "#/roadmap" }, "Journey"), `  /  ${levelName(c.level)}  /  ${c.name}`),
     h("div", { class: "chapter-head" },
       h("div", {}, h("h1", {}, c.name), meta),
-      h("div", { class: "chapter-actions" }, starButton(c.id), h("button",{class:"btn btn-sm", title:"Focus Flow � immersive reading", onclick:()=>{ document.body.classList.toggle("focus-flow"); makeToast(document.body.classList.contains("focus-flow")?"Focus Flow ON":"Focus Flow OFF", true); }}, "? Focus"), completeButton(c, st, prevCompleted, prevRankIdx))));
+      h("div", { class: "chapter-actions" }, starButton(c.id), h("button",{class:"btn btn-sm", title:"Focus Flow — immersive reading", onclick:()=>{ document.body.classList.toggle("focus-flow"); makeToast(document.body.classList.contains("focus-flow")?"Focus Flow ON":"Focus Flow OFF", true); }}, "Focus"), completeButton(c, st, prevCompleted, prevRankIdx))));
 
   let body = st === "locked"
     ? h("div", { class: "card", style: "margin-top:20px" },
@@ -975,37 +975,37 @@ export function ChapterView(root, id) {
 
   if (st !== "locked" && Quantum.godModeUnlocked(c.id)) {
     const god = h("div", { class: "card", style: "margin-top:14px;border-color:gold;background:color-mix(in srgb,gold 10%, var(--surface))" },
-      h("h3", { style: "color:gold" }, "?? God Mode � Legendary CP Unlocked"),
+      h("h3", { style: "color:gold" }, "God Mode — Legendary CP Unlocked"),
       h("p", { class: "small muted" }, "You mastered 100%. Solve this ultra-hard challenge to earn a legendary badge."),
       h("div", { style: "margin-top:8px;display:flex;gap:8px" },
         h("button", { class: "btn btn-primary btn-sm", onclick: () => {
-          const ok = confirm("God Mode: Accept legendary challenge? (demo � marks as completed)"); if(!ok) return;
-          const s=load(); s.achievements=s.achievements||[]; if(!s.achievements.includes("god-"+c.id)){ s.achievements.push("god-"+c.id); save(); makeToast("?? Legendary badge earned!", true); const cert=Quantum.mintCertificate(); makeToast(`Cert ${cert.id}`, true); Quantum.haptic(true); }
-        }}, "Accept God Challenge ?"),
+          const ok = confirm("God Mode: Accept legendary challenge? (demo — marks as completed)"); if(!ok) return;
+          const s=load(); s.achievements=s.achievements||[]; if(!s.achievements.includes("god-"+c.id)){ s.achievements.push("god-"+c.id); save(); makeToast("Legendary badge earned!", true); const cert=Quantum.mintCertificate(); makeToast(`Cert ${cert.id}`, true); Quantum.haptic(true); }
+        }}, "Accept God Challenge →"),
         h("span", { class: "tag", style:"background:gold;color:#111" }, "LEGENDARY")));
     body = h("div", {}, god, body);
   }
   if (Quantum.architectUnlocked() && c.id === ALL_CONCEPTS[0].id) {
     const arch = h("div", { class: "card", style: "margin-top:14px;border-style:dashed" },
-      h("h3", {}, "??? The Architect � Easter Note"),
-      h("p", { class: "small muted" }, "You�ve proven persistence. The architect is Tanush Saha � and now, you. This note is the blueprint of learning itself. Build on."));
+      h("h3", {}, "The Architect — Easter Note"),
+      h("p", { class: "small muted" }, "You've proven persistence. The architect is Tanush Saha — and now, you. This note is the blueprint of learning itself. Build on."));
     body = h("div", {}, arch, body);
   }
   if (st !== "locked") {
     const doubts = (load().doubts && load().doubts[c.id]) || [];
     const list = h("div", { class: "stack", style: "gap:6px;margin-top:8px" });
-    function repaintDoubts(){ list.innerHTML=""; if(!doubts.length) list.append(h("p",{class:"small faint"},"No doubts yet � be the first to ask.")); doubts.forEach(d=> list.append(h("div",{class:"card", style:"padding:8px;background:var(--bg)"}, h("div",{class:"small", style:"font-weight:600"}, d.q), h("div",{class:"small faint"}, new Date(d.at).toLocaleString() + (d.a?` � ? ${d.a}`:" � awaiting peer")) ))); }
-    const inp=h("input",{type:"text", placeholder:"Ask a doubt � e.g. Why does SN1 need polar protic?", style:"flex:1"});
-    const btn=h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const q=inp.value.trim(); if(!q) return; const s2=load(); s2.doubts=s2.doubts||{}; s2.doubts[c.id]=s2.doubts[c.id]||[]; s2.doubts[c.id].unshift({q, at:Date.now(), a:null}); save(); doubts.unshift({q, at:Date.now()}); inp.value=""; repaintDoubts(); makeToast("Doubt posted � peers will see in Fabric", true); }}, "Ask");
+    function repaintDoubts(){ list.innerHTML=""; if(!doubts.length) list.append(h("p",{class:"small faint"},"No doubts yet — be the first to ask.")); doubts.forEach(d=> list.append(h("div",{class:"card", style:"padding:8px;background:var(--bg)"}, h("div",{class:"small", style:"font-weight:600"}, d.q), h("div",{class:"small faint"}, new Date(d.at).toLocaleString() + (d.a?` — ? ${d.a}`:" — awaiting peer")) ))); }
+    const inp=h("input",{type:"text", placeholder:"Ask a doubt — e.g. Why does SN1 need polar protic?", style:"flex:1"});
+    const btn=h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const q=inp.value.trim(); if(!q) return; const s2=load(); s2.doubts=s2.doubts||{}; s2.doubts[c.id]=s2.doubts[c.id]||[]; s2.doubts[c.id].unshift({q, at:Date.now(), a:null}); save(); doubts.unshift({q, at:Date.now()}); inp.value=""; repaintDoubts(); makeToast("Doubt posted — peers will see in Fabric", true); }}, "Ask");
     repaintDoubts();
-    const doubtCard=h("div",{class:"card", style:"margin-top:14px"}, h("h3",{}, "?? Doubt Chain � peer threads"), h("p",{class:"small muted"},"Local-first threads per chapter. No server � synced via Fabric when you export."), h("div",{class:"row", style:"gap:8px;margin-top:8px"}, inp, btn), list);
+    const doubtCard=h("div",{class:"card", style:"margin-top:14px"}, h("h3",{}, "Doubt Chain — peer threads"), h("p",{class:"small muted"},"Local-first threads per chapter. No server — synced via Fabric when you export."), h("div",{class:"row", style:"gap:8px;margin-top:8px"}, inp, btn), list);
     body = h("div", {}, body, doubtCard);
   }
-  // Subtopics � 5 deep lenses per chapter (465 total)
+  // Subtopics — 5 deep lenses per chapter (465 total)
   if (st !== "locked") {
     const subs=subtopicsFor(c);
     const subWrap=h("div",{class:"card", style:"margin-top:14px"});
-    subWrap.append(h("h3",{}, `?? Deep Subtopics � ${subs.length} lenses`), h("p",{class:"small muted"},"465 sub-notes total (93�5) � each a chapter-specific deep dive with trap, visual, and cross-link."));
+    subWrap.append(h("h3",{}, `Deep Subtopics — ${subs.length} lenses`), h("p",{class:"small muted"},"465 sub-notes total (93×5) — each a chapter-specific deep dive with trap, visual, and cross-link."));
     const grid=h("div",{class:"labs-grid2", style:"margin-top:8px"});
     subs.forEach(st=>{
       const holder=h("div",{class:"small", style:"margin-top:6px"}); holder.innerHTML=st.body;
@@ -1041,10 +1041,10 @@ function completeButton(c, st, prevCompleted, prevRankIdx) {
   const done = st === "completed";
   const locked = st === "locked";
   if (locked) {
-    return h("button", { class: "btn", disabled: true, style: "cursor:not-allowed;opacity:.6" }, "Locked � finish prerequisites first");
+    return h("button", { class: "btn", disabled: true, style: "cursor:not-allowed;opacity:.6" }, "Locked — finish prerequisites first");
   }
   const btn = h("button", { class: `btn ${done ? "btn-ghost" : "btn-primary"}` },
-    done ? "? Mastered � undo" : "Mark as mastered");
+    done ? "Mastered — undo" : "Mark as mastered");
   btn.addEventListener("click", () => {
     if (done) {
       uncompleteConcept(c.id);
@@ -1128,7 +1128,7 @@ function overviewPane(c) {
           h("div", { class: "chapter-meta" },
             ...c.prereq.map((p) =>
               h("a", { class: `prereq-pill${completed.has(p) ? " done" : ""}`, href: `#/chapter/${p}` },
-                completed.has(p) ? "? " : "", CONCEPTS[p].name))))
+                completed.has(p) ? "" : "", CONCEPTS[p].name))))
       : null,
     unlockedAfter.length
       ? h("div", {},
@@ -1140,13 +1140,13 @@ function overviewPane(c) {
 
 function notesPane(c) {
   const saved = (load().notes && load().notes[c.id]) || "";
-  const ta = h("textarea", { class: "note-editor", rows: 4, placeholder: "Your own shortcuts, mnemonics, mistakes to avoid�" });
+  const ta = h("textarea", { class: "note-editor", rows: 4, placeholder: "Your own shortcuts, mnemonics, mistakes to avoid…" });
   ta.value = saved;
   const saveBtn = h("button", { class: "btn btn-sm" }, "Save note");
-  const savedTag = h("span", { class: "quiz-best" }, saved ? "saved ?" : "not saved");
+  const savedTag = h("span", { class: "quiz-best" }, saved ? "saved ✓" : "not saved");
   const saveIt = () => {
     saveNote(c.id, ta.value);
-    savedTag.textContent = "saved ?";
+    savedTag.textContent = "saved ✓";
     makeToast("Note saved.", true);
     notifySync();
   };
@@ -1190,12 +1190,12 @@ function subsPane(c) {
 function simPane(c) {
   const shell = h("div", { class: "sim-shell", style: "height:430px" },
     h("canvas", { style: "position:absolute;inset:0;width:100%;height:100%" }),
-    h("div", { class: "sim-loading" }, "Loading 3D lab�"),
+    h("div", { class: "sim-loading" }, "Loading 3D lab…"),
     h("div", { class: "sim-tools" },
       h("button", { title: "Reset view", html: "&#8635;" }),
       h("button", { title: "Fullscreen", html: "&#9974;" })),
-    h("div", { class: "sim-tag" }, "3D � drag rotate � scroll zoom � right-drag pan"),
-    h("div", { class: "sim-variant", style: "display:none" }, "? Generative variant"));
+    h("div", { class: "sim-tag" }, "3D · drag rotate · scroll zoom · right-drag pan"),
+    h("div", { class: "sim-variant", style: "display:none" }, "Generative variant"));
   const ctrlWrap = h("div", { class: "sim-panel", hidden: true });
   let sim = null;
 
@@ -1207,17 +1207,17 @@ function simPane(c) {
         const { randomVariant } = await import("./sim/factory.js");
         const v = randomVariant(); simId = v.sim;
         const loading = shell.querySelector(".sim-loading");
-        if (loading) loading.textContent = `No dedicated lab � showing ${simId} variant (factory).`;
+        if (loading) loading.textContent = `No dedicated lab — showing ${simId} variant (factory).`;
       }catch{
         const loading = shell.querySelector(".sim-loading");
-        if (loading) loading.textContent = "No dedicated lab for this chapter yet � notes, formulas and the PYQ bank cover it.";
+        if (loading) loading.textContent = "No dedicated lab for this chapter yet — notes, formulas and the PYQ bank cover it.";
         return;
       }
     }
     try {
       sim = mountSim(shell.querySelector("canvas"), simId);
       ownSim(sim);
-      // apply Atlas variant � uses the sim's REAL control keys/ranges
+      // apply Atlas variant — uses the sim's REAL control keys/ranges
       if (variantInfo && variantInfo.idx != null) {
         try {
           const { variantForControls } = await import("./sim/factory.js");
@@ -1225,7 +1225,7 @@ function simPane(c) {
           Object.entries(presets).forEach(([k, val]) => { try { sim.setControl(k, val); } catch {} });
           sim.controls.forEach((ctrl) => { if (presets[ctrl.key] !== undefined) ctrl.value = presets[ctrl.key]; });
           const chip = shell.querySelector(".sim-variant");
-          if (chip) { chip.textContent = `? Generative variant #${variantInfo.idx} � ${simId} (parametric controls applied)`; chip.style.display = "block"; }
+          if (chip) { chip.textContent = `Generative variant #${variantInfo.idx} — ${simId} (parametric controls applied)`; chip.style.display = "block"; }
         } catch {}
       }
       const loading = shell.querySelector(".sim-loading");
@@ -1274,7 +1274,7 @@ function simPane(c) {
   });
 
   return h("div", { style: "margin-top:4px" }, shell, ctrlWrap,
-    h("p", { class: "hint", style: "margin-top:10px" }, "Interactive model � grab it with mouse or finger."));
+    h("p", { class: "hint", style: "margin-top:10px" }, "Interactive model — grab it with mouse or finger."));
 }
 
 /* ----------- FLOWCHART ----------- */
@@ -1284,13 +1284,13 @@ export function FlowchartView(root) {
   const flow = h("div");
   LEVELS.forEach((lv, i) => {
     const nodes = ALL_CONCEPTS.filter((c) => c.level === lv.lvl).sort((a, b) => a.subject.localeCompare(b.subject));
-    flow.append(h("div", { class: "flow-stage-label" }, `${lv.title} � ${lv.sub}`));
+    flow.append(h("div", { class: "flow-stage-label" }, `${lv.title} — ${lv.sub}`));
     flow.append(h("div", { class: "flow-stage" },
       ...nodes.map((c) => {
         const st = nodeStatus(c, completed);
         const n = h("div", { class: `flow-node ${st}` },
           h("span", { class: "fn-name" }, c.name),
-          h("span", { class: "fn-sub" }, `${SUBJECTS[c.subject].name} � +${c.xp} XP`));
+          h("span", { class: "fn-sub" }, `${SUBJECTS[c.subject].name} · +${c.xp} XP`));
         n.addEventListener("click", () => navigate(`#/chapter/${c.id}`));
         return n;
       })));
@@ -1310,7 +1310,7 @@ export function ConstellationView(root) {
   const starred = new Set(s.starred || []);
   const container = h("div", { class: "constellation-obsidian" });
   root.innerHTML = "";
-  root.append(page("Constellation � Obsidian Graph", "Filter, search, and fly through the syllabus like Obsidian. Drag nodes � scroll zoom � hover preview � click to open � depth and groups on the left.", container));
+  root.append(page("Constellation — Obsidian Graph", "Filter, search, and fly through the syllabus like Obsidian. Drag nodes · scroll zoom · hover preview · click to open · depth and groups on the left.", container));
   renderConstellation(container, completed, starred, s);
 }
 
@@ -1330,7 +1330,7 @@ function renderConstellation(container, completed, starred, state) {
 
   const wrap = h("div", { class: "obs-wrap" });
   const controls = h("div", { class: "obs-controls" });
-  const searchIn = h("input", { type: "text", placeholder: "Search chapters (like Obsidian)�", class: "obs-search" });
+  const searchIn = h("input", { type: "text", placeholder: "Search chapters (like Obsidian)…", class: "obs-search" });
   searchIn.addEventListener("input", ()=>{ query = searchIn.value.trim().toLowerCase(); redraw(); });
   const subjChips = h("div", { class: "obs-chips" });
   ["ALL","P","C","M"].forEach((s)=>{
@@ -1353,16 +1353,16 @@ function renderConstellation(container, completed, starred, state) {
     (()=>{ const c=h("label",{class:"obs-toggle"}, h("input",{type:"checkbox",checked:physicsOn}), " Physics"); c.firstChild.addEventListener("change",(e)=>{physicsOn=e.target.checked; if(physicsOn) run();}); return c; })(),
   );
   const btnRow = h("div", { class:"obs-btnrow" },
-    h("button",{class:"btn btn-sm", onclick:()=>{ physicsOn=true; run(); }}, "? Resume"),
-    h("button",{class:"btn btn-sm", onclick:()=>{ for(const n of allNodes) positions[n.id]={x:(Math.random()-0.5)*700,y:(Math.random()-0.5)*520}; redraw(); }}, "? Reshuffle"),
-    h("button",{class:"btn btn-sm", onclick:()=>{ zoom=100; redraw(); }}, "? Fit"),
+    h("button",{class:"btn btn-sm", onclick:()=>{ physicsOn=true; run(); }}, "Resume"),
+    h("button",{class:"btn btn-sm", onclick:()=>{ for(const n of allNodes) positions[n.id]={x:(Math.random()-0.5)*700,y:(Math.random()-0.5)*520}; redraw(); }}, "Reshuffle"),
+    h("button",{class:"btn btn-sm", onclick:()=>{ zoom=100; redraw(); }}, "Fit"),
     h("button",{class:"btn btn-sm", title:"Radial mind-map by level", onclick:()=>{
       const byLevel={}; allNodes.forEach(n=> (byLevel[n.level]=byLevel[n.level]||[]).push(n));
       Object.entries(byLevel).forEach(([lvl, arr])=>{
         const r=70 + (+lvl)*78; arr.forEach((n,i)=>{ const ang=(i/arr.length)*Math.PI*2 + (+lvl)*0.35; positions[n.id]={x: Math.cos(ang)*r, y: Math.sin(ang)*r}; vz[n.id]=0; vvy[n.id]=0; });
       }); redraw();
-    }}, "? Mind Map"),
-    h("span",{class:"small faint", style:"margin-left:6px"}, "Drag � scroll zoom � double-click fit"),
+    }}, "Mind Map"),
+    h("span",{class:"small faint", style:"margin-left:6px"}, "Drag · scroll zoom · double-click fit"),
   );
   const legend = h("div",{class:"obs-legend"},
     h("span",{class:"obs-dot", style:"background:#60a5fa"}), " Physics ",
@@ -1372,7 +1372,7 @@ function renderConstellation(container, completed, starred, state) {
     h("span",{class:"obs-dot", style:"background:var(--amber)"}), " Unlocked ",
   );
   controls.append(
-    h("div",{class:"obs-searchrow"}, searchIn, h("span",{class:"small faint"}, `${allNodes.length} nodes � ${allEdges.length} links`)),
+    h("div",{class:"obs-searchrow"}, searchIn, h("span",{class:"small faint"}, `${allNodes.length} nodes · ${allEdges.length} links`)),
     h("div",{class:"obs-row"}, h("span",{class:"small faint", style:"min-width:56px"}, "Subject"), subjChips),
     h("div",{class:"obs-row"}, h("span",{class:"small faint", style:"min-width:56px"}, "Status"), statusChips),
     toggles, btnRow, legend
@@ -1472,8 +1472,10 @@ function renderConstellation(container, completed, starred, state) {
       if(showLabels){
         const lbl=document.createElementNS(svgNS,"text");
         lbl.setAttribute("x",p.x); lbl.setAttribute("y", p.y + r + 16);
-        lbl.setAttribute("text-anchor","middle"); lbl.setAttribute("font-size", Math.max(8, 11*z));
-        lbl.setAttribute("fill","var(--muted)"); lbl.setAttribute("opacity", String((n.status==="completed"?0.85:0.5)*Math.min(fade,localFade)));
+        lbl.setAttribute("text-anchor","middle");
+        const lockedLbl = n.status==="locked" && !isSel;
+        lbl.setAttribute("font-size", lockedLbl ? Math.max(7, 9*z) : Math.max(8, 11*z));
+        lbl.setAttribute("fill","var(--muted)"); lbl.setAttribute("opacity", String((n.status==="completed"?0.85:(lockedLbl?0.32:0.5))*Math.min(fade,localFade)));
         lbl.textContent = n.name.length>18 ? n.name.slice(0,18)+"…" : n.name;
         labelsG.append(lbl);
         elRefs[n.id] = { circ, glow: glowEl, lbl, r };
@@ -1517,39 +1519,49 @@ function renderConstellation(container, completed, starred, state) {
   onViewCleanup(()=>{ running=false; });
   run();
 
-  svg.addEventListener("mousedown",(ev)=>{
-    const c=ev.target; if(c.classList.contains("const-node")){ draggingNode=c.getAttribute("data-id"); selectedId=draggingNode; if(localMode) redraw(); ev.preventDefault(); return; }
-    if(localMode && !ev.target.closest(".const-node")){ selectedId=null; redraw(); }
+  let lastPtr=null, dragMoved=false;
+  svg.addEventListener("pointerdown",(ev)=>{
+    const c=ev.target;
+    if(c.classList && c.classList.contains("const-node")){ draggingNode=c.getAttribute("data-id"); selectedId=draggingNode; if(localMode) redraw(); lastPtr={x:ev.clientX,y:ev.clientY}; dragMoved=false; try{svg.setPointerCapture(ev.pointerId);}catch{} ev.preventDefault(); return; }
+    if(localMode && !(ev.target.closest && ev.target.closest(".const-node"))){ selectedId=null; redraw(); }
   });
-  svg.addEventListener("mousemove",(ev)=>{
+  svg.addEventListener("pointermove",(ev)=>{
     if(draggingNode){
-      const ctm=svg.getScreenCTM(); const dx=(ev.movementX||0)/((ctm&&ctm.a)||1), dy=(ev.movementY||0)/((ctm&&ctm.d)||1);
-      positions[draggingNode].x=Math.max(-BOUND_X,Math.min(BOUND_X,positions[draggingNode].x+dx)); positions[draggingNode].y=Math.max(-BOUND_Y,Math.min(BOUND_Y,positions[draggingNode].y+dy)); vz[draggingNode]=0; vvy[draggingNode]=0; paint(); return;
+      if(lastPtr){
+        const ctm=svg.getScreenCTM(); const dx=(ev.clientX-lastPtr.x)/((ctm&&ctm.a)||1), dy=(ev.clientY-lastPtr.y)/((ctm&&ctm.d)||1);
+        if(Math.abs(ev.clientX-lastPtr.x)+Math.abs(ev.clientY-lastPtr.y)>2) dragMoved=true;
+        positions[draggingNode].x=Math.max(-BOUND_X,Math.min(BOUND_X,positions[draggingNode].x+dx)); positions[draggingNode].y=Math.max(-BOUND_Y,Math.min(BOUND_Y,positions[draggingNode].y+dy)); vz[draggingNode]=0; vvy[draggingNode]=0; paint();
+      }
+      lastPtr={x:ev.clientX,y:ev.clientY}; return;
     }
     const t=ev.target;
-    if(t.classList.contains("const-node")){
+    if(t.classList && t.classList.contains("const-node")){
       const id=t.getAttribute("data-id"); const n=allNodes.find(x=>x.id===id); if(!n) return;
-      tooltip.style.display="block"; tooltip.style.left=(ev.offsetX+14)+"px"; tooltip.style.top=(ev.offsetY-10)+"px";
+      const r=stage.getBoundingClientRect();
+      tooltip.style.display="block"; tooltip.style.left=(ev.clientX-r.left+14)+"px"; tooltip.style.top=(ev.clientY-r.top-10)+"px";
       tooltip.innerHTML=""; tooltip.append(
         h("div",{style:"font-weight:700;font-size:13px"}, n.name),
-        h("div",{class:"small faint"}, `${SUBJECTS[n.subject].name} � L${n.level} � ${n.status}${n.isStarred?" � ?":""}`),
-        h("div",{class:"small", style:"margin-top:4px;max-width:220px;white-space:normal"}, n.summary.slice(0,120)+"�"),
+        h("div",{class:"small faint"}, `${SUBJECTS[n.subject].name} — L${n.level} — ${n.status}${n.isStarred?" · ★":""}`),
+        h("div",{class:"small", style:"margin-top:4px;max-width:220px;white-space:normal"}, n.summary.slice(0,120)+"…"),
         h("div",{class:"small", style:"margin-top:6px"}, h("span",{class:`tag ${SUBJECTS[n.subject].cls}`}, SUBJECTS[n.subject].name), `  Click to open`)
       );
     } else { tooltip.style.display="none"; }
   });
-  svg.addEventListener("mouseup",()=>{ draggingNode=null; });
-  svg.addEventListener("mouseleave",()=>{ draggingNode=null; tooltip.style.display="none"; });
+  const endDrag=()=>{ draggingNode=null; lastPtr=null; };
+  svg.addEventListener("pointerup",endDrag);
+  svg.addEventListener("pointercancel",endDrag);
+  svg.addEventListener("pointerleave",()=>{ draggingNode=null; lastPtr=null; tooltip.style.display="none"; });
   svg.addEventListener("wheel",(ev)=>{ ev.preventDefault(); zoom=Math.min(200,Math.max(45, zoom - ev.deltaY*0.001*zoom)); redraw(); }, { passive: false });
   svg.addEventListener("dblclick",()=>{ zoom=100; redraw(); });
   container.addEventListener("click",(ev)=>{
+    if(dragMoved){ dragMoved=false; return; }
     const node=ev.target.closest?.(".const-node");
     if(!node) return;
     const id=node.getAttribute("data-id"); if(!id) return;
     if(ev.shiftKey || ev.altKey){ selectedId=id; if(!localMode){ localMode=true; toggles.querySelectorAll("input")[3].checked=true; } redraw(); ev.preventDefault(); return; }
     navigate(`#/chapter/${id}`);
   });
-  let saveTimer; svg.addEventListener("mousemove",()=>{ clearTimeout(saveTimer); saveTimer=setTimeout(()=>{ state.constellationPos=positions; save(); },1100); });
+  let saveTimer; svg.addEventListener("pointermove",()=>{ clearTimeout(saveTimer); saveTimer=setTimeout(()=>{ state.constellationPos=positions; save(); },1100); });
   redraw();
 }
 
@@ -1557,7 +1569,7 @@ function renderConstellation(container, completed, starred, state) {
 
 
 
-/* ----------- LABS � Quantum Protocols Showcase (all 40 revolutionary features) ----------- */
+/* ----------- LABS — Quantum Protocols Showcase (all 40 revolutionary features) ----------- */
 export function LabsView(root){
   const s=load(); const pulse=Quantum.metaPulse(); const traj=Quantum.forecastRank(); const neuro=Quantum.neuroplasticityScore();
   const loadMap=Quantum.cognitiveLoadMap(); const pred=Quantum.predictNextChallenge();
@@ -1565,93 +1577,93 @@ export function LabsView(root){
   const certs=JSON.parse(localStorage.getItem("tmj_certs")||"[]"); const inbox=Quantum.inboxPackets();
   const godChapters=ALL_CONCEPTS.filter(c=> Quantum.godModeUnlocked(c.id)).slice(0,2);
   const archUnlocked=Quantum.architectUnlocked();
-  root.innerHTML=""; root.append(page("TeachMeJEE Labs � Quantum Edition", "The Future of JEE Learning � 40 systems � zero server. Built by aspirants. For aspirants.",
+  root.innerHTML=""; root.append(page("TeachMeJEE Labs — Quantum Edition", "The Future of JEE Learning — 40 systems — zero server. Built by aspirants. For aspirants.",
     h("div",{class:"stack", style:"gap:14px"},
-      h("div",{class:"card labs-hero"}, h("div",{class:"qb-badge"},"? QUANTUM EDITION � BIL � OPEN SOURCE DNA"), h("h2",{style:"margin:8px 0 6px"},"Where textbook meets telepathy"), h("p",{class:"muted small"}, `${Quantum.BRAND.tagline} � ${Quantum.BRAND.dna} � ${ALL_CONCEPTS.length} chapters � ${certs.length} certs minted � ${inbox.length} packets in fabric.`), h("div",{class:"row", style:"gap:8px;margin-top:8px;flex-wrap:wrap"}, h("a",{class:"btn btn-primary btn-sm", href:"#/constellation"},"Open Constellation ?"), h("a",{class:"btn btn-sm", href:"#/videos"},"Lectures (18 channels) ?"), h("span",{class:"tag"},"v5 Quantum"))),
+      h("div",{class:"card labs-hero"}, h("div",{class:"qb-badge"},"QUANTUM EDITION · BIL · OPEN SOURCE DNA"), h("h2",{style:"margin:8px 0 6px"},"Where textbook meets telepathy"), h("p",{class:"muted small"}, `${Quantum.BRAND.tagline} — ${Quantum.BRAND.dna} — ${ALL_CONCEPTS.length} chapters — ${certs.length} certs minted — ${inbox.length} packets in fabric.`), h("div",{class:"row", style:"gap:8px;margin-top:8px;flex-wrap:wrap"}, h("a",{class:"btn btn-primary btn-sm", href:"#/constellation"},"Open Constellation →"), h("a",{class:"btn btn-sm", href:"#/videos"},"Lectures (18 channels) →"), h("span",{class:"tag"},"v5 Quantum"))),
       // MLD row
       h("div",{class:"labs-grid2"},
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Meta-Cognitive Pulse"), h("p",{class:"small muted"}, pulse.learnFaster + " � " + pulse.peak),
+        h("div",{class:"card lab-card"}, h("h3",{},"Meta-Cognitive Pulse"), h("p",{class:"small muted"}, pulse.learnFaster + " · " + pulse.peak),
           h("div",{class:"lab-demo"}, h("div",{class:"row", style:"justify-content:space-between"}, h("span",{class:"small"},`Trap rate ${pulse.trapRate}%`), h("span",{class:"small faint"}, pulse.exposure)), h("div",{class:"rank-bar"}, h("i",{style:`width:${Math.min(100,pulse.trapRate*2)}%`})) ),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Skill Trajectory"), h("p",{class:"small muted"},`Forecast ${traj.rank} � ${traj.pct}% to mastery`),
-          h("div",{class:"lab-demo"}, h("div",{class:"rank-bar"}, h("i",{style:`width:${traj.pct}%`})), h("div",{class:"small faint", style:"margin-top:6px"},`Velocity ${traj.velocity}% � Streak ${getStreak()}d`)),
+        h("div",{class:"card lab-card"}, h("h3",{},"Skill Trajectory"), h("p",{class:"small muted"},`Forecast ${traj.rank} — ${traj.pct}% to mastery`),
+          h("div",{class:"lab-demo"}, h("div",{class:"rank-bar"}, h("i",{style:`width:${traj.pct}%`})), h("div",{class:"small faint", style:"margin-top:6px"},`Velocity ${traj.velocity}% · Streak ${getStreak()}d`)),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},`?? Neuroplasticity ${neuro.score}`), h("p",{class:"small muted"}, neuro.label),
+        h("div",{class:"card lab-card"}, h("h3",{},`Neuroplasticity ${neuro.score}`), h("p",{class:"small muted"}, neuro.label),
           h("div",{class:"lab-demo"}, h("div",{class:"rank-bar"}, h("i",{style:`width:${neuro.score}%`})), h("div",{class:"small faint", style:"margin-top:6px"},`Variety ${neuro.variety}% across ${ALL_CONCEPTS.length} chapters`)),
           h("span",{class:"tag live"},"LIVE")),
       ),
       h("div",{class:"labs-grid2"},
-        h("div",{class:"card lab-card"}, h("h3",{},"?? ANPE � Cognitive Load Map"), h("p",{class:"small muted"},"Real-time struggle tracking ? auto bridges."),
-          h("div",{class:"lab-demo"}, loadMap.length? h("div",{class:"stack", style:"gap:6px"}, ...loadMap.slice(0,3).map(x=> h("div",{class:"row", style:"justify-content:space-between"}, h("a",{class:"prereq-pill", href:`#/chapter/${x.id}`}, `${x.name} ${x.acc}%`), h("span",{class:"small faint"},`load ${x.load}%`)))) : h("span",{class:"small faint"},"No load yet � attempt 2 quizzes per chapter")),
+        h("div",{class:"card lab-card"}, h("h3",{},"ANPE — Cognitive Load Map"), h("p",{class:"small muted"},"Real-time struggle tracking — auto bridges."),
+          h("div",{class:"lab-demo"}, loadMap.length? h("div",{class:"stack", style:"gap:6px"}, ...loadMap.slice(0,3).map(x=> h("div",{class:"row", style:"justify-content:space-between"}, h("a",{class:"prereq-pill", href:`#/chapter/${x.id}`}, `${x.name} ${x.acc}%`), h("span",{class:"small faint"},`load ${x.load}%`)))) : h("span",{class:"small faint"},"No load yet — attempt 2 quizzes per chapter")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Predictive Next Challenge"), h("p",{class:"small muted"},"ML-style picks optimal difficulty."),
-          h("div",{class:"lab-demo"}, pred? h("div",{}, h("a",{class:"prereq-pill", href:`#/chapter/${pred.c.id}`}, pred.c.name), h("div",{class:"small faint", style:"margin-top:6px"}, pred.reason), h("button",{class:"btn btn-primary btn-sm", style:"margin-top:8px", onclick:()=> navigate(`#/chapter/${pred.c.id}`)}, "Go ?")) : h("span",{class:"small faint"},"All frontiers clear � boss awaits")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Predictive Next Challenge"), h("p",{class:"small muted"},"ML-style picks optimal difficulty."),
+          h("div",{class:"lab-demo"}, pred? h("div",{}, h("a",{class:"prereq-pill", href:`#/chapter/${pred.c.id}`}, pred.c.name), h("div",{class:"small faint", style:"margin-top:6px"}, pred.reason), h("button",{class:"btn btn-primary btn-sm", style:"margin-top:8px", onclick:()=> navigate(`#/chapter/${pred.c.id}`)}, "Go →")) : h("span",{class:"small faint"},"All frontiers clear — boss awaits")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Neuro-Synaptic Flashcards"), h("p",{class:"small muted"},"Cards evolve 1?3?7?16d on recall."),
-          h("div",{class:"lab-demo"}, h("div",{class:"small"},`Due now: ${(Object.keys(s.srQueue||{}).length)} � Tap Evolve on a card in Flash to see level up`), h("a",{class:"btn btn-sm", href:"#/flash", style:"margin-top:8px"},"Open Flash ?")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Neuro-Synaptic Flashcards"), h("p",{class:"small muted"},"Cards evolve 1?3?7?16d on recall."),
+          h("div",{class:"lab-demo"}, h("div",{class:"small"},`Due now: ${(Object.keys(s.srQueue||{}).length)} — Tap Evolve on a card in Flash to see level up`), h("a",{class:"btn btn-sm", href:"#/flash", style:"margin-top:8px"},"Open Flash →")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Entanglement"), h("p",{class:"small muted"},"Master one ? surfaces linked math."),
+        h("div",{class:"card lab-card"}, h("h3",{},"Entanglement"), h("p",{class:"small muted"},"Master one — surfaces linked math."),
           h("div",{class:"lab-demo"}, (()=>{ const sel=pred?.c||ALL_CONCEPTS.find(c=>load().completed.includes(c.id))||ALL_CONCEPTS[0]; const ent=Quantum.entangledConcepts(sel.id,3); return h("div",{class:"stack", style:"gap:6px"}, h("div",{class:"small faint"},`Entangled with ${sel.name}:`), ...ent.map(c=> h("a",{class:"prereq-pill", href:`#/chapter/${c.id}`}, c.name))); })()),
           h("span",{class:"tag"},"BETA")),
-        h("div",{class:"card lab-card"}, h("h3",{},"? Temporal Fields"), h("p",{class:"small muted"},"Opacity = memory decay. Review to relight."),
+        h("div",{class:"card lab-card"}, h("h3",{},"Temporal Fields"), h("p",{class:"small muted"},"Opacity = memory decay. Review to relight."),
           h("div",{class:"lab-demo"}, (()=>{ const arr=ALL_CONCEPTS.filter(c=> load().completed.includes(c.id)).slice(0,3); return arr.length? h("div",{class:"stack", style:"gap:6px"}, ...arr.map(c=>{ const op=Math.round(Quantum.temporalOpacity(c.id)*100); return h("div",{class:"row", style:`justify-content:space-between;opacity:${Math.max(0.35, op/100)}`}, h("span",{class:"small"}, c.name), h("span",{class:"small faint"}, op+"%")); })) : h("span",{class:"small faint"},"Complete a chapter to see decay"); })()),
           h("span",{class:"tag"},"BETA")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Mentor Mode"), h("p",{class:"small muted"},"Pip delivers hints in-character."),
-          h("div",{class:"lab-demo"}, h("div",{class:"small"}, Quantum.mentorHint(ALL_CONCEPTS[10].id, "hint")), h("button",{class:"btn btn-sm", style:"margin-top:8px", onclick:()=> makeToast(Quantum.mentorHint(pred?.c?.id||ALL_CONCEPTS[5].id, "trap"), true)}, "Trap warning ?")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Mentor Mode"), h("p",{class:"small muted"},"Pip delivers hints in-character."),
+          h("div",{class:"lab-demo"}, h("div",{class:"small"}, Quantum.mentorHint(ALL_CONCEPTS[10].id, "hint")), h("button",{class:"btn btn-sm", style:"margin-top:8px", onclick:()=> makeToast(Quantum.mentorHint(pred?.c?.id||ALL_CONCEPTS[5].id, "trap"), true)}, "Trap warning →")),
           h("span",{class:"tag live"},"LIVE")),
       ),
       h("div",{class:"labs-grid2"},
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Holographic Layers"), h("p",{class:"small muted"},"CSS 3D overlays for vectors/orbitals."),
+        h("div",{class:"card lab-card"}, h("h3",{},"Holographic Layers"), h("p",{class:"small muted"},"CSS 3D overlays for vectors/orbitals."),
           h("div",{class:"lab-demo"}, h("label",{class:"obs-toggle"}, h("input",{type:"checkbox", onchange:(e)=>{ document.body.classList.toggle("holo-on", e.target.checked); }}), " Enable holograms in Chapter")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Emotion-Aware CPs"), h("p",{class:"small muted"},`State: ${Quantum.emotionState((load().answerLog||[]).slice(-5).map(a=>({at:a.at, correct:!!a.ok})))} � adjusts tone.`),
-          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=> makeToast(`Emotion: ${Quantum.emotionState((load().answerLog||[]).slice(-5).map(a=>({at:a.at, correct:!!a.ok})))} � take a micro-break?`, true)}, "Check pulse")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Emotion-Aware CPs"), h("p",{class:"small muted"},`State: ${Quantum.emotionState((load().answerLog||[]).slice(-5).map(a=>({at:a.at, correct:!!a.ok})))} — adjusts tone.`),
+          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=> makeToast(`Emotion: ${Quantum.emotionState((load().answerLog||[]).slice(-5).map(a=>({at:a.at, correct:!!a.ok})))} — take a micro-break?`, true)}, "Check pulse")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? P2P Fabric"), h("p",{class:"small muted"},"Broadcast insight packets via BroadcastChannel."),
+        h("div",{class:"card lab-card"}, h("h3",{},"P2P Fabric"), h("p",{class:"small muted"},"Broadcast insight packets via BroadcastChannel."),
           h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ const pkt=Quantum.createInsightPacket(load().lastNote||ALL_CONCEPTS[0].id); Quantum.broadcastPacket(pkt); makeToast("Packet broadcast to nearby tabs", true); }}, "Broadcast insight"), h("div",{class:"small faint", style:"margin-top:6px"}, `${inbox.length} packets in local inbox`)),
           h("span",{class:"tag proto"},"PROTOCOL")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Blockchain Cert"), h("p",{class:"small muted"},"Verifiable badge on local ledger."),
-          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const c=Quantum.mintCertificate(); makeToast(`Minted ${c.id} � ${c.pct}%`, true); }}, "Mint certificate"), h("div",{class:"small faint", style:"margin-top:6px"}, certs[0]?`Last: ${certs[0].id} � ${certs[0].pct}%`:"No certs yet")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Blockchain Cert"), h("p",{class:"small muted"},"Verifiable badge on local ledger."),
+          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const c=Quantum.mintCertificate(); makeToast(`Minted ${c.id} — ${c.pct}%`, true); }}, "Mint certificate"), h("div",{class:"small faint", style:"margin-top:6px"}, certs[0]?`Last: ${certs[0].id} — ${certs[0].pct}%`:"No certs yet")),
           h("span",{class:"tag proto"},"PROTOCOL")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Zero-Server Sync"), h("p",{class:"small muted"},"IPFS-style export � no central authority."),
-          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ const blob=new Blob([Quantum.zeroServerSyncExport()],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=`teachmejee-fabric-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url); }}, "Export fabric ?")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Zero-Server Sync"), h("p",{class:"small muted"},"IPFS-style export — no central authority."),
+          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ const blob=new Blob([Quantum.zeroServerSyncExport()],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=`teachmejee-fabric-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url); }}, "Export fabric →")),
           h("span",{class:"tag proto"},"PROTOCOL")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Self-Deriving Flashcards"), h("p",{class:"small muted"},"Auto from your misses."),
-          h("div",{class:"lab-demo"}, derived.length? h("div",{class:"stack", style:"gap:6px"}, ...derived.map(d=> h("div",{class:"small"}, `${d.front.slice(0,46)}� ? ${d.back.slice(0,28)}�`)), h("button",{class:"btn btn-sm", style:"margin-top:6px", onclick:()=>{ const s2=load(); s2.srQueue=s2.srQueue||{}; derived.forEach(d=> s2.srQueue["auto-"+Date.now()+Math.random()]={q:d.front,a:d.back,due:Date.now()}); save(); makeToast("Derived cards added to Flash", true); }}, "Add to Flash")) : h("span",{class:"small faint"},"No misses yet � attempt quiz")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Self-Deriving Flashcards"), h("p",{class:"small muted"},"Auto from your misses."),
+          h("div",{class:"lab-demo"}, derived.length? h("div",{class:"stack", style:"gap:6px"}, ...derived.map(d=> h("div",{class:"small"}, `${d.front.slice(0,46)}… — ${d.back.slice(0,28)}…`)), h("button",{class:"btn btn-sm", style:"margin-top:6px", onclick:()=>{ const s2=load(); s2.srQueue=s2.srQueue||{}; derived.forEach(d=> s2.srQueue["auto-"+Date.now()+Math.random()]={q:d.front,a:d.back,due:Date.now()}); save(); makeToast("Derived cards added to Flash", true); }}, "Add to Flash")) : h("span",{class:"small faint"},"No misses yet — attempt quiz")),
           h("span",{class:"tag live"},"LIVE")),
       ),
       h("div",{class:"labs-grid2"},
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Auto-Blog Journal"), h("p",{class:"small muted"},"Mastered chapters ? Markdown journal."),
+        h("div",{class:"card lab-card"}, h("h3",{},"Auto-Blog Journal"), h("p",{class:"small muted"},"Mastered chapters ? Markdown journal."),
           h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ const md=Quantum.generateJournalMarkdown(); const blob=new Blob([md],{type:"text/markdown"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="TeachMeJEE-Journal.md"; a.click(); URL.revokeObjectURL(url); }}, "Export Journal.md")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Boss Escalation"), h("p",{class:"small muted"},"Combines mastered topics."),
-          h("div",{class:"lab-demo"}, boss? h("div",{}, h("div",{class:"small"}, boss.title), h("div",{class:"small faint"}, `+${boss.xp} XP`), h("button",{class:"btn btn-primary btn-sm", style:"margin-top:6px", onclick:()=> navigate(`#/quiz`)}, "Fight boss ?")) : h("span",{class:"small faint"},"Master 4 chapters to unlock")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Boss Escalation"), h("p",{class:"small muted"},"Combines mastered topics."),
+          h("div",{class:"lab-demo"}, boss? h("div",{}, h("div",{class:"small"}, boss.title), h("div",{class:"small faint"}, `+${boss.xp} XP`), h("button",{class:"btn btn-primary btn-sm", style:"margin-top:6px", onclick:()=> navigate(`#/quiz`)}, "Fight boss →")) : h("span",{class:"small faint"},"Master 4 chapters to unlock")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Time-Dilation Reading"), h("p",{class:"small muted"},"Derivations fade in incrementally."),
+        h("div",{class:"card lab-card"}, h("h3",{},"Time-Dilation Reading"), h("p",{class:"small muted"},"Derivations fade in incrementally."),
           h("div",{class:"lab-demo"}, h("label",{class:"obs-toggle"}, h("input",{type:"checkbox", onchange:(e)=> document.body.classList.toggle("time-dilate", e.target.checked)}), " Enable in Notes")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? Haptic Feedback"), h("p",{class:"small muted"},"Vibration on CP correctness."),
-          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ Quantum.haptic(true); makeToast("Haptic: correct ?", true); }}, "Test haptic ?"), h("button",{class:"btn btn-sm", style:"margin-left:6px", onclick:()=> Quantum.haptic(false)}, "?")),
+        h("div",{class:"card lab-card"}, h("h3",{},"Haptic Feedback"), h("p",{class:"small muted"},"Vibration on CP correctness."),
+          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ Quantum.haptic(true); makeToast("Haptic: correct ✓", true); }}, "Test haptic ✓"), h("button",{class:"btn btn-sm", style:"margin-left:6px", onclick:()=> Quantum.haptic(false)}, "Test haptic ✕")),
           h("span",{class:"tag live"},"LIVE")),
-        h("div",{class:"card lab-card"}, h("h3",{},"?? A/B & Sandbox"), h("p",{class:"small muted"},`Variant ${Quantum.abVariant("note-layout")} � Export logs.`),
+        h("div",{class:"card lab-card"}, h("h3",{},"A/B & Sandbox"), h("p",{class:"small muted"},`Variant ${Quantum.abVariant("note-layout")} — Export logs.`),
           h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=>{ const blob=new Blob([JSON.stringify(Quantum.analyticsExport(),null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="analytics-sandbox.json"; a.click(); URL.revokeObjectURL(url); }}, "Export sandbox")),
           h("span",{class:"tag"},"BETA")),
-        h("div",{class:"card lab-card"}, h("h3",{}, archUnlocked?"??? The Architect � UNLOCKED":"??? The Architect � LOCKED"), h("p",{class:"small muted"}, archUnlocked?"Creator revealed � see below.":"Solve 7+ chapters + 3d streak to reveal."),
-          h("div",{class:"lab-demo"}, archUnlocked? h("div",{class:"small"}, "Built by Tanush Saha � anonymous no more. The architect is you, the aspirant.") : h("span",{class:"small faint"},`Progress ${load().completed.length}/7 � streak ${getStreak()}d`)),
+        h("div",{class:"card lab-card"}, h("h3",{}, archUnlocked?"The Architect — UNLOCKED":"The Architect — LOCKED"), h("p",{class:"small muted"}, archUnlocked?"Creator revealed — see below.":"Solve 7+ chapters + 3d streak to reveal."),
+          h("div",{class:"lab-demo"}, archUnlocked? h("div",{class:"small"}, "Built by Tanush Saha — anonymous no more. The architect is you, the aspirant.") : h("span",{class:"small faint"},`Progress ${load().completed.length}/7 — streak ${getStreak()}d`)),
           h("span",{class:"tag", style: archUnlocked?"background:gold;color:#111":""}, archUnlocked?"EASTER":"LOCKED")),
       ),
       h("div",{class:"labs-grid2"},
-        h("div",{class:"card lab-card", style: godChapters.length?"border-color:gold":""}, h("h3",{}, "?? God Mode CPs"), h("p",{class:"small muted"}, godChapters.length?`Unlocked for ${godChapters.map(c=>c.name).join(", ")}`:"100% a chapter to unlock legendary CP"),
-          h("div",{class:"lab-demo"}, godChapters.length? h("div",{class:"stack", style:"gap:6px"}, ...godChapters.map(c=> h("a",{class:"prereq-pill", href:`#/chapter/${c.id}`}, `God CP: ${c.name}`))) : h("span",{class:"small faint"},"Keep mastering � god mode awaits")),
+        h("div",{class:"card lab-card", style: godChapters.length?"border-color:gold":""}, h("h3",{}, "God Mode CPs"), h("p",{class:"small muted"}, godChapters.length?`Unlocked for ${godChapters.map(c=>c.name).join(", ")}`:"100% a chapter to unlock legendary CP"),
+          h("div",{class:"lab-demo"}, godChapters.length? h("div",{class:"stack", style:"gap:6px"}, ...godChapters.map(c=> h("a",{class:"prereq-pill", href:`#/chapter/${c.id}`}, `God CP: ${c.name}`))) : h("span",{class:"small faint"},"Keep mastering — god mode awaits")),
           h("span",{class:"tag", style: godChapters.length?"background:gold;color:#111":""}, godChapters.length?"UNLOCKED":"LOCKED")),
-        h("div",{class:"card lab-card"}, h("h3",{}, "?? TeachMeJEE Labs Portal"), h("p",{class:"small muted"},"Top scorers co-author CPs."),
-          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=> makeToast("Submit a CP via GitHub PR � open source DNA", true)}, "Contribute ?")),
+        h("div",{class:"card lab-card"}, h("h3",{}, "TeachMeJEE Labs Portal"), h("p",{class:"small muted"},"Top scorers co-author CPs."),
+          h("div",{class:"lab-demo"}, h("button",{class:"btn btn-sm", onclick:()=> makeToast("Submit a CP via GitHub PR — open source DNA", true)}, "Contribute →")),
           h("span",{class:"tag"},"OPEN")),
-        h("div",{class:"card lab-card"}, h("h3",{}, "??? Branding"), h("p",{class:"small muted"}, Quantum.BRAND.tagline),
+        h("div",{class:"card lab-card"}, h("h3",{}, "Branding"), h("p",{class:"small muted"}, Quantum.BRAND.tagline),
           h("div",{class:"lab-demo"}, h("div",{class:"small"}, Quantum.BRAND.edition), h("div",{class:"small faint"}, Quantum.BRAND.dna)),
           h("span",{class:"tag live"},"LIVE"))
       ),
-      h("div",{class:"card", style:"border-style:dashed"}, h("h3",{}, "How to demo for judges (30s)"), h("ol",{class:"small", style:"margin:8px 0 0 18px;display:flex;flex-direction:column;gap:4px"}, h("li",{},"Labs shows all 40 systems live � each card is wired to your real store"), h("li",{},"Constellation: search + Local graph + Shift+click isolate (Obsidian)"), h("li",{},"Chapter: toggle Focus Flow + Holographic + Time-Dilation"), h("li",{},"Miss a quiz ? Labs Autonomous Companion forges a card; check Flash")) )
+      h("div",{class:"card", style:"border-style:dashed"}, h("h3",{}, "How to demo for judges (30s)"), h("ol",{class:"small", style:"margin:8px 0 0 18px;display:flex;flex-direction:column;gap:4px"}, h("li",{},"Labs shows all 40 systems live — each card is wired to your real store"), h("li",{},"Constellation: search + Local graph + Shift+click isolate (Obsidian)"), h("li",{},"Chapter: toggle Focus Flow + Holographic + Time-Dilation"), h("li",{},"Miss a quiz ? Labs Autonomous Companion forges a card; check Flash")) )
     )));
 }
 
@@ -1664,34 +1676,34 @@ export function PlaygroundView(root){
   // projectile state
   let v=12, ang=42, g=9.8;
   const projOut=h("div",{class:"mono small", style:"background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px"});
-  function paintProj(){ const rad=ang*Math.PI/180; const R=(v*v*Math.sin(2*rad))/g; const T=(2*v*Math.sin(rad))/g; const H=(v*v*Math.sin(rad)*Math.sin(rad))/(2*g); projOut.textContent=`R = ${(R).toFixed(2)} m � T = ${T.toFixed(2)} s � H = ${H.toFixed(2)} m  (v�sin2?/g)`; }
+  function paintProj(){ const rad=ang*Math.PI/180; const R=(v*v*Math.sin(2*rad))/g; const T=(2*v*Math.sin(rad))/g; const H=(v*v*Math.sin(rad)*Math.sin(rad))/(2*g); projOut.textContent=`R = ${(R).toFixed(2)} m — T = ${T.toFixed(2)} s — H = ${H.toFixed(2)} m  (v²sin2θ/g)`; }
   // lens state
   let u=-30, f=15;
   const lensOut=h("div",{class:"mono small", style:"background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px"});
-  function paintLens(){ const vImg=1/(1/f + 1/u); const m=vImg/u; lensOut.textContent=`v = ${vImg.toFixed(1)} cm � m = ${m.toFixed(2)}  (1/f = 1/v - 1/u)`; }
+  function paintLens(){ const vImg=1/(1/f + 1/u); const m=vImg/u; lensOut.textContent=`v = ${vImg.toFixed(1)} cm · m = ${m.toFixed(2)}  (1/f = 1/v - 1/u)`; }
   // nernst
   let Q=0.01, n=2; const E0=0.34;
   const nernstOut=h("div",{class:"mono small", style:"background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px"});
-  function paintNernst(){ const E=E0 - (0.0592/n)*Math.log10(Q); nernstOut.textContent=`E = ${E.toFixed(3)} V  (E�=${E0} - 0.0592/${n}�log10${Q})`; }
+  function paintNernst(){ const E=E0 - (0.0592/n)*Math.log10(Q); nernstOut.textContent=`E = ${E.toFixed(3)} V  (E°=${E0} - 0.0592/${n}·log10${Q})`; }
   // nCr
   let nn=8, rr=3;
   const ncrOut=h("div",{class:"mono small", style:"background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px"});
   function fact(x){ let r=1; for(let i=2;i<=x;i++) r*=i; return r; }
   function paintNcr(){ const v=fact(nn)/(fact(rr)*fact(nn-rr)); ncrOut.textContent=`C(${nn},${rr}) = ${v}  (n! / r!(n-r)!)`; }
   paintProj(); paintLens(); paintNernst(); paintNcr();
-  root.innerHTML=""; root.append(page("Formula Playground � sliders that teach",
-    "Drag the numbers. The formula stays the same � your intuition grows. Zero server, instant feedback.",
+  root.innerHTML=""; root.append(page("Formula Playground — sliders that teach",
+    "Drag the numbers. The formula stays the same — your intuition grows. Zero server, instant feedback.",
     h("div",{class:"stack", style:"gap:14px"},
-      h("div",{class:"card"}, h("h3",{}, "?? Smart Timetable (weak-area aware)"), h("p",{class:"small muted", style:"margin:4px 0 8px"}, `Built from Cognitive Load Map + frontier � ${tt.length} blocks today`),
-        h("div",{class:"stack", style:"gap:6px"}, ...tt.map(t=> h("div",{class:"row", style:"justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px"}, h("div",{}, h("div",{class:"small", style:"font-weight:600"}, t.name), h("div",{class:"small faint"}, `${SUBJECTS[t.subject].name} � ${t.why}`)), h("span",{class:"tag"}, `${t.hours}h`), h("a",{class:"btn btn-sm", href:`#/chapter/${t.id}`}, "Go ?")))),
+      h("div",{class:"card"}, h("h3",{}, "Smart Timetable (weak-area aware)"), h("p",{class:"small muted", style:"margin:4px 0 8px"}, `Built from Cognitive Load Map + frontier — ${tt.length} blocks today`),
+        h("div",{class:"stack", style:"gap:6px"}, ...tt.map(t=> h("div",{class:"row", style:"justify-content:space-between;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px"}, h("div",{}, h("div",{class:"small", style:"font-weight:600"}, t.name), h("div",{class:"small faint"}, `${SUBJECTS[t.subject].name} · ${t.why}`)), h("span",{class:"tag"}, `${t.hours}h`), h("a",{class:"btn btn-sm", href:`#/chapter/${t.id}`}, "Go →")))),
         h("button",{class:"btn btn-primary btn-sm", style:"margin-top:10px", onclick:()=> makeToast("Timetable saved to Planner (local)", true)}, "Save to Planner")),
-      h("div",{class:"card"}, h("h3",{}, "?? Projectile Playground"), h("p",{class:"small muted"},"R = v� sin2? / g � drag v and ?"),
-        mkRow("v",5,20,1,v, x=>{v=+x; paintProj();}, " m/s"), mkRow("?",10,80,1,ang, x=>{ang=+x; paintProj();}, "�"), projOut),
-      h("div",{class:"card"}, h("h3",{}, "?? Lens Playground"), h("p",{class:"small muted"},"1/f = 1/v - 1/u � drag object distance"),
+      h("div",{class:"card"}, h("h3",{}, "Projectile Playground"), h("p",{class:"small muted"},"R = v² sin2θ / g — drag v and θ"),
+        mkRow("v",5,20,1,v, x=>{v=+x; paintProj();}, " m/s"), mkRow("θ",10,80,1,ang, x=>{ang=+x; paintProj();}, "°"), projOut),
+      h("div",{class:"card"}, h("h3",{}, "Lens Playground"), h("p",{class:"small muted"},"1/f = 1/v - 1/u — drag object distance"),
         mkRow("u",-50,-10,1,u, x=>{u=+x; paintLens();}, " cm"), mkRow("f",8,25,1,f, x=>{f=+x; paintLens();}, " cm"), lensOut),
-      h("div",{class:"card"}, h("h3",{}, "?? Nernst Playground"), h("p",{class:"small muted"},"E = E� - 0.0592/n � logQ"),
+      h("div",{class:"card"}, h("h3",{}, "Nernst Playground"), h("p",{class:"small muted"},"E = E° - 0.0592/n · logQ"),
         mkRow("Q",0.0001,1,0.01,Q, x=>{Q=+x; paintNernst();}, ""), mkRow("n",1,3,1,n, x=>{n=+x; paintNernst();}, " e?"), nernstOut),
-      h("div",{class:"card"}, h("h3",{}, "?? nCr Playground"), h("p",{class:"small muted"},"Choose n and r � see combinatorics live"),
+      h("div",{class:"card"}, h("h3",{}, "nCr Playground"), h("p",{class:"small muted"},"Choose n and r — see combinatorics live"),
         mkRow("n",4,12,1,nn, x=>{nn=+x; if(rr>nn) rr=nn; paintNcr();}, ""), mkRow("r",1,6,1,rr, x=>{rr=Math.min(+x,nn); paintNcr();}, ""), ncrOut)
     )));
 }
@@ -1707,7 +1719,7 @@ export function PeriodicView(root){
   const blockColor={s:"#f87171",p:"#60a5fa",d:"#34d399",f:"#a78bfa"};
   let q=""; let block="ALL";
   const wrap=h("div",{class:"stack", style:"gap:12px"}); const grid=h("div",{class:"periodic-grid"}); const detail=h("div",{class:"card", style:"min-height:88px"});
-  const search=h("input",{type:"text", placeholder:"Search element (H, Fe, Gold)�", style:"flex:1"}); search.addEventListener("input",()=>{q=search.value.toLowerCase(); paint();});
+  const search=h("input",{type:"text", placeholder:"Search element (H, Fe, Gold)…", style:"flex:1"}); search.addEventListener("input",()=>{q=search.value.toLowerCase(); paint();});
   const chips=h("div",{class:"filter-tabs", style:"gap:6px"});
   ;["ALL","s","p","d","f"].forEach(b=>{
     const btn=h("button",{class:`ftab${block===b?" on":""}`}, b==="ALL"?"All":b+"-block");
@@ -1727,25 +1739,25 @@ export function PeriodicView(root){
         h("div",{style:"font-size:9px;color:var(--faint)"}, el[0]),
         h("div",{class:"small faint", style:"font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"}, el[2]));
       cell.addEventListener("click",()=>{
-        const chap = el[3]==="s"? "C-sblock" : el[3]==="p"? "C-pblock" : el[3]==="d"? "C-dblock" : "C-fblock";
+        const chap = el[3]==="s" ? "C-sblock" : el[3]==="p" ? "C-pblock" : el[3]==="d" ? "C-dblock" : "C-fblock";
         detail.innerHTML=""; detail.append(
           h("div",{class:"row", style:"justify-content:space-between;align-items:center"},
-            h("div",{}, h("h3",{}, `${el[2]} (${el[1]}-${el[0]})`), h("div",{class:"small faint"}, `Block ${el[3]} � Group ${el[4]} � Period ${el[5]}`)),
+            h("div",{}, h("h3",{}, `${el[2]} (${el[1]}-${el[0]})`), h("div",{class:"small faint"}, `Block ${el[3]} · Group ${el[4]} · Period ${el[5]}`)),
             h("span",{class:"tag", style:`background:${blockColor[el[3]]};color:#111`}, el[3]+"-block")),
           h("p",{class:"small muted", style:"margin-top:6px"}, el[2]+" is a "+el[3]+"-block element. JEE focus: periodicity trends, ionisation, electronegativity."),
-          h("div",{class:"row", style:"gap:8px;margin-top:8px"}, h("a",{class:"btn btn-primary btn-sm", href:`#/chapter/${chap}`}, "Open chapter ?"), h("span",{class:"small faint"},"Click element again to pin to Notes"))
+          h("div",{class:"row", style:"gap:8px;margin-top:8px"}, h("a",{class:"btn btn-primary btn-sm", href:`#/chapter/${chap}`}, "Open chapter →"), h("span",{class:"small faint"},"Click element again to pin to Notes"))
         );
       });
       grid.append(cell);
     }
   }
   paint();
-  root.innerHTML=""; root.append(page("Periodic Table � Interactive", "Tap any element. Block-colored, searchable, JEE-linked. Built for the 1.5M.",
+  root.innerHTML=""; root.append(page("Periodic Table — Interactive", "Tap any element. Block-colored, searchable, JEE-linked. Built for the 1.5M.",
     h("div",{class:"stack", style:"gap:12px"}, h("div",{class:"row", style:"gap:8px"}, search, chips), grid, detail)));
 }
 
 export function DerivationView(root){
-  let q=""; const search=h("input",{type:"text", placeholder:"Search derivations� (e.g. Pythagoras, Nernst, entropy)", style:"flex:1"}); search.addEventListener("input",()=>{q=search.value.toLowerCase(); paint();});
+  let q=""; const search=h("input",{type:"text", placeholder:"Search derivations… (e.g. Pythagoras, Nernst, entropy)", style:"flex:1"}); search.addEventListener("input",()=>{q=search.value.toLowerCase(); paint();});
   const wrap=h("div",{class:"stack", style:"gap:12px"});
   function paint(){
     wrap.innerHTML="";
@@ -1756,22 +1768,22 @@ export function DerivationView(root){
       const steps=txt.split(/\. +/).filter(Boolean); let idx=0;
       const out=h("div",{class:"small", style:"margin-top:8px;min-height:38px"}); const prog=h("div",{class:"rank-bar", style:"margin-top:8px"}, h("i",{style:"width:0%"}));
       function show(i){ out.innerHTML=""; out.append(...steps.slice(0,i+1).map((s,j)=> h("div",{style:`opacity:${j===i?1:0.72};margin-top:${j?6:0}px`}, `${j+1}. ${s}.`))); prog.firstChild.style.width=`${((i+1)/steps.length)*100}%`; }
-      const nextBtn=h("button",{class:"btn btn-sm", onclick:()=>{ idx=Math.min(steps.length-1, idx+1); show(idx); if(idx===steps.length-1) nextBtn.disabled=true; }}, "Next step ?");
+      const nextBtn=h("button",{class:"btn btn-sm", onclick:()=>{ idx=Math.min(steps.length-1, idx+1); show(idx); if(idx===steps.length-1) nextBtn.disabled=true; }}, "Next step →");
       const autoBtn=h("button",{class:"btn btn-sm", style:"margin-left:6px", onclick:()=>{
         idx=0; show(0); let t=setInterval(()=>{ idx++; if(idx>=steps.length){ clearInterval(t); return; } show(idx); }, 900);
-      }}, "? Auto-play");
+      }}, "Auto-play");
       show(0);
-      card.append(h("div",{class:"row", style:"justify-content:space-between;align-items:center"}, h("div",{}, h("h3",{}, c?c.name:id), h("div",{class:"small faint"}, c?`${SUBJECTS[c.subject].name} � L${c.level}`:"")), h("a",{class:"btn btn-sm", href:`#/chapter/${id}`}, "Open ?")), out, prog, h("div",{style:"margin-top:8px"}, nextBtn, autoBtn));
+      card.append(h("div",{class:"row", style:"justify-content:space-between;align-items:center"}, h("div",{}, h("h3",{}, c?c.name:id), h("div",{class:"small faint"}, c?`${SUBJECTS[c.subject].name} · L${c.level}`:"")), h("a",{class:"btn btn-sm", href:`#/chapter/${id}`}, "Open →")), out, prog, h("div",{style:"margin-top:8px"}, nextBtn, autoBtn));
       wrap.append(card);
     }
   }
   paint();
-  root.innerHTML=""; root.append(page("Derivation Theatre � animated", "Every key result, revealed one logical step at a time. Auto-play like a proof film.", h("div",{class:"stack", style:"gap:12px"}, h("div",{class:"row", style:"gap:8px"}, search), wrap)));
+  root.innerHTML=""; root.append(page("Derivation Theatre — animated", "Every key result, revealed one logical step at a time. Auto-play like a proof film.", h("div",{class:"stack", style:"gap:12px"}, h("div",{class:"row", style:"gap:8px"}, search), wrap)));
 }
 
 export function AtlasView(root){
   const stats=featureStats(); let q=""; let type="ALL"; let subj="ALL"; let shown=60;
-  const search=h("input",{type:"text", placeholder:`Search 1000+ features � try "sim", "doubt", "P-block" �`, style:"flex:1"}); search.addEventListener("input",()=>{q=search.value.toLowerCase(); shown=60; paint();});
+  const search=h("input",{type:"text", placeholder:`Search 1000+ features — try "sim", "doubt", "P-block" …`, style:"flex:1"}); search.addEventListener("input",()=>{q=search.value.toLowerCase(); shown=60; paint();});
   const typeChips=h("div",{class:"filter-tabs", style:"gap:6px;flex-wrap:wrap"});
   ;["ALL","notes","sim","deriv","video","play","flash","quiz","doubt","const","periodic","timetable","global"].forEach(t=>{
     const b=h("button",{class:`ftab${type===t?" on":""}`}, t); b.addEventListener("click",()=>{type=t; typeChips.querySelectorAll(".ftab").forEach(x=>x.classList.toggle("on", x.textContent===t)); shown=60; paint();}); typeChips.append(b);
@@ -1780,7 +1792,7 @@ export function AtlasView(root){
   ;["ALL","P","C","M"].forEach(s=>{
     const b=h("button",{class:`ftab${subj===s?" on":""}`}, s==="ALL"?"All subjects":SUBJECTS[s].name); b.addEventListener("click",()=>{subj=s; subjChips.querySelectorAll(".ftab").forEach(x=>x.classList.toggle("on", x.textContent===b.textContent)); shown=60; paint();}); subjChips.append(b);
   });
-  const grid=h("div",{class:"labs-grid2"}); const more=h("button",{class:"btn btn-sm", style:"display:none"}, "Load more ?"); more.addEventListener("click",()=>{shown+=60; paint();});
+  const grid=h("div",{class:"labs-grid2"}); const more=h("button",{class:"btn btn-sm", style:"display:none"}, "Load more →"); more.addEventListener("click",()=>{shown+=60; paint();});
   const counter=h("div",{class:"small faint"}); const virtBox=h("div",{style:"margin-top:6px"});
   function paint(){
     const all=allFeatures(); const filtered=all.filter(f=>{
@@ -1789,7 +1801,7 @@ export function AtlasView(root){
       if(q && !`${f.name} ${f.blurb} ${f.type}`.toLowerCase().includes(q)) return false;
       return true;
     });
-    counter.textContent=`${filtered.length} of ${stats.total} features � P:${stats.bySubject.P} C:${stats.bySubject.C} M:${stats.bySubject.M} � showing ${Math.min(shown, filtered.length)}`;
+    counter.textContent=`${filtered.length} of ${stats.total} features · P:${stats.bySubject.P} C:${stats.bySubject.C} M:${stats.bySubject.M} · showing ${Math.min(shown, filtered.length)}`;
     grid.innerHTML=""; filtered.slice(0,shown).forEach(f=>{
       const card=h("a",{class:"card lab-card", href:f.route||"#/labs", style:"text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:4px"},
         h("div",{class:"row", style:"justify-content:space-between;align-items:center"},
@@ -1800,19 +1812,19 @@ export function AtlasView(root){
       grid.append(card);
     });
     more.style.display = filtered.length>shown ? "block":"none";
-    more.textContent=`Load more ? ${Math.max(0, filtered.length-shown)} left`;
+    more.textContent=`Load more → ${Math.max(0, filtered.length-shown)} left`;
   }
   paint();
-  root.innerHTML=""; root.append(page(`Feature Atlas � ${stats.total} micro-features`, `1000� stand-out: 93 chapters � 11 types + 30 globals. Every card is a live route � no dead mocks.`,
+  root.innerHTML=""; root.append(page(`Feature Atlas — ${stats.total} micro-features`, `1000× stand-out: 93 chapters × 11 types + 30 globals. Every card is a live route — no dead mocks.`,
     h("div",{class:"stack", style:"gap:12px"},
       h("div",{class:"card", style:"background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)) 0%, var(--surface) 100%);border-color:color-mix(in srgb, var(--accent) 22%, var(--border))"},
         h("div",{class:"row", style:"justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline"},
-          h("div",{}, h("h2",{style:"margin:0"}, `${stats.total} features`), h("div",{class:"small muted"}, `P ${stats.bySubject.P} � C ${stats.bySubject.C} � M ${stats.bySubject.M} � 11 types � 93 chapters`)),
-          h("span",{class:"qb-badge"},"? 1000� STAND-OUT"))),
+          h("div",{}, h("h2",{style:"margin:0"}, `${stats.total} features`), h("div",{class:"small muted"}, `P ${stats.bySubject.P} · C ${stats.bySubject.C} · M ${stats.bySubject.M} — 11 types — 93 chapters`)),
+          h("span",{class:"qb-badge"},"1000× STAND-OUT"))),
       h("div",{class:"card", style:"border-color:gold;background:color-mix(in srgb,gold 9%, var(--surface));"},
-        h("h3",{}, "?? 100,000,000 Generative Variants � Sim Factory"),
-        h("p",{class:"small muted"}, `Real ${stats.real.toLocaleString()} + Virtual ${stats.virtual.toLocaleString()} = ${stats.total.toLocaleString()} total. Each variant is a parametric sim/playground combo � generated on demand, zero RAM. Factory: 59 bases � 1000s of combos.`),
-        h("div",{class:"row", style:"gap:8px;margin-top:8px"}, h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const g=h("div",{class:"labs-grid2"}); for(let i=0;i<12;i++){ const f=virtualFeatureAt(FEATURE_COUNT + Math.floor(Math.random()*VIRTUAL_FEATURE_COUNT)); g.append(h("a",{class:"card lab-card", href:f.route, style:"text-decoration:none;color:inherit"}, h("div",{style:"font-weight:700;font-size:13px"}, `${f.icon} ${f.name}`), h("div",{class:"small muted", style:"margin-top:4px"}, f.blurb), h("span",{class:"small faint"}, f.route))); } virtBox.innerHTML=""; virtBox.append(g); }}, "Generate 12 random variants ?"), h("span",{class:"small faint"}, "100M via factory � try it")),
+        h("h3",{}, "100,000,000 Generative Variants — Sim Factory"),
+        h("p",{class:"small muted"}, `Real ${stats.real.toLocaleString()} + Virtual ${stats.virtual.toLocaleString()} = ${stats.total.toLocaleString()} total. Each variant is a parametric sim/playground combo — generated on demand, zero RAM. Factory: 59 bases · 1000s of combos.`),
+        h("div",{class:"row", style:"gap:8px;margin-top:8px"}, h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const g=h("div",{class:"labs-grid2"}); for(let i=0;i<12;i++){ const f=virtualFeatureAt(FEATURE_COUNT + Math.floor(Math.random()*VIRTUAL_FEATURE_COUNT)); g.append(h("a",{class:"card lab-card", href:f.route, style:"text-decoration:none;color:inherit"}, h("div",{style:"font-weight:700;font-size:13px"}, `${f.icon} ${f.name}`), h("div",{class:"small muted", style:"margin-top:4px"}, f.blurb), h("span",{class:"small faint"}, f.route))); } virtBox.innerHTML=""; virtBox.append(g); }}, "Generate 12 random variants →"), h("span",{class:"small faint"}, "100M via factory — try it")),
         virtBox),
       h("div",{class:"row", style:"gap:8px"}, search),
       h("div",{class:"stack", style:"gap:8px"}, h("div",{class:"small faint"},"Filter by type"), typeChips),
@@ -1851,9 +1863,9 @@ export function MoleculeView(root){
   draw();
   const selEl=h("select",{style:"min-width:140px"}, ...Object.keys(MOL).map(k=> h("option",{value:k, selected:k===sel}, k)));
   selEl.addEventListener("change",()=>{ sel=selEl.value; });
-  const info=h("div",{class:"small muted", style:"margin-top:8px"}, "Drag-free 3D-ish projection � auto-rotating � pick a molecule");
-  root.innerHTML=""; root.append(page("Molecule Viewer 3D", "Rotate any molecule � H2O, CH4, Benzene, NH3. JEE chemistry, now tactile.",
-    h("div",{class:"stack", style:"gap:12px"}, h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"Molecule"), selEl, h("span",{class:"tag"},"Three-ish � no server")), canvas, info)));
+  const info=h("div",{class:"small muted", style:"margin-top:8px"}, "Drag-free 3D-ish projection · auto-rotating · pick a molecule");
+  root.innerHTML=""; root.append(page("Molecule Viewer 3D", "Rotate any molecule — H2O, CH4, Benzene, NH3. JEE chemistry, now tactile.",
+    h("div",{class:"stack", style:"gap:12px"}, h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"Molecule"), selEl, h("span",{class:"tag"},"Three-ish · no server")), canvas, info)));
   const obs=new ResizeObserver(()=>{ canvas.width=canvas.clientWidth*2; canvas.height=320*2; canvas.style.height="320px"; }); obs.observe(canvas);
   root.addEventListener("DOMNodeRemoved",()=>{ cancelAnimationFrame(raf); obs.disconnect(); }, {once:true});
 }
@@ -1878,7 +1890,7 @@ export function GraphView(root){
   }
   inp.addEventListener("input", plot); aSl.addEventListener("input", plot); bSl.addEventListener("input", plot);
   plot();
-  root.innerHTML=""; root.append(page("Graph Playground � Desmos-like", "Type any f(x) with a,b sliders. Live canvas � zero server.",
+  root.innerHTML=""; root.append(page("Graph Playground — Desmos-like", "Type any f(x) with a,b sliders. Live canvas — zero server.",
     h("div",{class:"stack", style:"gap:12px"},
       h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"f(x) ="), inp),
       h("div",{class:"row", style:"gap:10px"}, h("span",{class:"small"},"a"), aSl, h("span",{class:"small"},"b"), bSl),
@@ -1898,7 +1910,7 @@ export function BoardView(root){
   });
   window.addEventListener("pointerup",()=>{ if(drawing){ drawing=false; last=null; saveBoard(); }});
   loadBoard();
-  root.innerHTML=""; root.append(page("Whiteboard � per chapter", "Draw freehand, save locally, export PNG. Lives in localStorage � no server.",
+  root.innerHTML=""; root.append(page("Whiteboard — per chapter", "Draw freehand, save locally, export PNG. Lives in localStorage — no server.",
     h("div",{class:"stack", style:"gap:10px"},
       h("div",{class:"row", style:"gap:8px"},
         h("button",{class:"btn btn-sm", onclick:()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); saveBoard(); }}, "Clear"),
@@ -1914,21 +1926,21 @@ export function ThemeView(root){
     const saved=localStorage.getItem(cssVar); if(saved){ document.documentElement.style.setProperty(cssVar, saved); inp.value=saved; }
     return h("div",{class:"row", style:"justify-content:space-between;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px"}, h("span",{class:"small"}, label), inp);
   };
-  root.innerHTML=""; root.append(page("Theme Studio", "Craft your palette � live preview, saved locally. Zero server.",
+  root.innerHTML=""; root.append(page("Theme Studio", "Craft your palette — live preview, saved locally. Zero server.",
     h("div",{class:"stack", style:"gap:10px"},
       pick("Accent", "--accent", cur.getPropertyValue("--accent").trim()||"#f2a33c"),
       pick("Background", "--bg", cur.getPropertyValue("--bg").trim()||"#151109"),
       pick("Surface", "--surface", cur.getPropertyValue("--surface").trim()||"#241c12"),
       h("div",{class:"row", style:"gap:8px"},
         h("button",{class:"btn btn-sm", onclick:()=>{ ["--accent","--bg","--surface"].forEach(k=>{ localStorage.removeItem(k); location.reload(); }); }}, "Reset"),
-        h("span",{class:"small faint"},"Saved in localStorage � survives reload")))));
+        h("span",{class:"small faint"},"Saved in localStorage — survives reload")))));
 }
 
 export function BrowseView(root) {
   const s = load();
   const completed = new Set(s.completed);
   const starred = new Set(s.starred);
-  const searchInput = h("input", { type: "text", placeholder: "Search 90+ chapters�" });
+  const searchInput = h("input", { type: "text", placeholder: "Search 90+ chapters…" });
   const listWrap = h("div", { style: "margin-top:16px" });
   const tabs = ["All", "Unlocked", "Locked", "Done", "Starred"];
   let filter = "All";
@@ -1970,10 +1982,10 @@ export function BrowseView(root) {
                 });
                 const tr = h("tr", { class: "row-link" },
                   h("td", {}, star),
-                  h("td", {}, c.name, h("div", { class: "faint small" }, c.summary.slice(0, 70) + "�")),
+                  h("td", {}, c.name, h("div", { class: "faint small" }, c.summary.slice(0, 70) + "…")),
                   h("td", { class: "small muted" }, `L${c.level}`),
                   h("td", {}, h("span", { class: `wtag w-${Math.min(4, Math.ceil(wInfo.w / 2))}`, title: weightLabel(c.id) }, `~${wInfo.w}m`)),
-                  h("td", { class: "small" }, st === "completed" ? "? done" : st),
+                  h("td", { class: "small" }, st === "completed" ? "done" : st),
                   h("td", {}, `${c.xp} XP`));
                 tr.addEventListener("click", () => navigate(`#/chapter/${c.id}`));
                 return tr;
@@ -1985,7 +1997,7 @@ export function BrowseView(root) {
   searchInput.addEventListener("input", () => renderList(searchInput.value));
   renderList("");
   root.innerHTML = "";
-  root.append(page("All chapters", "Every concept in the syllabus � searchable and filterable.",
+  root.append(page("All chapters", "Every concept in the syllabus — searchable and filterable.",
     h("div", {},
       h("div", { class: "searchbar" }, searchInput),
       h("div", { class: "filter-tabs", style: "margin-top:12px" },
@@ -2004,7 +2016,7 @@ export function BrowseView(root) {
 /* ----------- FORMULAS ----------- */
 
 export function FormulasView(root) {
-  const searchInput = h("input", { type: "text", placeholder: "Search formulas� (e.g. kinematics, nernst, binomial)" });
+  const searchInput = h("input", { type: "text", placeholder: "Search formulas… (e.g. kinematics, nernst, binomial)" });
   const wrap = h("div", { style: "margin-top:16px" });
 
   function render(q) {
@@ -2026,7 +2038,7 @@ export function FormulasView(root) {
                   const tr = h("tr", { class: "row-link" },
                     h("td", {}, h("a", { href: `#/chapter/${c.id}` }, c.name)),
                     h("td", {}, h("code", {}, f.f)),
-                    h("td", { class: "muted small" }, f.n + (f.d ? ` � ${f.d}` : "")));
+                    h("td", { class: "muted small" }, f.n + (f.d ? ` — ${f.d}` : "")));
                   tr.addEventListener("click", () => navigate(`#/chapter/${c.id}`));
                   return tr;
                 }))))));
@@ -2070,7 +2082,7 @@ function pomoSync() {
   ui.fg.classList.toggle("paused", !pomo.running && pomo.remaining > 0);
   ui.fg.classList.toggle("done", pomo.remaining <= 0);
   ui.start.textContent = pomo.running ? "Pause" : pomo.remaining === 0 ? "Done" : pomo.remaining < pomo.total ? "Resume" : "Start";
-  ui.sessions.textContent = `${load().focusLog[todayISO()] || 0} min today � ${pomodorosToday()} session${pomodorosToday() === 1 ? "" : "s"}`;
+  ui.sessions.textContent = `${load().focusLog[todayISO()] || 0} min today · ${pomodorosToday()} session${pomodorosToday() === 1 ? "" : "s"}`;
   ui.presets.forEach((p) => p.el.classList.toggle("on", !pomo.running && Math.round(pomo.total / 60) === p.min));
 }
 function pomoTick() {
@@ -2079,8 +2091,8 @@ function pomoTick() {
     pomoStop();
     logFocusMin(Math.round(pomo.total / 60), pomo.subj);
     bumpPomodoroCount();
-    addEvent(`Focus session complete: ${Math.round(pomo.total / 60)} min${pomo.subj ? " � " + SUBJECTS[pomo.subj].name : ""}`);
-    makeToast("Focus session complete � take a break!", true);
+    addEvent(`Focus session complete: ${Math.round(pomo.total / 60)} min${pomo.subj ? " · " + SUBJECTS[pomo.subj].name : ""}`);
+    makeToast("Focus session complete — take a break!", true);
     confettiBurst(innerWidth / 2, innerHeight * 0.3, 70);
     notifySync();
   }
@@ -2172,7 +2184,7 @@ function focusTimerCard() {
     ringBox,
     h("div", { class: "timer-side" },
       h("h2", {}, "Focus timer"),
-      h("p", { class: "hint", style: "margin-top:4px" }, "Pomodoro sprints � finish a chapter segment before the bell."),
+      h("p", { class: "hint", style: "margin-top:4px" }, "Pomodoro sprints — finish a chapter segment before the bell."),
       h("div", { class: "timer-row" },
         h("span", { class: "small muted" }, "Minutes"), minsIn,
         h("span", { class: "small muted" }, "Subject"), subjSel,
@@ -2208,7 +2220,7 @@ export function PlannerView(root) {
         h("div", { class: "row" },
           h("div", { class: "col card" },
             h("h2", { style: "margin-bottom:14px" }, "Study settings"),
-            dateField("JEE Main � Session 1", "mainDate", p.mainDate),
+            dateField("JEE Main — Session 1", "mainDate", p.mainDate),
             dateField("JEE Advanced", "advDate", p.advDate),
             numField("Study hours per day", "dailyHours", p.dailyHours || 6, 1, 16),
             (() => {
@@ -2220,10 +2232,10 @@ export function PlannerView(root) {
             h("div", { class: "stack", style: "gap:10px" },
               h("div", { class: "countdown", style: "margin:0" },
                 h("div", { class: "top" }, h("span", { class: "muted small" }, "JEE Main"), h("span", { class: "small faint" }, fmt(p.mainDate))),
-                h("div", { class: "days" }, daysUntil(p.mainDate) >= 0 ? daysUntil(p.mainDate) : "�", " ", h("small", {}, "days"))),
+                h("div", { class: "days" }, daysUntil(p.mainDate) >= 0 ? daysUntil(p.mainDate) : "—", " ", h("small", {}, "days"))),
               h("div", { class: "countdown adv", style: "margin:0" },
                 h("div", { class: "top" }, h("span", { class: "muted small" }, "JEE Advanced"), h("span", { class: "small faint" }, fmt(p.advDate))),
-                h("div", { class: "days" }, dAdv >= 0 ? dAdv : "�", " ", h("small", {}, "days")))))),
+                h("div", { class: "days" }, dAdv >= 0 ? dAdv : "—", " ", h("small", {}, "days")))))),
 
         h("h2", { style: "margin:24px 0 12px" }, "Study phases"),
         h("div", { class: "phase-bar" },
@@ -2231,7 +2243,7 @@ export function PlannerView(root) {
         phases.length
           ? h("div", { class: "row" }, ...phases.map((ph) =>
               h("div", { class: "col card", style: "padding:13px 15px" },
-                h("h3", {}, `${ph.name} � ${ph.days} days`),
+                h("h3", {}, `${ph.name} · ${ph.days} days`),
                 h("p", { class: "small muted", style: "margin-top:4px;margin-bottom:0" }, ph.desc))))
           : h("p", { class: "hint" }, "Set a valid Advanced date to see phases."),
 
@@ -2303,14 +2315,14 @@ export function QuizView(root) {
   let quizLen = 8;
   if (isBoss) quizLen = Math.min(16, pool.length);
   const lenSel = h("select", { title: "Number of questions" },
-    h("option", { value: "8" }, "Quick � 8"),
-    h("option", { value: "16" }, "Full � 16"));
+    h("option", { value: "8" }, "Quick — 8"),
+    h("option", { value: "16" }, "Full — 16"));
   lenSel.addEventListener("change", () => { quizLen = parseInt(lenSel.value, 10) || 8; });
   if (isBoss) { lenSel.value = String(quizLen); lenSel.disabled = true; }
 
   const box = h("div", { class: "quiz-box" });
   root.innerHTML = "";
-  root.append(page("Practice quiz", "+5 XP per correct answer. Keys: 1�4 answer � Enter continue.", box));
+  root.append(page("Practice quiz", "+5 XP per correct answer. Keys: 1–4 answer · Enter continue.", box));
 
   let quiz = [];
   let idx = 0, score = 0, streak = 0;
@@ -2340,8 +2352,8 @@ export function QuizView(root) {
       box.append(h("div", { class: "card boss-banner", style: "margin-bottom:14px;border-color:color-mix(in srgb,var(--red) 45%,transparent)" },
         h("div", { class: "row", style: "justify-content:space-between;align-items:center" },
           h("div", {},
-            h("h2", { style: "color:var(--red)" }, "? Boss battle"),
-            h("p", { class: "small muted", style: "margin:4px 0 0" }, `${quizLen} questions � 10 minutes � score 12+ to clear the week.`)),
+            h("h2", { style: "color:var(--red)" }, "Boss battle"),
+            h("p", { class: "small muted", style: "margin:4px 0 0" }, `${quizLen} questions · 10 minutes · score 12+ to clear the week.`)),
           h("span", { class: "boss-glyph", style: "font-size:30px" }, "?"))));
     }
     box.append(
@@ -2350,14 +2362,14 @@ export function QuizView(root) {
         h("p", { class: "muted small", style: "margin-top:6px" },
           bank.length >= 5
             ? `${bank.length} questions unlocked from your mastered chapters.`
-            : `Only ${bank.length} unlocked yet � using the full bank.`),
+            : `Only ${bank.length} unlocked yet — using the full bank.`),
         h("label", { style: "display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13.5px;color:var(--muted);cursor:pointer" },
-          timedCb, "Timed mode � 90 seconds for the whole set"),
+          timedCb, "Timed mode — 90 seconds for the whole set"),
         h("div", { style: "margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center" },
           lenSel,
           h("button", { class: "btn btn-primary", onclick: () => renderQ(0) }, "Start quiz"),
           quizBest.practiced
-            ? h("span", { class: "quiz-best" }, `${quizBest.practiced} practiced � best session ${quizBest.best}/8`)
+            ? h("span", { class: "quiz-best" }, `${quizBest.practiced} practiced · best session ${quizBest.best}/8`)
             : h("span", { class: "quiz-best" }, "No attempts yet."))));
   }
 
@@ -2414,8 +2426,8 @@ export function QuizView(root) {
       recordQuizAnswer(q.c, ok);
       Quantum.haptic(ok);
       const emo=Quantum.emotionState((load().answerLog||[]).slice(-5).map(a=>({at:a.at, correct:!!a.ok})));
-      if(!ok && emo==="frustrated") setTimeout(()=> makeToast("?? Frustrated? Take a micro-break � you�ve got this.", true), 400);
-      if(!ok && emo==="stuck") setTimeout(()=> makeToast(`?? ${Quantum.mentorHint(q.c,"trap")}`, true), 500);
+      if(!ok && emo==="frustrated") setTimeout(()=> makeToast("Frustrated? Take a micro-break — you've got this.", true), 400);
+      if(!ok && emo==="stuck") setTimeout(()=> makeToast(`${Quantum.mentorHint(q.c,"trap")}`, true), 500);
       results[idx] = ok;
       if (ok) { score++; streak++; combo++; confettiMini(); }
       else { streak = 0; combo = 0; }
@@ -2457,7 +2469,7 @@ export function QuizView(root) {
       } else if (now.cleared) {
         makeToast(`Best this week: ${now.best}/16`, true);
       } else {
-        makeToast(`Boss survives � ${score}/${quiz.length}. Regroup and retry.`, false);
+        makeToast(`Boss survives — ${score}/${quiz.length}. Regroup and retry.`, false);
       }
     }
     refreshXP();
@@ -2469,7 +2481,7 @@ export function QuizView(root) {
     box.append(
       h("div", { class: "quiz-result card" },
         h("div", { class: "big" }, `${score}/${quiz.length}`),
-        h("p", { class: "muted" }, pctScore >= 80 ? "Outstanding round!" : pctScore >= 50 ? "Solid effort." : "Keep studying � retry any time."),
+        h("p", { class: "muted" }, pctScore >= 80 ? "Outstanding round!" : pctScore >= 50 ? "Solid effort." : "Keep studying — retry any time."),
         h("p", { class: "quiz-best" }, `+${score * 5} XP earned`),
         h("div", { style: "margin-top:18px" },
           h("button", { class: "btn btn-primary", onclick: () => QuizView(root) }, "Play again"))),
@@ -2478,8 +2490,8 @@ export function QuizView(root) {
         ...quiz.map((q, i) => {
           const ok = results[i];
           return h("div", { class: "card", style: "margin-bottom:10px;padding:14px 16px" },
-            h("p", { style: "font-weight:600;margin-bottom:4px" }, ok ? "? Correct" : "? Missed", h("span", { class: "small faint" }, ` � ${q.q}`)),
-            h("p", { class: "small muted", style: "margin:0" }, `Answer: ${q.opts[q.a]} � ${q.why}`),
+            h("p", { style: "font-weight:600;margin-bottom:4px" }, ok ? "Correct" : "Missed", h("span", { class: "small faint" }, ` — ${q.q}`)),
+            h("p", { class: "small muted", style: "margin:0" }, `Answer: ${q.opts[q.a]} — ${q.why}`),
             CONCEPTS[q.c] ? h("a", { class: "prereq-pill", href: `#/chapter/${q.c}`, style: "margin-top:8px" }, "Open chapter") : null);
         })));
   }
@@ -2532,7 +2544,7 @@ export function FlashView(root) {
     idx = 0; flipped = false; known = 0; total = deck.length;
     if (!deck.length) {
       cardBox.innerHTML = "";
-      cardBox.append(h("div", { class: "empty" }, fromDue ? "Nothing is due right now � come back tomorrow." : "No formulas for this filter."));
+      cardBox.append(h("div", { class: "empty" }, fromDue ? "Nothing is due right now — come back tomorrow." : "No formulas for this filter."));
       return;
     }
     render();
@@ -2544,7 +2556,7 @@ export function FlashView(root) {
     const c = deck[idx];
     cardBox.append(
       h("div", { class: "flash-progress" },
-        h("span", { class: "quiz-best" }, `Card ${idx + 1} / ${total}${dueRun ? " � due review" : ""}`),
+        h("span", { class: "quiz-best" }, `Card ${idx + 1} / ${total}${dueRun ? " · due review" : ""}`),
         h("span", { class: "small faint" }, `${known} known`)),
       h("div", { class: "flash-card", onclick: () => { flipped = !flipped; paintFlip(); } },
         h("div", { class: "flash-inner" },
@@ -2565,7 +2577,7 @@ export function FlashView(root) {
         h("button", { class: "btn btn-sm", onclick: flip, title: "Flip (Space)" }, "Flip"),
         h("button", { class: "btn btn-sm", onclick: next, title: "Next (right arrow)" }, "?")),
       h("div", { class: "row", style: "gap:8px;margin-top:10px;justify-content:center" },
-        h("button", { class: "btn btn-primary btn-sm", onclick: gotIt, title: "Got it (1)" }, "Got it ?"),
+        h("button", { class: "btn btn-primary btn-sm", onclick: gotIt, title: "Got it (1)" }, "Got it ✓"),
         h("button", { class: "btn btn-sm", onclick: againSoon, title: "Again soon (2)" }, "Again soon"),
         h("button", { class: `btn btn-sm${reverse ? " btn-primary" : ""}`, onclick: () => { reverse = !reverse; render(); } }, "Reverse")));
   }
@@ -2590,8 +2602,8 @@ export function FlashView(root) {
       cardBox.innerHTML = "";
       cardBox.append(h("div", { class: "quiz-result" },
         h("div", { class: "big" }, `${known}/${total}`),
-        h("p", { class: "muted" }, known === total ? "Perfect sweep � every formula retired." : "Session done. The rest are scheduled for review."),
-        h("p", { class: "quiz-best" }, "Cards you miss resurface in 1�3 days; mastered ones after a week."),
+        h("p", { class: "muted" }, known === total ? "Perfect sweep — every formula retired." : "Session done. The rest are scheduled for review."),
+        h("p", { class: "quiz-best" }, "Cards you miss resurface in 1–3 days; mastered ones after a week."),
         h("div", { style: "margin-top:18px" },
           h("button", { class: "btn btn-primary", onclick: () => FlashView(root) }, "New session"))));
       return;
@@ -2643,7 +2655,7 @@ export function PYQView(root) {
     wrap.innerHTML = "";
     const list = filtered();
     wrap.append(h("p", { class: "hint", style: "margin:4px 2px 12px" },
-      `${list.length} question${list.length === 1 ? "" : "s"} � answers stay hidden until you reveal them.`));
+      `${list.length} question${list.length === 1 ? "" : "s"} — answers stay hidden until you reveal them.`));
     if (!list.length) { wrap.append(h("div", { class: "empty" }, mascotSVG(60), h("p", { style: "margin-top:6px" }, "Nothing matches these filters."))); return; }
     for (const q of shuffle(list)) {
       const starred = () => load().pyqStarred.includes(q.id);
@@ -2690,7 +2702,7 @@ export function PYQView(root) {
     ...years.map((y) => h("option", { value: String(y) }, String(y))));
   const specialSel = h("select", { onchange: (ev) => { specialF = ev.target.value; render(); } },
     h("option", { value: "all" }, "Everything"),
-    h("option", { value: "starred" }, "? Bookmarked"),
+    h("option", { value: "starred" }, "Bookmarked"),
     h("option", { value: "hard" }, "Hard only"));
 
   render();
@@ -2738,8 +2750,8 @@ export function PredictorView(root) {
           h("div", { class: "muted small" }, "expected rank")),
         h("div", { style: "flex:1;min-width:220px" },
           h("div", { class: "rank-bar", style: "margin-bottom:8px" }, h("i", { style: `width:${Math.min(100, pct)}%` })),
-          h("p", { class: "small", style: "margin-bottom:4px" }, `� ${pct.toFixed(2)} percentile � band ${(rank - band).toLocaleString("en-IN")}�${(rank + band).toLocaleString("en-IN")}`),
-          h("p", { class: "hint", style: "margin:0" }, "Ballpark from recent session curves � not a prophecy."))));
+          h("p", { class: "small", style: "margin-bottom:4px" }, `≈ ${pct.toFixed(2)} percentile · band ${(rank - band).toLocaleString("en-IN")}–${(rank + band).toLocaleString("en-IN")}`),
+          h("p", { class: "hint", style: "margin:0" }, "Ballpark from recent session curves — not a prophecy."))));
   }
 
   scoreInput.addEventListener("input", () => { scoreSlider.value = scoreInput.value; compute(); });
@@ -2799,7 +2811,7 @@ export function AnalyticsView(root) {
     for (const sub of ["P", "C", "M"]) {
       const rows = withPct.filter((m) => m.subject === sub);
       const a = rows.length ? rows.reduce((x, m) => x + m.pct, 0) / rows.length : null;
-      avgWrap.append(tile(a === null ? "�" : `${Math.round(a)}%`, `${SUBJECTS[sub].name} avg`));
+      avgWrap.append(tile(a === null ? "—" : `${Math.round(a)}%`, `${SUBJECTS[sub].name} avg`));
     }
   }
 
@@ -2815,7 +2827,7 @@ export function AnalyticsView(root) {
         tile(withPct.length, "mocks logged"), tile(`${Math.round(avg)}%`, "average"), tile(`${Math.round(best)}%`, "best")),
       h("div", { class: "mock-chart" },
         ...withPct.map((m) =>
-          h("div", { class: "mock-bar-col", title: `${m.name} � ${m.date} � ${m.score}/${m.total} (${Math.round(m.pct)}%)` },
+          h("div", { class: "mock-bar-col", title: `${m.name} — ${m.date} — ${m.score}/${m.total} (${Math.round(m.pct)}%)` },
             h("div", { class: `mock-bar subj-${m.subject}`, style: `height:${Math.max(3, m.pct)}%` }),
             h("div", { class: "mock-bar-label" }, Math.round(m.pct))))),
       h("div", { class: "table-wrap", style: "margin-top:16px" },
@@ -2857,7 +2869,7 @@ export function AnalyticsView(root) {
     const total = Math.max(1, parseInt(totalIn.value, 10) || 1);
     if (score > total) { makeToast("Score can't exceed the total."); return; }
     addMock({ name, subject: subjSel.value, score, total });
-    addEvent(`Logged mock: ${name} � ${score}/${total}`);
+    addEvent(`Logged mock: ${name} — ${score}/${total}`);
     renderList(); renderAvg(); makeToast(`"${name}" logged.`, true); notifySync();
   }
 
@@ -2956,7 +2968,7 @@ export function AuthView(root) {
         msg,
         h("div", { class: "auth-switch" }, switchBtn),
         h("p", { class: "hint", style: "margin:14px 0 0;text-align:center" },
-          h("a", { href: "#/home" }, "Continue as guest"), " � everything works offline, an account just adds the leaderboard.")))));
+          h("a", { href: "#/home" }, "Continue as guest"), " — everything works offline, an account just adds the leaderboard.")))));
 }
 
 /* ----------- LEADERBOARD ----------- */
@@ -2979,7 +2991,7 @@ export function LeaderboardView(root) {
             h("span", { class: "lb-rank" }, `#${i + 1}`),
             h("span", { class: "lb-avatar" }, (u.username[0] || "?").toUpperCase()),
             h("span", { class: "lb-name" }, u.username),
-            h("span", { class: "lb-meta" }, `${u.chapters} chapters � ${u.streak}d streak`),
+            h("span", { class: "lb-meta" }, `${u.chapters} chapters · ${u.streak}d streak`),
             h("span", { class: "lb-xp" }, `${u.xp} XP`));
         }));
       }
@@ -2991,7 +3003,7 @@ export function LeaderboardView(root) {
           h("div", { class: "card" },
             h("h3", { style: "margin-bottom:10px" }, "Your standing"),
             h("div", { class: "quest-stats" },
-              tile(mine ? `#${mine.rank}` : "�", "rank"),
+              tile(mine ? `#${mine.rank}` : "—", "rank"),
               tile(getTotalXP(ALL_CONCEPTS), "XP"),
               tile(`${(st.quizBest && st.quizBest.best) || 0}/8`, "best quiz"),
               tile((st.mocks || []).length, "mocks")),
@@ -3019,7 +3031,7 @@ export function LeaderboardView(root) {
   }
 
   root.innerHTML = "";
-  root.append(page("Leaderboard", "Local rankings � every account on this device competes here.",
+  root.append(page("Leaderboard", "Local rankings — every account on this device competes here.",
     h("div", { class: "lb-layout" },
       h("div", {},
         h("div", { class: "row", style: "align-items:center;gap:10px;margin-bottom:12px" },
@@ -3095,8 +3107,8 @@ export function BookmarksView(root) {
   for (const c of items) {
     wrap.append(h("div", { class: "card row-link", style: "margin-bottom:10px;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap",
       onclick: () => navigate(`#/chapter/${c.id}`) },
-      h("div", {}, h("div", { style: "font-weight:650" }, c.name), h("div", { class: "small faint", style: "margin-top:3px" }, `${levelName(c.level)} � +${c.xp} XP`)),
-      h("button", { class: "btn btn-sm", onclick: (ev) => { ev.stopPropagation(); toggleStar(c.id); BookmarksView(root); } }, "? Remove")));
+      h("div", {}, h("div", { style: "font-weight:650" }, c.name), h("div", { class: "small faint", style: "margin-top:3px" }, `${levelName(c.level)} · +${c.xp} XP`)),
+      h("button", { class: "btn btn-sm", onclick: (ev) => { ev.stopPropagation(); toggleStar(c.id); BookmarksView(root); } }, "Remove")));
   }
   root.innerHTML = "";
   root.append(page("Bookmarks", "Chapters you starred for quick access.", wrap));
@@ -3106,7 +3118,7 @@ export function WeakAreasView(root) {
   const weak = getWeakAreas();
   const wrap = h("div");
   if (!weak.length) {
-    wrap.append(h("p", { class: "hint" }, "Nothing flagged yet. Answer quiz questions on mastered chapters � anything below 80% accuracy lands here."));
+    wrap.append(h("p", { class: "hint" }, "Nothing flagged yet. Answer quiz questions on mastered chapters — anything below 80% accuracy lands here."));
   }
   for (const { c, score } of weak) {
     wrap.append(h("div", { class: "card", style: "margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:13px 16px" },
@@ -3147,7 +3159,7 @@ export function ProgressView(root) {
       h("div", { class: "rank-bar" }, h("i", { style: `width:${stt.pct}%` })),
       h("div", { class: "small faint", style: "margin-top:8px" },
         `${stt.completed}/${stt.total} chapters`,
-        stt.avgScore == null ? "" : ` � quiz accuracy ${Math.round(stt.avgScore * 100)}%`));
+        stt.avgScore == null ? "" : ` · quiz accuracy ${Math.round(stt.avgScore * 100)}%`));
   });
   root.innerHTML = "";
   root.append(page("Progress by subject", "Completion and quiz accuracy per subject.", h("div", {}, cards)));
@@ -3179,7 +3191,7 @@ export function MasteryView(root) {
   const wrap = h("div");
   for (const { lvl, chapters } of sections) {
     wrap.append(h("div", { style: "margin-bottom:22px" },
-      h("h2", { style: "margin-bottom:10px;font-size:16px" }, `${getMasteryLabel(lvl)} � ${chapters.length}`),
+      h("h2", { style: "margin-bottom:10px;font-size:16px" }, `${getMasteryLabel(lvl)} · ${chapters.length}`),
       h("div", { class: "sub-grid" },
         ...chapters.slice(0, 40).map((c) =>
           h("div", { class: "sub-item row-link", onclick: () => navigate(`#/chapter/${c.id}`) },
@@ -3209,7 +3221,7 @@ export function StatsView(root) {
     ["Chapters mastered", `${s.completed.length}/${ALL_CONCEPTS.length}`],
     ["Weak areas", getWeakAreas().length],
     ["Due revision", revisionCandidates().length],
-    ["Best subject", bestSubject ? SUBJECTS[bestSubject].name : "�"],
+    ["Best subject", bestSubject ? SUBJECTS[bestSubject].name : "—"],
     ["Focus time", `${focusTotal} min`],
     ["Active days", Object.keys(s.activity).filter((k) => s.activity[k] > 0).length],
   ];
@@ -3250,20 +3262,20 @@ export function AchievementsView(root) {
     analyst: [Math.min((s.mocks || []).length, 5), 5],
   };
   const unlocked = badges.filter((b) => b.ok).length;
-  const shareCard = h("div", { class: "card", style:"margin-top:14px" }, h("h3",{}, "?? Shareable Victory Card"), h("p",{class:"small muted"},"Generate a canvas card for Instagram / WhatsApp � one tap."),
+  const shareCard = h("div", { class: "card", style:"margin-top:14px" }, h("h3",{}, "Shareable Victory Card"), h("p",{class:"small muted"},"Generate a canvas card for Instagram / WhatsApp — one tap."),
     h("div",{class:"row", style:"gap:8px;margin-top:8px;flex-wrap:wrap"},
       h("button",{class:"btn btn-primary btn-sm", onclick:()=>{
         const c=document.createElement("canvas"); c.width=900; c.height=460; const ctx=c.getContext("2d");
         const g=ctx.createLinearGradient(0,0,900,460); g.addColorStop(0,"#1a1208"); g.addColorStop(1,"#2e2517"); ctx.fillStyle=g; ctx.fillRect(0,0,900,460);
         ctx.fillStyle="#f2a33c"; ctx.font="800 28px sans-serif"; ctx.fillText("TeachMeJEE Quantum", 36, 48);
-        ctx.fillStyle="#f5eddc"; ctx.font="700 22px sans-serif"; ctx.fillText(`${unlocked}/${badges.length} badges � ${getTotalXP(ALL_CONCEPTS)} XP � ${count}/${ALL_CONCEPTS.length} chapters`, 36, 88);
-        ctx.fillStyle="#a89a7d"; ctx.font="13px sans-serif"; ctx.fillText("The Future of JEE Learning � Built by aspirants. For aspirants.", 36, 112);
+        ctx.fillStyle="#f5eddc"; ctx.font="700 22px sans-serif"; ctx.fillText(`${unlocked}/${badges.length} badges · ${getTotalXP(ALL_CONCEPTS)} XP · ${count}/${ALL_CONCEPTS.length} chapters`, 36, 88);
+        ctx.fillStyle="#a89a7d"; ctx.font="13px sans-serif"; ctx.fillText("The Future of JEE Learning — Built by aspirants. For aspirants.", 36, 112);
         // badges
         let x=36, y=150; badges.filter(b=>b.ok).slice(0,8).forEach(b=>{ ctx.fillStyle="rgba(242,163,60,0.14)"; ctx.beginPath(); ctx.roundRect(x,y,104,72,10); ctx.fill(); ctx.fillStyle="#ffd9a0"; ctx.font="22px sans-serif"; ctx.fillText(b.g, x+38, y+30); ctx.fillStyle="#f5eddc"; ctx.font="9px sans-serif"; const t=b.t.slice(0,14); ctx.fillText(t, x+52-ctx.measureText(t).width/2, y+50); x+=112; if(x>780){ x=36; y+=84; } });
-        ctx.fillStyle="#a89a7d"; ctx.font="11px sans-serif"; ctx.fillText("teachmejee.local � tmj-v8 Quantum", 36, 438);
+        ctx.fillStyle="#a89a7d"; ctx.font="11px sans-serif"; ctx.fillText("teachmejee.local · tmj-v8 Quantum", 36, 438);
         const url=c.toDataURL("image/png"); const a=document.createElement("a"); a.href=url; a.download=`teachmejee-victory-${Date.now()}.png`; a.click();
       }}, "Generate & Download PNG"),
-      h("span",{class:"small faint"},"900�460 � no server")) );
+      h("span",{class:"small faint"},"900×460 — no server")) );
   root.innerHTML = "";
   root.append(page("Achievements", `${unlocked} of ${badges.length} badges earned.`,
     h("div", { class: "stack", style:"gap:14px" },
@@ -3306,16 +3318,16 @@ export function CalendarView(root) {
     const cls = n >= 4 ? "a3" : n >= 2 ? "a2" : n >= 1 ? "a1" : "";
     const isToday = key === todayISO();
     const isExam = key === s.planner.mainDate || key === s.planner.advDate;
-    cells.push(h("div", { class: `cal-day ${cls}${isToday ? " today" : ""}${isExam ? " exam" : ""}`, title: `${key}${n ? ` � ${n} item${n > 1 ? "s" : ""}` : ""}${isExam ? " � EXAM DAY" : ""}` }, d));
+    cells.push(h("div", { class: `cal-day ${cls}${isToday ? " today" : ""}${isExam ? " exam" : ""}`, title: `${key}${n ? ` — ${n} item${n > 1 ? "s" : ""}` : ""}${isExam ? " — EXAM DAY" : ""}` }, d));
   }
 
   root.innerHTML = "";
   root.append(page("Study calendar", "Daily activity with exam dates pinned.",
     h("div", { style: "max-width:480px" },
       h("div", { class: "cal-nav" },
-        h("button", { class: "btn btn-sm", onclick: () => { calOffset--; CalendarView(root); } }, "� Prev"),
+        h("button", { class: "btn btn-sm", onclick: () => { calOffset--; CalendarView(root); } }, "‹ Prev"),
         h("div", { class: "cal-title" }, base.toLocaleDateString(undefined, { month: "long", year: "numeric" })),
-        h("button", { class: "btn btn-sm", onclick: () => { calOffset++; CalendarView(root); } }, "Next �"),
+        h("button", { class: "btn btn-sm", onclick: () => { calOffset++; CalendarView(root); } }, "Next ›"),
         h("button", { class: "btn btn-ghost btn-sm", onclick: () => { calOffset = 0; CalendarView(root); } }, "Today")),
       h("div", { class: "cal-grid" },
         ...["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((l) => h("div", { class: "cal-dow" }, l)),
@@ -3336,9 +3348,9 @@ export function NeetView(root) {
   const s = load();
   const readCount = NEET_TOPICS.filter((t) => s.seen[`neet:${t.id}`]).length;
 
-  const neetSearchEl = h("input", { type: "text", placeholder: "Search topics, terms�", style: "margin-top:14px;max-width:340px" });
+  const neetSearchEl = h("input", { type: "text", placeholder: "Search topics, terms…", style: "margin-top:14px;max-width:340px" });
   neetSearchEl.addEventListener("input", () => { neetQuery = neetSearchEl.value; if (neetTab === "syllabus") NeetView(root); });
-  const head = page("NEET hub", "Biology-first track for the medical entrance � notes, 3D models and practice.",
+  const head = page("NEET hub", "Biology-first track for the medical entrance — notes, 3D models and practice.",
     h("div", {},
       h("div", { class: "stat-grid", style: "grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:0" },
         tile(`${readCount}/${NEET_TOPICS.length}`, "topics studied", false),
@@ -3395,9 +3407,9 @@ export function NeetView(root) {
   function modelsTab(rootEl) {
     const MODELS = [
       { id: "bio-dna", name: "DNA double helix", desc: "Antiparallel strands, base-pair rungs, B-form twist." },
-      { id: "bio-cell", name: "Eukaryotic cell", desc: "Membrane, nucleus, mitochondria, ER � labelled cutaway." },
+      { id: "bio-cell", name: "Eukaryotic cell", desc: "Membrane, nucleus, mitochondria, ER — labelled cutaway." },
       { id: "bio-neuron", name: "Neuron & impulse", desc: "Myelinated axon firing an action potential." },
-      { id: "bio-photo", name: "Photosynthesis", desc: "Light photons in, O2 out � watch the rate react." },
+      { id: "bio-photo", name: "Photosynthesis", desc: "Light photons in, O2 out — watch the rate react." },
       { id: "bio-heart", name: "Human heart", desc: "Four chambers pumping in sequence with a pacemaker flash." },
       { id: "bio-synth", name: "Protein synthesis", desc: "DNA unzips, mRNA feeds a ribosome building a peptide." },
     ];
@@ -3409,10 +3421,10 @@ export function NeetView(root) {
       viewer.innerHTML = "";
       const shell = h("div", { class: "sim-shell", style: "height:420px" },
         h("canvas", { style: "position:absolute;inset:0;width:100%;height:100%" }),
-        h("div", { class: "sim-loading" }, "Loading biology lab�"),
-        h("div", { class: "sim-tag" }, "drag rotate � scroll zoom"));
+        h("div", { class: "sim-loading" }, "Loading biology lab…"),
+        h("div", { class: "sim-tag" }, "drag rotate · scroll zoom"));
       const ctrl = h("div", { class: "sim-panel", hidden: true });
-      const backBtn = h("button", { class: "btn btn-sm", onclick: () => { disposeActiveSim(); drawGrid(); } }, "? All models");
+      const backBtn = h("button", { class: "btn btn-sm", onclick: () => { disposeActiveSim(); drawGrid(); } }, "‹ All models");
       viewer.append(backBtn, shell, ctrl);
       import("./sim/index.js").then(({ mountSim }) => {
         try {
@@ -3462,15 +3474,15 @@ export function NeetView(root) {
       const id = neetModel;
       neetModel = null;
       setTimeout(() => mount(id), 0);
-      return h("div", {}, h("p", { class: "hint", style: "margin-bottom:10px" }, "Opening model�"), viewer);
+      return h("div", {}, h("p", { class: "hint", style: "margin-bottom:10px" }, "Opening model…"), viewer);
     }
     return viewer;
   }
 
   function practiceTab() {
     const lenSel = h("select", { title: "Round length" },
-      h("option", { value: "8" }, "Quick � 8"),
-      h("option", { value: "16" }, "Full � 16"));
+      h("option", { value: "8" }, "Quick — 8"),
+      h("option", { value: "16" }, "Full — 16"));
     const quiz = shuffle(NEET_QUESTIONS).slice(0, 8);
     let idx = 0, score = 0;
     lenSel.addEventListener("change", () => {
@@ -3491,7 +3503,7 @@ export function NeetView(root) {
         idx + 1 < quiz.length ? "Next" : "See result");
       box.append(
         h("div", { class: "row", style: "align-items:center;gap:10px" },
-          h("span", { class: "quiz-best" }, `Question ${idx + 1} of ${quiz.length} � ${score} correct`),
+          h("span", { class: "quiz-best" }, `Question ${idx + 1} of ${quiz.length} · ${score} correct`),
           lenSel),
         h("h2", { style: "margin-top:8px" }, q.q),
         opts, why,
@@ -3557,7 +3569,7 @@ export function QuestsView(root) {
     ...Object.keys(byLevel).sort((a, b) => a - b).map((lvl) =>
       h("div", { class: "quest-stage" },
         h("div", { class: "quest-stage-label" },
-          LEVELS[lvl] ? `Level ${lvl} � ${LEVELS[lvl].title}` : `Level ${lvl}`,
+          LEVELS[lvl] ? `Level ${lvl} — ${LEVELS[lvl].title}` : `Level ${lvl}`,
           h("b", {}, `${byLevel[lvl].filter((c) => completed.has(c.id)).length}/${byLevel[lvl].length} done`)),
         h("div", { class: "quest-nodes" }, ...byLevel[lvl].map(questNode)))));
 
@@ -3573,7 +3585,7 @@ export function QuestsView(root) {
         h("h3", {}, "Weekly boss"),
         h("span", { class: "boss-glyph" }, b.cleared ? "?" : "?")),
       h("p", { class: "small muted", style: "margin:0 0 10px" }, b.cleared
-        ? `Cleared this week � best ${b.best}/16. It resets Monday.`
+        ? `Cleared this week — best ${b.best}/16. It resets Monday.`
         : "A 16-question timed gauntlet. Score 12 or better to clear it."),
       h("button", { class: `btn ${b.cleared ? "" : "btn-primary"} btn-sm`, onclick: () => {
         try { sessionStorage.setItem("tmj_boss", "1"); } catch {}
@@ -3600,11 +3612,11 @@ export function QuestsView(root) {
                 h("span", { class: "pr-name" }, c.name),
                 subjectTag(c.subject),
                 h("span", { class: "pr-rating" }, `~${weightInfo(c.id).w}m`)))
-          : h("p", { class: "hint", style: "padding:10px 6px" }, "Roadmap complete � nothing left to queue."))));
+          : h("p", { class: "hint", style: "padding:10px 6px" }, "Roadmap complete — nothing left to queue."))));
 
   root.innerHTML = "";
   root.append(page("Quest board",
-    "The whole syllabus as one board � clear the glowing node to advance.",
+    "The whole syllabus as one board — clear the glowing node to advance.",
     h("div", { class: "quest-layout" }, board, side)));
 }
 
@@ -3631,7 +3643,7 @@ export function WelcomeView(root) {
           h("div", { class: "stack", style: "gap:6px" },
             h("p", { class: "small faint", style: "margin:0;letter-spacing:.12em;text-transform:uppercase" }, `Welcome back, ${name}`),
             h("h1", { class: "grad-text", style: "font-size:32px" }, completed ? `${ALL_CONCEPTS.length - completed} chapters between you and mastery` : "Your JEE quest starts here"),
-            h("p", { class: "muted small", style: "margin:0;max-width:520px" }, "A roadmap that plays like a game: unlock levels by mastering prerequisites, keep streaks alive, claim daily quests � and bring NEET Biology along in the same bag."),
+            h("p", { class: "muted small", style: "margin:0;max-width:520px" }, "A roadmap that plays like a game: unlock levels by mastering prerequisites, keep streaks alive, claim daily quests — and bring NEET Biology along in the same bag."),
             h("div", { class: "chapter-actions", style: "margin-top:12px" },
               h("button", { class: "btn btn-primary", onclick: () => { try { sessionStorage.setItem("tmj_welcomed", "1"); } catch {} location.hash = "#/home"; } }, "Enter the dashboard"),
               h("a", { class: "btn", href: "#/roadmap" }, "Peek at the journey"))))),
@@ -3715,7 +3727,7 @@ function chipRow(chips, onPick) {
 
 export function buildTutorChat() {
   const feed = h("div", { class: "chat-feed" });
-  const input = h("input", { type: "text", placeholder: "Ask about any topic, formula, PYQ or your plan�", autocomplete: "off" });
+  const input = h("input", { type: "text", placeholder: "Ask about any topic, formula, PYQ or your plan…", autocomplete: "off" });
   const sendBtn = h("button", { class: "btn btn-primary btn-sm", title: "Send" }, "Send");
 
   function addBubble(role) {
@@ -3764,7 +3776,7 @@ export function buildTutorChat() {
   feed.append(h("div", { class: "msg pip" },
     h("div", { class: "bubble" },
       h("div", { class: "bubble-text" },
-        "Hi! I am Pip � your offline study brain. I have read all 93 chapters, every formula, the PYQ bank and the NEET notes, and I can see your progress.",
+        "Hi! I am Pip — your offline study brain. I have read all 93 chapters, every formula, the PYQ bank and the NEET notes, and I can see your progress.",
         h("div", { class: "chip-row" },
           ...["What should I study next?", "Explain escape velocity", "My weak areas", "Days left for Advanced?"].map((s) => {
             const b = h("button", { class: "chip" }, s);
@@ -3777,7 +3789,7 @@ export function buildTutorChat() {
       mascotSVG(34),
       h("div", {},
         h("div", { style: "font-weight:700;font-size:14px;line-height:1.2" }, "Pip"),
-        h("div", { class: "small faint", style: "margin-top:1px" }, "offline � knows your syllabus and your progress"))),
+        h("div", { class: "small faint", style: "margin-top:1px" }, "offline — knows your syllabus and your progress"))),
     feed,
     h("div", { class: "chat-input" }, input, sendBtn));
 }
@@ -3785,30 +3797,30 @@ export function buildTutorChat() {
 export function TutorView(root) {
   root.innerHTML = "";
   root.append(page("Ask Pip",
-    "A retrieval tutor wired into this exact syllabus � no internet needed, nothing leaves your device.",
+    "A retrieval tutor wired into this exact syllabus — no internet needed, nothing leaves your device.",
     buildTutorChat()));
 }
 
 /* ----------- VIDEO LECTURES ----------- */
 
 const CHANNELS = [
-  { key: "pw", name: "Physics Wallah � Alakh Pandey", subjects: ["P","C","M"], q: (name) => `${name} Physics Wallah Alakh Pandey JEE` },
+  { key: "pw", name: "Physics Wallah — Alakh Pandey", subjects: ["P","C","M"], q: (name) => `${name} Physics Wallah Alakh Pandey JEE` },
   { key: "unac", name: "Unacademy JEE", subjects: ["P","C","M"], q: (name) => `${name} Unacademy JEE` },
   { key: "ved", name: "Vedantu JEE", subjects: ["P","C","M"], q: (name) => `${name} Vedantu JEE` },
   { key: "allen", name: "ALLEN Career Institute", subjects: ["P","C","M"], q: (name) => `${name} Allen JEE` },
   { key: "res", name: "Resonance Kota", subjects: ["P","C","M"], q: (name) => `${name} Resonance Kota JEE` },
-  { key: "pg", name: "Physics Galaxy � Ashish Arora", subjects: ["P"], q: (name) => `${name} Physics Galaxy Ashish Arora` },
+  { key: "pg", name: "Physics Galaxy — Ashish Arora", subjects: ["P"], q: (name) => `${name} Physics Galaxy Ashish Arora` },
   { key: "rohit", name: "Rohit Mishra (Physics)", subjects: ["P"], q: (name) => `${name} Physics IIT JEE Rohit Mishra` },
   { key: "khan", name: "Khan Academy (concept)", subjects: ["P","C","M"], q: (name) => `${name} Khan Academy` },
-  { key: "apni", name: "Apni Kaksha � Aman Dhattarwal", subjects: ["P","C","M"], q: (name) => `${name} Aman Dhattarwal Apni Kaksha` },
+  { key: "apni", name: "Apni Kaksha — Aman Dhattarwal", subjects: ["P","C","M"], q: (name) => `${name} Aman Dhattarwal Apni Kaksha` },
   { key: "mohit", name: "Mohit Tyagi (Maths)", subjects: ["M"], q: (name) => `${name} Mohit Tyagi mathematics JEE` },
-  { key: "sameer", name: "Sameer Sir � Maths", subjects: ["M"], q: (name) => `${name} Sameer Chincholikar maths JEE` },
+  { key: "sameer", name: "Sameer Sir — Maths", subjects: ["M"], q: (name) => `${name} Sameer Chincholikar maths JEE` },
   { key: "vishal", name: "Vishal Tiwari (Chemistry)", subjects: ["C"], q: (name) => `${name} Chemistry Vishal Tiwari JEE` },
-  { key: "pankaj", name: "Pankaj Sir � Chemistry", subjects: ["C"], q: (name) => `${name} Pankaj Sir chemistry JEE` },
+  { key: "pankaj", name: "Pankaj Sir — Chemistry", subjects: ["C"], q: (name) => `${name} Pankaj Sir chemistry JEE` },
   { key: "oneshot", name: "One-shot Revision", subjects: ["P","C","M"], q: (name) => `${name} one shot JEE Main` },
   { key: "pyqchan", name: "PYQ Marathon", subjects: ["P","C","M"], q: (name) => `${name} previous year questions JEE` },
   { key: "ncert", name: "NCERT Line-by-Line", subjects: ["P","C","M","BIO"], q: (name) => `${name} NCERT line by line` },
-  { key: "ncertbio", name: "NCERT Biology � NEET", subjects: ["BIO"], q: (name) => `${name} NCERT biology line by line NEET` },
+  { key: "ncertbio", name: "NCERT Biology — NEET", subjects: ["BIO"], q: (name) => `${name} NCERT biology line by line NEET` },
   { key: "biov", name: "Biology at Ease / Seep Pahuja", subjects: ["BIO"], q: (name) => `${name} Seep Pahuja biology NEET` },
 ];
 
@@ -3845,9 +3857,9 @@ export function VideosView(root) {
 
     wrap.append(h("div", { class: "card", style: "margin-bottom:18px" },
       h("h3", {}, "Pin a lecture"),
-      h("p", { class: "hint", style: "margin:4px 0 10px" }, "Paste any YouTube link � it becomes a permanent embedded lesson here and on its chapter page."),
+      h("p", { class: "hint", style: "margin:4px 0 10px" }, "Paste any YouTube link — it becomes a permanent embedded lesson here and on its chapter page."),
       (() => {
-        const urlIn = h("input", { type: "text", placeholder: "https://youtube.com/watch?v=� or youtu.be/�", style: "flex:1;min-width:220px" });
+        const urlIn = h("input", { type: "text", placeholder: "https://youtube.com/watch?v=… or youtu.be/…", style: "flex:1;min-width:220px" });
         const titleIn = h("input", { type: "text", placeholder: "Title (optional)", style: "width:170px" });
         const sel = h("select", {},
           h("option", { value: "" }, "General (no chapter)"),
@@ -3874,10 +3886,10 @@ export function VideosView(root) {
 
     const mine = s.videos;
     wrap.append(
-      h("h2", { style: "margin-bottom:10px" }, `Your library${mine.length ? ` � ${mine.length}` : ""}`),
+      h("h2", { style: "margin-bottom:10px" }, `Your library${mine.length ? ` — ${mine.length}` : ""}`),
       mine.length
         ? h("div", { class: "video-grid" }, ...mine.map((v) => ytEmbed(v.ytId, v.title)))
-        : h("p", { class: "hint", style: "margin-bottom:18px" }, "Nothing pinned yet � grab a link from a search below."));
+        : h("p", { class: "hint", style: "margin-bottom:18px" }, "Nothing pinned yet — grab a link from a search below."));
 
     wrap.append(h("div", { class: "divider" }), h("h2", { style: "margin-bottom:10px" }, "Find lectures"));
     const isBio = subjF === "BIO";
@@ -3915,16 +3927,16 @@ function lecturesPane(c) {
   return h("div", { class: "notes", style: "margin-top:4px" },
     h("div", { class: "card" },
       h("h3", { style: "margin-bottom:6px" }, "Find this chapter on YouTube"),
-      h("p", { class: "hint", style: "margin-bottom:10px" }, "Pre-filled searches � pick your teacher."),
+      h("p", { class: "hint", style: "margin-bottom:10px" }, "Pre-filled searches — pick your teacher."),
       h("div", { class: "chapter-meta" }, channelButtons(c.name, [c.subject]))),
     mine.length
       ? h("div", {},
           h("h3", { style: "margin:4px 0 10px" }, "Your pinned lectures"),
           h("div", { class: "video-grid" }, ...mine.map((v) => ytEmbed(v.ytId, v.title))))
-      : h("p", { class: "hint" }, "No pinned lectures for this chapter yet � pin one from the Video lectures page or paste a link while studying."));
+      : h("p", { class: "hint" }, "No pinned lectures for this chapter yet — pin one from the Video lectures page or paste a link while studying."));
 }
 
-/* ----------- CLASS 9�10 FOUNDATION TRACK ----------- */
+/* ----------- CLASS 9–10 FOUNDATION TRACK ----------- */
 
 export function FoundationView(root) {
   const s = load();
@@ -3948,13 +3960,13 @@ export function FoundationView(root) {
     timelineOut.innerHTML = "";
     timelineOut.append(
       h("p", { style: "margin:0;font-size:19px;font-weight:750" },
-        `� ${months} month${months === 1 ? "" : "s"} to JEE-ready`),
+        `~ ${months} month${months === 1 ? "" : "s"} to JEE-ready`),
       h("p", { class: "small muted", style: "margin:4px 0 0" },
-        `${weeks} weeks at ${hrs}h/day � ready by around ${target.toLocaleDateString(undefined, { month: "long", year: "numeric" })}`),
+        `${weeks} weeks at ${hrs}h/day — ready by around ${target.toLocaleDateString(undefined, { month: "long", year: "numeric" })}`),
       h("p", { class: "hint", style: "margin-top:6px" },
         months <= (parseInt(gradeSel.value, 10) === 10 ? 12 : 22)
-          ? "Comfortably before your JEE Main window � the gates will do the rest."
-          : "Tight but possible � protect the daily hours and use the focus timer."));
+          ? "Comfortably before your JEE Main window — the gates will do the rest."
+          : "Tight but possible — protect the daily hours and use the focus timer."));
   }
   gradeSel.addEventListener("change", calcTimeline);
   hrsIn.addEventListener("input", calcTimeline);
@@ -3977,7 +3989,7 @@ export function FoundationView(root) {
         done === track.units.length && !checked
           ? h("button", { class: "btn btn-primary btn-sm claim-btn", onclick: () => runBridgeCheck(track) }, "Take the bridge check")
           : null,
-        checked ? h("span", { class: "combo-chip" }, "bridge cleared ?") : null));
+        checked ? h("span", { class: "combo-chip" }, "bridge cleared ✓") : null));
   }
 
   function unitRow(u) {
@@ -4010,7 +4022,7 @@ export function FoundationView(root) {
         if (foundationStats().done === TOTAL_UNITS && !load().foundation.celebrated) {
           const st = load(); st.foundation.celebrated = true; save();
           confettiBurst(); chime("level");
-          showModal({ icon: "?", title: "Foundation complete!", rows: [h("span", {}, "Every basic is yours. The Class 11�12 roadmap starts unlocked at Level 0 � go take it.")] , cta: "Enter the Journey" });
+          showModal({ icon: "★", title: "Foundation complete!", rows: [h("span", {}, "Every basic is yours. The Class 11–12 roadmap starts unlocked at Level 0 — go take it.")] , cta: "Enter the Journey" });
         }
         FoundationView(root);
       } }, fIsDone(u.id) ? "Mark not done" : "Mark as learnt"));
@@ -4028,7 +4040,7 @@ export function FoundationView(root) {
     let i = 0, correct = 0;
     const box = h("div");
     root.innerHTML = "";
-    root.append(page(`Bridge check � ${track.name}`, "Answer at least 3 of 4 to clear the bridge into JEE territory.", box));
+    root.append(page(`Bridge check — ${track.name}`, "Answer at least 3 of 4 to clear the bridge into JEE territory.", box));
 
     function renderQ() {
       box.innerHTML = "";
@@ -4036,7 +4048,7 @@ export function FoundationView(root) {
       const opts = h("div", { class: "stack", style: "gap:8px;margin-top:10px" },
         ...q.opts.map((o, k) => h("button", { class: "quiz-opt", onclick: () => answer(k, q.a) },
           h("span", { class: "q-key" }, "ABCD"[k]), o)));
-      box.append(h("span", { class: "quiz-best" }, `Question ${i + 1} / ${qs.length} � ${correct} correct`),
+      box.append(h("span", { class: "quiz-best" }, `Question ${i + 1} / ${qs.length} · ${correct} correct`),
         h("h2", { style: "margin-top:8px" }, q.q), opts,
         h("div", { style: "margin-top:14px" }, realNext));
       function answer(chosen, corr) {
@@ -4057,7 +4069,7 @@ export function FoundationView(root) {
       const passed = correct >= 3;
       fSetCheck(track.id, passed);
       if (passed) { confettiBurst(); chime("level"); showModal({ icon: "?", title: "Bridge cleared!", rows: [`${correct}/4 on ${track.name}. This territory is officially yours.`], cta: "Onward" }); }
-      else makeToast(`${correct}/4 � revisit the units and retake when ready.`);
+      else makeToast(`${correct}/4 — revisit the units and retake when ready.`);
       notifySync();
       FoundationView(root);
     }
@@ -4071,13 +4083,13 @@ export function FoundationView(root) {
   const planRows = remaining.map((u) => {
     cum += u.estWeeks;
     return h("div", { class: "modal-row" },
-      h("b", { class: "mono small" }, `W${cum - u.estWeeks + 1}�${cum}`),
+      h("b", { class: "mono small" }, `W${cum - u.estWeeks + 1}–${cum}`),
       h("span", { class: "small" }, u.name));
   });
 
   root.innerHTML = "";
-  root.append(page("Class 9�10 launchpad",
-    "Master these basics and the JEE roadmap stops being scary � every unit here feeds a real chapter.",
+  root.append(page("Class 9–10 launchpad",
+    "Master these basics and the JEE roadmap stops being scary — every unit here feeds a real chapter.",
     h("div", {},
       (() => {
         const s2 = load();
@@ -4087,7 +4099,7 @@ export function FoundationView(root) {
           ringSVG(pct, "progress-ring"),
           h("div", { style: "flex:1;min-width:230px" },
             h("h2", {}, `Readiness ${pct}%`),
-            h("p", { class: "muted small", style: "margin:4px 0 8px" }, `${fstats.done} of ${TOTAL_UNITS} foundation units learnt. Readiness unlocks nothing less than confidence � roadmap XP stays separate.`),
+            h("p", { class: "muted small", style: "margin:4px 0 8px" }, `${fstats.done} of ${TOTAL_UNITS} foundation units learnt. Readiness unlocks nothing less than confidence — roadmap XP stays separate.`),
             h("div", { class: "row", style: "gap:8px;flex-wrap:wrap" },
               h("a", { class: "btn btn-primary btn-sm", href: "#/roadmap" }, "Preview the Journey"),
               h("a", { class: "btn btn-sm", href: "#/tutor" }, "Ask Pip a doubt")),
@@ -4108,13 +4120,13 @@ export function FoundationView(root) {
         : h("div", { class: "card", style: "text-align:center;padding:26px" },
             mascotSVG(72, "cheer"),
             h("h2", { style: "margin-top:10px" }, "Every basic mastered."),
-            h("p", { class: "muted small", style: "margin-top:6px" }, "The Level 0 gates are already open for you � start the Journey and climb."),
+            h("p", { class: "muted small", style: "margin-top:6px" }, "The Level 0 gates are already open for you — start the Journey and climb."),
             h("a", { class: "btn btn-primary", style: "margin-top:12px", href: "#/roadmap" }, "Enter the Journey")))));
   calcTimeline();
 }
 
 /* --------------------------------------------------------------
-   FULL NOTES READER � textbook-grade chapter notes with TOC,
+   FULL NOTES READER — textbook-grade chapter notes with TOC,
    scrollspy, checkpoints, step-reveal examples, flashcards,
    search, focus mode, read-aloud and print-to-PDF.
    -------------------------------------------------------------- */
@@ -4200,7 +4212,7 @@ export function deepNotesPane(c) {
   /* toolbar */
   const pctFill = h("span", { class: "dn-pct-fill" });
   const pctLabel = h("span", { class: "dn-pct-label" }, "0%");
-  const searchIn = h("input", { class: "dn-search", type: "text", placeholder: "Search these notes�", autocomplete: "off" });
+  const searchIn = h("input", { class: "dn-search", type: "text", placeholder: "Search these notes…", autocomplete: "off" });
   const matchTag = h("span", { class: "dn-matches" });
   const focusBtn = h("button", { class: "btn btn-sm", title: "Dim everything except the section you're reading" }, "Focus");
   const listenBtn = h("button", { class: "btn btn-sm", title: "Read current section aloud" }, "Listen");
@@ -4209,14 +4221,14 @@ export function deepNotesPane(c) {
   function paintPct() {
     const p = Math.round((readSet.size / Math.max(1, secs.length)) * 100);
     pctFill.style.width = p + "%";
-    pctLabel.textContent = `${readSet.size}/${secs.length} � ${p}%`;
+    pctLabel.textContent = `${readSet.size}/${secs.length} · ${p}%`;
   }
 
   const toolbar = h("div", { class: "dn-toolbar" },
     h("div", { class: "dn-progress" }, pctFill),
     h("div", { class: "dn-tools" },
       pctLabel,
-      h("span", { class: "dn-mins", title: "Estimated reading time" }, `�${totalMin} min read`),
+      h("span", { class: "dn-mins", title: "Estimated reading time" }, `~${totalMin} min read`),
       h("button", { class: "btn btn-sm", title: "Smaller text", onclick: () => setFs(fsHolder.v - 1) }, "A-"),
       h("button", { class: "btn btn-sm", title: "Larger text", onclick: () => setFs(fsHolder.v + 1) }, "A+"),
       searchIn, matchTag,
@@ -4248,7 +4260,7 @@ export function deepNotesPane(c) {
     const head = h("header", { class: "dn-head" },
       h("h2", { class: "dn-chapter-title" }, c.name),
       h("p", { class: "dn-chapter-sub" },
-        `${SUBJECTS[c.subject].name} � ${levelName(c.level)} � full-chapter study notes � �${totalMin} min`));
+        `${SUBJECTS[c.subject].name} — ${levelName(c.level)} — full-chapter study notes — ~${totalMin} min`));
     article.append(head);
 
     secs.forEach((sec, i) => {
@@ -4279,7 +4291,7 @@ export function deepNotesPane(c) {
     const nav = h("footer", { class: "dn-prevnext" });
     if (pos > 0) {
       const p = CONCEPTS[deepIds[pos - 1]];
-      nav.append(h("a", { class: "dn-pn", href: `#/chapter/${p.id}` }, h("small", {}, "? previous"), p.name));
+      nav.append(h("a", { class: "dn-pn", href: `#/chapter/${p.id}` }, h("small", {}, "previous"), p.name));
     } else nav.append(h("span", {}));
     if (pos >= 0 && pos < deepIds.length - 1) {
       const n = CONCEPTS[deepIds[pos + 1]];
@@ -4307,12 +4319,12 @@ export function deepNotesPane(c) {
       return b;
     });
     const box = h("div", { class: "dn-cp" },
-      h("div", { class: "cp-tag" }, "? Checkpoint"),
+      h("div", { class: "cp-tag" }, "Checkpoint"),
       h("div", { class: "cp-q" }, cp.q),
       ...opts,
       chosen != null
         ? h("div", { class: `cp-exp${chosen === cp.a ? " ok" : " no"}` },
-            chosen === cp.a ? "Correct � " : "Not quite. ", cp.e)
+            chosen === cp.a ? "Correct — " : "Not quite. ", cp.e)
         : null);
     opts.forEach((b, oi) => b.addEventListener("click", () => {
       if (cpChoices[ci] != null) return;
@@ -4334,7 +4346,7 @@ export function deepNotesPane(c) {
       grid.append(cardEl);
       return cardEl;
     });
-    const shuffleBtn = h("button", { class: "btn btn-sm", style: "margin-top:8px" }, "? Shuffle cards");
+    const shuffleBtn = h("button", { class: "btn btn-sm", style: "margin-top:8px" }, "Shuffle cards");
     shuffleBtn.addEventListener("click", () => {
       const arr = [...cards];
       for (let i = arr.length - 1; i > 0; i--) {
@@ -4345,7 +4357,7 @@ export function deepNotesPane(c) {
       arr.forEach((cardEl) => { cardEl.classList.remove("flipped"); grid.append(cardEl); });
     });
     return h("section", { class: "dn-sec dn-recall" },
-      h("h3", { class: "dn-sec-title" }, h("span", {}, "Rapid recall � tap a card to flip")),
+      h("h3", { class: "dn-sec-title" }, h("span", {}, "Rapid recall — tap a card to flip")),
       grid, shuffleBtn);
   }
 
@@ -4415,7 +4427,7 @@ export function deepNotesPane(c) {
       if (q.length > 1) {
         requestAnimationFrame(() => {
           const marks = article.querySelectorAll(".dn-mark");
-          matchTag.textContent = marks.length ? `${marks.length} match${marks.length === 1 ? "" : "es"} � Enter to jump` : "no matches";
+          matchTag.textContent = marks.length ? `${marks.length} match${marks.length === 1 ? "" : "es"} — Enter to jump` : "no matches";
           if (marks.length) marks[0].scrollIntoView({ block: "center" });
           jumpState.i = 0;
         });
@@ -4483,7 +4495,7 @@ export function LibraryView(root) {
 
   const continueCard = h("div", {});
   const gridWrap = h("div", {});
-  const searchIn = h("input", { class: "lib-search", type: "text", placeholder: "Search chapters with full notes�", autocomplete: "off" });
+  const searchIn = h("input", { class: "lib-search", type: "text", placeholder: "Search chapters with full notes…", autocomplete: "off" });
   const chips = ["ALL", "P", "C", "M"].map((s) => {
     const label = s === "ALL" ? "All subjects" : SUBJECTS[s].name;
     const chip = h("button", { class: `chip lib-chip${s === subjectFilter ? " on" : ""}` }, label);
@@ -4515,7 +4527,7 @@ export function LibraryView(root) {
         h("div", { class: "lbl" }, "Continue reading"),
         h("a", { class: "lib-cont-title", href: `#/chapter/${cc.id}` }, cc.name),
         h("p", { class: "muted small", style: "margin:4px 0 0" },
-          `${SUBJECTS[cc.subject].name} � ${pr.done}/${pr.total} sections read${pr.cps ? ` � ${pr.cps} checkpoint${pr.cps === 1 ? "" : "s"} answered` : ""}`)),
+          `${SUBJECTS[cc.subject].name} — ${pr.done}/${pr.total} sections read${pr.cps ? ` — ${pr.cps} checkpoint${pr.cps === 1 ? "" : "s"} answered` : ""}`)),
       h("div", { class: "lib-cont-bar" }, h("span", { style: `width:${pr.pct}%` })),
       h("a", { class: "btn btn-primary btn-sm", href: `#/chapter/${cc.id}` }, pr.pct ? "Resume ?" : "Start ?")));
   }
@@ -4539,11 +4551,11 @@ export function LibraryView(root) {
         grid.append(h("a", { class: "lib-item", href: `#/chapter/${c.id}` },
           h("div", { class: "li-top" },
             h("strong", {}, c.name),
-            h("span", { class: "lib-mins" }, `�${mins} min`)),
+            h("span", { class: "lib-mins" }, `~${mins} min`)),
           h("div", { class: "muted small" }, levelName(c.level)),
           h("div", { class: "lib-bar" }, h("span", { style: `width:${pr.pct}%` })),
           h("div", { class: "lib-foot" },
-            pr.pct === 0 ? "not started" : pr.pct === 100 ? "? fully read" : `${pr.pct}% read`)));
+            pr.pct === 0 ? "not started" : pr.pct === 100 ? "fully read" : `${pr.pct}% read`)));
       });
       gridWrap.append(grid);
     }
@@ -4554,7 +4566,7 @@ export function LibraryView(root) {
   root.innerHTML = "";
   root.append(page(
     "Notes Library",
-    `${ids.length} full-textbook chapters � �${Math.round(totalMinSum / 6) / 10} hours of reading � progress tracked per section`,
+    `${ids.length} full-textbook chapters — ~${Math.round(totalMinSum / 6) / 10} hours of reading — progress tracked per section`,
     h("div", { class: "stack", style: "gap:18px" },
       continueCard,
       h("div", { class: "row", style: "gap:10px;flex-wrap:wrap" }, ...chips),

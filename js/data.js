@@ -252,7 +252,7 @@ add(S("P-gravitation", "Gravitation", "P", 1, ["P-kinematics"], "gravitation", 4
  { n: "Kepler III", d: "T² ∝ a³." },
  { n: "Weightlessness", d: "Free fall: normal reaction = 0." }]));
 
-add(S("P-shm", "Simple Harmonic Motion", "P", 1, ["P-wpe","M-trig"], "shm", 45,
+add(S("P-shm", "Simple Harmonic Motion", "P", 1, ["P-wpe","M-trig"], "pendulum-lab", 45,
 `SHM is the prototype of all oscillations. A restoring force proportional to displacement drives sinusoidal motion. It's the foundation of waves, sound, AC circuits and molecular vibrations.`,
 [`Restoring force F = −kx gives acceleration a = −ω²x.`,
 `Displacement x = A sin(ωt + φ); ω = √(k/m) for spring, √(g/L) for pendulum.`,
@@ -434,7 +434,7 @@ add(S("C-equil", "Chemical Equilibrium", "C", 1, ["C-thermo"], "equilibrium", 45
 [{ n: "Degree of dissociation", d: "α = moles dissociated / initial moles." },
  { n: "Extent", d: "K very large ⇒ reaction effectively complete." }]));
 
-add(S("C-ionic", "Ionic Equilibrium", "C", 1, ["C-equil"], "equilibrium", 45,
+add(S("C-ionic", "Ionic Equilibrium", "C", 1, ["C-equil"], "titration-lab", 45,
 `Equilibrium among ions in solution: acids, bases, salts and buffers. pH = −log[H⁺], weak acid/base dissociation (Ka, Kb), common-ion effect and buffer action (Henderson–Hasselbalch).`,
 [`pH 7 neutral; pH = −log₁₀[H⁺]; [H⁺][OH⁻] = 10⁻¹⁴ at 25°C.`,
 `Weak acid: Ka = [H⁺]²/c (approx, small α).`,
@@ -547,7 +547,7 @@ add(S("P-ktg", "Kinetic Theory of Gases", "P", 2, ["P-thermo","C-gas"], "gas", 4
 [{ n: "Degrees of freedom", d: "monoatomic f=3, diatomic f=5 (T not too high)." },
  { n: "Mean free path", d: "λ ∝ 1/(n·σ); inversely proportional to density." }]));
 
-add(S("P-waves", "Waves: Sound & Wave Motion", "P", 2, ["P-shm"], "waves", 45,
+add(S("P-waves", "Waves: Sound & Wave Motion", "P", 2, ["P-shm"], "standing-wave", 45,
 `Waves transfer energy without transferring matter. Transverse vs longitudinal; wave equation y = A sin(ωt − kx); superposition, interference, standing waves and resonance. Sound waves and the Doppler effect follow.`,
 [`Speed of wave v = fλ; on string v = √(T/μ); in air v = √(γP/ρ).`,
 `Standing waves: nodes (rest) and antinodes (max amplitude).`,
@@ -610,7 +610,7 @@ add(S("M-limits", "Limits & Continuity", "M", 2, ["M-sets","M-quad","M-trig"], "
 [{ n: "Squeeze theorem", d: "g(x) ≤ f(x) ≤ h(x) with equal limits forces f's limit." },
  { n: "Indeterminate forms", d: "0/0, ∞/∞, 0·∞, ∞−∞, 1^∞, 0⁰, ∞⁰." }]));
 
-add(S("M-diff", "Differentiation & Its Applications", "M", 2, ["M-limits"], "functions", 50,
+add(S("M-diff", "Differentiation & Its Applications", "M", 2, ["M-limits"], "secant-tangent", 50,
 `The derivative is the instantaneous rate of change — the slope of the tangent. Rules (product, quotient, chain), higher derivatives, and applications: tangents/normals, maxima-minima, monotonicity and rates.`,
 [`d/dx xⁿ = nxⁿ⁻¹; d/dx sinx = cosx; d/dx eˣ = eˣ; d/dx lnx = 1/x.`,
 `Chain rule: dy/dx = dy/du · du/dx.`,
@@ -732,7 +732,7 @@ add(S("C-surface", "Surface Chemistry", "C", 2, ["C-equil"], "particles", 30,
 
 
 /* Physics */
-add(S("P-electro", "Electrostatics & Capacitance", "P", 3, ["P-units","M-vectors","C-atomic"], "electrostatics", 55,
+add(S("P-electro", "Electrostatics & Capacitance", "P", 3, ["P-units","M-vectors","C-atomic"], "field-dipole", 55,
 `Electric charges, fields and potentials. Coulomb's law, Gauss's law, potential energy, capacitors and dielectrics. Electrostatics is the conceptual core of all of electricity and magnetism.`,
 [`Coulomb: F = kq₁q₂/r², k = 1/4πε₀ = 9×10⁹ Nm²/C².`,
 `Field E = F/q; potential V = kq/r; E = −dV/dr.`,
@@ -822,7 +822,7 @@ add(S("P-rayoptics", "Ray Optics", "P", 3, ["f-geometry","M-trig"], "optics", 45
 [{ n: "TIR", d: "Fiber optics, mirage, diamond brilliance." },
  { n: "Prism", d: "δ = i₁ + i₂ − A; minimum deviation at symmetric pass." }]));
 
-add(S("P-waveoptics", "Wave Optics", "P", 3, ["P-rayoptics","P-waves"], "waves", 45,
+add(S("P-waveoptics", "Wave Optics", "P", 3, ["P-rayoptics","P-waves"], "double-slit", 45,
 `Light as waves: Huygens' principle, interference (Young's double slit), diffraction, and polarisation. Wave nature explains effects rays cannot.`,
 [`YDSE: fringe width β = λD/d.`,
 `Path difference = nλ constructive, (n+½)λ destructive.`,

@@ -333,8 +333,8 @@ function openPalette() {
   if (paletteOpen) return;
   paletteOpen = true;
   const overlay = hEl("div", { class: "palette-overlay" });
-  const input = hEl("input", { type: "text", placeholder: "Search pages and chapters…  (🎤 voice)", autocomplete: "off" });
-  const micBtn = hEl("button", { class: "btn btn-sm", title: "Voice search", style:"position:absolute;right:10px;top:9px" }, "🎤");
+  const input = hEl("input", { type: "text", placeholder: "Search pages and chapters…  (◉ voice)", autocomplete: "off" });
+  const micBtn = hEl("button", { class: "btn btn-sm", title: "Voice search", style:"position:absolute;right:10px;top:9px" }, "◉");
   const inputWrap = hEl("div", { style:"position:relative;display:flex;align-items:center" }, input, micBtn);
   input.style.flex="1"; input.style.paddingRight="42px";
   const hasSpeech = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
@@ -345,15 +345,15 @@ function openPalette() {
     const rec=new SR(); rec.lang="en-IN"; rec.interimResults=false; rec.maxAlternatives=1;
     micBtn.textContent="●"; micBtn.disabled=true;
     rec.onresult=e=>{ const t=e.results[0][0].transcript; input.value=t; sel=0; renderItems(t); input.focus(); };
-    rec.onerror=()=>{ micBtn.textContent="🎤"; micBtn.disabled=false; };
-    rec.onend=()=>{ micBtn.textContent="🎤"; micBtn.disabled=false; };
+    rec.onerror=()=>{ micBtn.textContent="◉"; micBtn.disabled=false; };
+    rec.onend=()=>{ micBtn.textContent="◉"; micBtn.disabled=false; };
     rec.start();
   });
   const list = hEl("div", { class: "palette-list" });
   const box = hEl("div", { class: "palette" });
   box.append(inputWrap, list,
     hEl("div", { class: "palette-foot" },
-      hEl("span", {}, "↑↓ navigate · Enter open · Esc close · 🎤 voice"),
+      hEl("span", {}, "↑↓ navigate · Enter open · Esc close · ◉ voice"),
       hEl("span", {}, "? for all shortcuts")));
   overlay.append(box);
   document.body.append(overlay);

@@ -1,5 +1,5 @@
 /* TeachMeJEE — Simulation Factory: 100M parametric variations.
-   Covers all 59 registered sims. Each sim is parameterised; Cartesian product yields variants.
+   Covers all 65 registered sims. Each sim is parameterised; Cartesian product yields variants.
    Virtual count 100,000,007 — generate any variant on demand, zero RAM. */
 
 const BASE_SIMS = [
@@ -62,6 +62,12 @@ const BASE_SIMS = [
   {name:"bio-photo", params:{light:[0,10,1]}},
   {name:"bio-heart", params:{rate:[40,120,5]}},
   {name:"bio-synth", params:{temp:[20,40,2]}},
+  {name:"pendulum-lab", params:{len:[0.6,2,0.1], ang:[5,60,5]}},
+  {name:"standing-wave", params:{mode:[1,5,1], amp:[0.2,1.4,0.1]}},
+  {name:"field-dipole", params:{sep:[0.6,3,0.1], q:[1,5,0.5]}},
+  {name:"double-slit", params:{sep:[0.4,2.4,0.1], lam:[400,700,10]}},
+  {name:"titration-lab", params:{pka:[3,9,0.1], conc:[0.02,0.2,0.01]}},
+  {name:"secant-tangent", params:{a:[-2,2,0.1], h:[0.02,2,0.02]}},
 ];
 
 function paramCount(p){ const [min,max,step]=p; return Math.floor((max-min)/step)+1; }

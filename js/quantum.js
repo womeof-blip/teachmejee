@@ -50,7 +50,7 @@ export function temporalOpacity(id){
 const MENTOR_LINES={
   hint:["Remember the trap: check the normal component first.","Draw it. Vectors love pictures.","What would happen if that parameter went to zero?","Recall the bridge concept: "],
   cheer:["That's the spirit — one more rep and this sticks.","Clean logic. Keep the streak warm.","You’re carving a pathway."],
-  trap:["⚠️ Trap ahead:","Heads up — common pitfall:"]
+  trap:["▲ Trap ahead:","Heads up — common pitfall:"]
 };
 export function mentorHint(conceptId, kind="hint"){
   const c=CONCEPTS[conceptId]; const pool=MENTOR_LINES[kind]||MENTOR_LINES.hint;
