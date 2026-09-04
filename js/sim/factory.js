@@ -1,5 +1,5 @@
 /* TeachMeJEE — Simulation Factory: 100M parametric variations.
-   Covers all 65 registered sims. Each sim is parameterised; Cartesian product yields variants.
+   Covers all 75 registered sims. Each sim is parameterised; Cartesian product yields variants.
    Virtual count 100,000,007 — generate any variant on demand, zero RAM. */
 
 const BASE_SIMS = [
@@ -68,6 +68,16 @@ const BASE_SIMS = [
   {name:"double-slit", params:{sep:[0.4,2.4,0.1], lam:[400,700,10]}},
   {name:"titration-lab", params:{pka:[3,9,0.1], conc:[0.02,0.2,0.01]}},
   {name:"secant-tangent", params:{a:[-2,2,0.1], h:[0.02,2,0.02]}},
+  {name:"stereo-lab", params:{flip:[0,1,1], spin:[0,2,0.1]}},
+  {name:"kinetics-lab", params:{order:[0,2,1], k:[0.2,2,0.1]}},
+  {name:"transistor-lab", params:{ib:[10,50,5]}},
+  {name:"cyclotron-lab", params:{B:[0.5,2,0.1], v:[1,3,0.2]}},
+  {name:"slope-field", params:{eq:[0,2,1], c:[-2,2,0.2]}},
+  {name:"polarizer-lab", params:{a1:[0,180,10], a2:[0,180,10]}},
+  {name:"bio-mitosis", params:{stage:[0,4,1]}},
+  {name:"bio-nephron", params:{flow:[0.3,2,0.1]}},
+  {name:"bio-lung", params:{rate:[0.2,1.6,0.1]}},
+  {name:"bio-muscle", params:{pace:[0.15,1,0.05]}},
 ];
 
 function paramCount(p){ const [min,max,step]=p; return Math.floor((max-min)/step)+1; }

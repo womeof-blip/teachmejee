@@ -429,3 +429,212 @@ register("bio-synth", ({ THREE, group }) => {
     controls: [{ key: "speed", label: "Transcription speed", type: "range", min: 0.03, max: 0.4, step: 0.01, value: spd }],
   };
 });
+
+/* Mitosis: chromosomes condense, align, split — stage by stage. */
+register("bio-mitosis", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const cell = new THREE.Mesh(
+    new THREE.SphereGeometry(2.4, 24, 24),
+    new THREE.MeshStandardMaterial({ color: "#9db8c9", transparent: true, opacity: 0.16 }));
+  g.add(cell);
+  const chromMat = new THREE.MeshStandardMaterial({ color: "#c678dd", emissive: "#c678dd", emissiveIntensity: 0.55 });
+  const arms = [];
+  for (let i = 0; i < 4; i++) {
+    const a = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.5, 4, 8), chromMat);
+    const b = new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.5, 4, 8), chromMat);
+    g.add(a, b);
+    arms.push([a, b]);
+  }
+  const spindleMat = new THREE.LineBasicMaterial({ color: "#8a7c68", transparent: true, opacity: 0.5 });
+  const spindleGeo = new THREE.BufferGeometry().setFromPoints(
+    [new THREE.Vector3(0, -2.2, 0), new THREE.Vector3(0, 2.2, 0)]);
+  const spindle = new THREE.Line(spindleGeo, spindleMat);
+  g.add(spindle);
+  let stage = 2, play = true, t = 0;
+  const STAGENAMES = ["Interphase", "Prophase", "Metaphase", "Anaphase", "Telophase"];
+  function layout() {
+    const s = stage;
+    arms.forEach(([a, b], i) => {
+      const off = (i - 1.5) * 0.55;
+      let spread, yy;
+      if (s <= 1) { spread = 0.12; yy = Math.sin(i * 1.7) * 0.9; }
+      else if (s === 2) { spread = 0.12; yy = off; }
+      else if (s === 3) { spread = 0.55; yy = off; }
+      else { spread = 1.05; yy = off * 0.7; }
+      a.position.set(-spread, yy, 0);
+      b.position.set(spread, yy, 0);
+      a.rotation.z = 0.5; b.rotation.z = -0.5;
+      const vis = s >= 1;
+      a.visible = b.visible = vis;
+      const sc = s === 0 ? 0.4 : 1;
+      a.scale.set(sc, sc, sc); b.scale.set(sc, sc, sc);
+    });
+    spindle.visible = s >= 1 && s <= 3;
+  }
+  layout();
+  return {
+    tick(_t, dt) {
+      if (play) {
+        t += dt;
+        if (t > 2.2) { t = 0; stage = (stage + 1) % 5; layout(); }
+      }
+    },
+    set(key, v) {
+      if (key === "stage") { stage = Math.round(v); play = false; layout(); }
+      if (key === "play") { play = !play; if (play) t = 0; }
+    },
+    controls: [
+      { key: "stage", label: "Stage (0–4)", type: "range", min: 0, max: 4, step: 1, value: stage },
+      { key: "play", label: "Auto-play cycle", type: "button" },
+    ],
+  };
+});
+
+/* Nephron: filtrate flows the tubule, ADH decides how much water stays. */
+register("bio-nephron", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const path = [
+    new THREE.Vector3(-2.6, 1.6, 0), new THREE.Vector3(-1.2, 1.6, 0),
+    new THREE.Vector3(-0.6, 0.4, 0), new THREE.Vector3(-0.6, -1.4, 0),
+    new THREE.Vector3(0.6, -1.4, 0), new THREE.Vector3(0.6, 0.2, 0),
+    new THREE.Vector3(1.4, 1.0, 0), new THREE.Vector3(2.6, 1.0, 0),
+  ];
+  const curve = new THREE.CatmullRomCurve3(path);
+  const tube = new THREE.Mesh(
+    new THREE.TubeGeometry(curve, 60, 0.16, 10, false),
+    new THREE.MeshStandardMaterial({ color: "#e8b4b8", transparent: true, opacity: 0.5 }));
+  g.add(tube);
+  const cup = new THREE.Mesh(
+    new THREE.SphereGeometry(0.42, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.6),
+    new THREE.MeshStandardMaterial({ color: "#c678dd", transparent: true, opacity: 0.6, side: THREE.DoubleSide }));
+  cup.position.set(-2.6, 1.6, 0);
+  cup.rotation.x = Math.PI;
+  g.add(cup);
+  const dotGeo = new THREE.SphereGeometry(0.06, 8, 8);
+  const dotMat = new THREE.MeshStandardMaterial({ color: "#7dd3fc", emissive: "#7dd3fc", emissiveIntensity: 0.9 });
+  const dots = [];
+  for (let i = 0; i < 22; i++) {
+    const d = new THREE.Mesh(dotGeo, dotMat);
+    d.userData.u = Math.random();
+    g.add(d);
+    dots.push(d);
+  }
+  const outBar = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.6, 0.2),
+    new THREE.MeshStandardMaterial({ color: "#f2a33c", emissive: "#f2a33c", emissiveIntensity: 0.5 }));
+  outBar.position.set(3.3, 0.2, 0);
+  g.add(outBar);
+  let flow = 1, adh = 1;
+  return {
+    tick(_t, dt) {
+      for (const d of dots) {
+        d.userData.u += dt * 0.12 * flow;
+        if (d.userData.u > 1) d.userData.u -= 1;
+        const p = curve.getPoint(d.userData.u);
+        d.position.copy(p);
+        d.visible = d.userData.u < 0.55 || Math.random() < 0.35 + adh * 0.3;
+      }
+      const urine = Math.max(0.06, 1 - adh * 0.75);
+      outBar.scale.y = urine;
+      outBar.position.y = 0.2 - 1.6 * (1 - urine) / 2;
+    },
+    set(key, v) {
+      if (key === "flow") flow = v;
+      if (key === "adh") adh = v ? 1 : 0;
+    },
+    controls: [
+      { key: "flow", label: "Filtration rate", type: "range", min: 0.3, max: 2, step: 0.1, value: flow },
+      { key: "adh", label: "ADH present", type: "toggle", value: true },
+    ],
+  };
+});
+
+/* Lung: bronchial tree inflates alveoli on a breathing cycle. */
+register("bio-lung", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const tubeMat = new THREE.MeshStandardMaterial({ color: "#e8b4b8", transparent: true, opacity: 0.8 });
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.26, 1.6, 12), tubeMat);
+  trunk.position.set(0, 1.6, 0);
+  g.add(trunk);
+  const sacs = [];
+  const sacMat = new THREE.MeshStandardMaterial({ color: "#f2a33c", emissive: "#f2a33c", emissiveIntensity: 0.35, transparent: true, opacity: 0.85 });
+  const branches = [[-1, 0.4], [1, 0.4], [-1.7, -0.7], [1.7, -0.7], [-0.9, -1.5], [0.9, -1.5]];
+  for (const [bx, by] of branches) {
+    const br = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.11, 1.1, 8), tubeMat);
+    br.position.set(bx * 0.5, by + 0.5, 0);
+    br.rotation.z = bx > 0 ? -0.5 : 0.5;
+    g.add(br);
+    for (let k = 0; k < 4; k++) {
+      const s = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), sacMat.clone());
+      s.position.set(bx + (k - 1.5) * 0.28, by - 0.35, (k % 2) * 0.2);
+      g.add(s);
+      sacs.push(s);
+    }
+  }
+  let rate = 0.5, t = 0;
+  return {
+    tick(_t, dt) {
+      t += dt * rate * 2;
+      const infl = 0.75 + 0.45 * Math.sin(t * 2);
+      for (const s of sacs) s.scale.set(infl, infl, infl);
+      trunk.scale.x = trunk.scale.z = 0.9 + 0.15 * Math.sin(t * 2);
+    },
+    set(key, v) { if (key === "rate") rate = v; },
+    controls: [
+      { key: "rate", label: "Breathing rate", type: "range", min: 0.2, max: 1.6, step: 0.1, value: rate },
+    ],
+  };
+});
+
+/* Muscle: sarcomere sliding filaments — Z-discs close on contraction. */
+register("bio-muscle", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const zMat = new THREE.MeshStandardMaterial({ color: "#f5eddc" });
+  const zL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 1.8, 0.3), zMat);
+  const zR = zL.clone();
+  g.add(zL, zR);
+  const thickMat = new THREE.MeshStandardMaterial({ color: "#60a5fa", emissive: "#60a5fa", emissiveIntensity: 0.4 });
+  const thins = [];
+  const thinMat = new THREE.MeshStandardMaterial({ color: "#f87171", emissive: "#f87171", emissiveIntensity: 0.4 });
+  const thick = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 1.7, 10), thickMat);
+  thick.rotation.z = Math.PI / 2;
+  g.add(thick);
+  for (let i = 0; i < 6; i++) {
+    const side = i < 3 ? -1 : 1;
+    const f = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.3, 8), thinMat);
+    f.rotation.z = Math.PI / 2;
+    f.position.y = -0.6 + (i % 3) * 0.6;
+    g.add(f);
+    thins.push({ m: f, side });
+  }
+  let contract = 0.4, dir = 1, auto = true;
+  function layout() {
+    const half = 1.9 - contract * 0.75;
+    zL.position.x = -half; zR.position.x = half;
+    for (const th of thins) {
+      th.m.position.x = th.side * (half - 0.45 - contract * 0.25);
+    }
+    thick.material.emissiveIntensity = 0.25 + contract * 0.5;
+  }
+  layout();
+  return {
+    tick(_t, dt) {
+      if (!auto) return;
+      contract += dir * dt * 0.5;
+      if (contract > 1) { contract = 1; dir = -1; }
+      if (contract < 0.15) { contract = 0.15; dir = 1; }
+      layout();
+    },
+    set(key, v) {
+      if (key === "pace") { contract = Math.max(0.15, Math.min(1, v)); auto = false; layout(); }
+      if (key === "auto") { auto = !auto; }
+    },
+    controls: [
+      { key: "pace", label: "Contraction level", type: "range", min: 0.15, max: 1, step: 0.05, value: contract },
+      { key: "auto", label: "Auto cycle", type: "button" },
+    ],
+  };
+});
