@@ -1823,7 +1823,7 @@ export function AtlasView(root){
           h("span",{class:"qb-badge"},"1000× STAND-OUT"))),
       h("div",{class:"card", style:"border-color:gold;background:color-mix(in srgb,gold 9%, var(--surface));"},
         h("h3",{}, "100,000,000 Generative Variants — Sim Factory"),
-        h("p",{class:"small muted"}, `Real ${stats.real.toLocaleString()} + Virtual ${stats.virtual.toLocaleString()} = ${stats.total.toLocaleString()} total. Each variant is a parametric sim/playground combo — generated on demand, zero RAM. Factory: 75 bases · 1000s of combos.`),
+        h("p",{class:"small muted"}, `Real ${stats.real.toLocaleString()} + Virtual ${stats.virtual.toLocaleString()} = ${stats.total.toLocaleString()} total. Each variant is a parametric sim/playground combo — generated on demand, zero RAM. Factory: 87 bases · 1000s of combos.`),
         h("div",{class:"row", style:"gap:8px;margin-top:8px"}, h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const g=h("div",{class:"labs-grid2"}); for(let i=0;i<12;i++){ const f=virtualFeatureAt(FEATURE_COUNT + Math.floor(Math.random()*VIRTUAL_FEATURE_COUNT)); g.append(h("a",{class:"card lab-card", href:f.route, style:"text-decoration:none;color:inherit"}, h("div",{style:"font-weight:700;font-size:13px"}, `${f.icon} ${f.name}`), h("div",{class:"small muted", style:"margin-top:4px"}, f.blurb), h("span",{class:"small faint"}, f.route))); } virtBox.innerHTML=""; virtBox.append(g); }}, "Generate 12 random variants →"), h("span",{class:"small faint"}, "100M via factory — try it")),
         virtBox),
       h("div",{class:"row", style:"gap:8px"}, search),
@@ -1833,33 +1833,48 @@ export function AtlasView(root){
 }
 
 export function MoleculeView(root){
-  const CPK={H:"#f5eddc",C:"#52525b",N:"#60a5fa",O:"#ef4444",Cl:"#4ade80",F:"#bef264",B:"#f472b6",P:"#fb923c",S:"#eab308"};
-  const RAD={H:14,C:18,N:20,O:22,F:20,Cl:26,B:20,P:24,S:24};
+  const CPK={H:"#f5eddc",C:"#52525b",N:"#60a5fa",O:"#ef4444",Cl:"#4ade80",F:"#bef264",B:"#f472b6",P:"#fb923c",S:"#eab308",Xe:"#c084fc"};
+  const RAD={H:14,C:18,N:20,O:22,F:20,Cl:26,B:20,P:24,S:24,Xe:32};
   function at(e,x,y,z){ return {e,x,y,z,c:CPK[e]||"#ccc"}; }
   const MOL={
-    "H2":{name:"Hydrogen",shape:"Linear",angle:"—",atoms:[at("H",-0.37,0,0),at("H",0.37,0,0)],bonds:[[0,1]]},
-    "O2":{name:"Oxygen",shape:"Linear (double bond)",angle:"—",atoms:[at("O",-0.6,0,0),at("O",0.6,0,0)],bonds:[[0,1]]},
-    "N2":{name:"Nitrogen",shape:"Linear (triple bond)",angle:"—",atoms:[at("N",-0.55,0,0),at("N",0.55,0,0)],bonds:[[0,1]]},
-    "Cl2":{name:"Chlorine",shape:"Linear",angle:"—",atoms:[at("Cl",-0.95,0,0),at("Cl",0.95,0,0)],bonds:[[0,1]]},
-    "HCl":{name:"Hydrogen chloride",shape:"Linear polar",angle:"—",atoms:[at("H",-0.64,0,0),at("Cl",0.64,0,0)],bonds:[[0,1]]},
-    "CO2":{name:"Carbon dioxide",shape:"Linear",angle:"180°",atoms:[at("O",-1.16,0,0),at("C",0,0,0),at("O",1.16,0,0)],bonds:[[0,1],[1,2]]},
-    "C2H2":{name:"Acetylene",shape:"Linear",angle:"180°",atoms:[at("H",-1.66,0,0),at("C",-0.6,0,0),at("C",0.6,0,0),at("H",1.66,0,0)],bonds:[[0,1],[1,2],[2,3]]},
-    "BF3":{name:"Boron trifluoride",shape:"Trigonal planar",angle:"120°",atoms:[at("B",0,0,0),at("F",1.3,0,0),at("F",-0.65,1.13,0),at("F",-0.65,-1.13,0)],bonds:[[0,1],[0,2],[0,3]]},
-    "SO2":{name:"Sulphur dioxide",shape:"Bent",angle:"≈119°",atoms:[at("S",0,-0.3,0),at("O",-1.23,0.43,0),at("O",1.23,0.43,0)],bonds:[[0,1],[0,2]]},
-    "H2O":{name:"Water",shape:"Bent",angle:"104.5°",atoms:[at("O",0,0,0),at("H",0.76,0.58,0),at("H",-0.76,0.58,0)],bonds:[[0,1],[0,2]]},
-    "NH3":{name:"Ammonia",shape:"Trigonal pyramidal",angle:"107°",atoms:[at("N",0,0,0),at("H",0.9,0.6,0),at("H",-0.45,0.6,0.78),at("H",-0.45,0.6,-0.78)],bonds:[[0,1],[0,2],[0,3]]},
-    "CH4":{name:"Methane",shape:"Tetrahedral",angle:"109.5°",atoms:[at("C",0,0,0),at("H",0.9,0.9,0),at("H",-0.9,0.9,0),at("H",0,-0.9,0.9),at("H",0,-0.9,-0.9)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
-    "C2H4":{name:"Ethene",shape:"Trigonal planar",angle:"120°",atoms:[at("C",-0.67,0,0),at("C",0.67,0,0),at("H",-1.22,0.95,0),at("H",-1.22,-0.95,0),at("H",1.22,0.95,0),at("H",1.22,-0.95,0)],bonds:[[0,1],[0,2],[0,3],[1,4],[1,5]]},
-    "PCl5":{name:"Phosphorus pentachloride",shape:"Trigonal bipyramidal",angle:"90° / 120°",atoms:[at("P",0,0,0),at("Cl",0,1.6,0),at("Cl",0,-1.6,0),at("Cl",1.4,0,0),at("Cl",-0.7,0,1.21),at("Cl",-0.7,0,-1.21)],bonds:[[0,1],[0,2],[0,3],[0,4],[0,5]]},
-    "SF6":{name:"Sulphur hexafluoride",shape:"Octahedral",angle:"90°",atoms:[at("S",0,0,0),at("F",1.5,0,0),at("F",-1.5,0,0),at("F",0,1.5,0),at("F",0,-1.5,0),at("F",0,0,1.5),at("F",0,0,-1.5)],bonds:[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6]]},
-    "C6H6":{name:"Benzene",shape:"Planar hexagon",angle:"120°",atoms:[at("C",1,0,0),at("C",0.5,0.86,0),at("C",-0.5,0.86,0),at("C",-1,0,0),at("C",-0.5,-0.86,0),at("C",0.5,-0.86,0)],bonds:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]},
+    "H2":{name:"Hydrogen",shape:"Linear",angle:"—",grp:"Linear",atoms:[at("H",-0.37,0,0),at("H",0.37,0,0)],bonds:[[0,1]]},
+    "O2":{name:"Oxygen",shape:"Linear (double bond)",angle:"—",grp:"Linear",atoms:[at("O",-0.6,0,0),at("O",0.6,0,0)],bonds:[[0,1]]},
+    "N2":{name:"Nitrogen",shape:"Linear (triple bond)",angle:"—",grp:"Linear",atoms:[at("N",-0.55,0,0),at("N",0.55,0,0)],bonds:[[0,1]]},
+    "Cl2":{name:"Chlorine",shape:"Linear",angle:"—",grp:"Linear",atoms:[at("Cl",-0.95,0,0),at("Cl",0.95,0,0)],bonds:[[0,1]]},
+    "HCl":{name:"Hydrogen chloride",shape:"Linear polar",angle:"—",grp:"Linear",atoms:[at("H",-0.64,0,0),at("Cl",0.64,0,0)],bonds:[[0,1]]},
+    "CO":{name:"Carbon monoxide",shape:"Linear (triple bond)",angle:"—",grp:"Linear",atoms:[at("C",-0.55,0,0),at("O",0.55,0,0)],bonds:[[0,1]]},
+    "NO":{name:"Nitric oxide",shape:"Linear (odd-electron)",angle:"—",grp:"Linear",atoms:[at("N",-0.5,0,0),at("O",0.5,0,0)],bonds:[[0,1]]},
+    "HCN":{name:"Hydrogen cyanide",shape:"Linear",angle:"180°",grp:"Linear",atoms:[at("H",-1.15,0,0),at("C",-0.55,0,0),at("N",0.62,0,0)],bonds:[[0,1],[1,2]]},
+    "CO2":{name:"Carbon dioxide",shape:"Linear",angle:"180°",grp:"Linear",atoms:[at("O",-1.16,0,0),at("C",0,0,0),at("O",1.16,0,0)],bonds:[[0,1],[1,2]]},
+    "C2H2":{name:"Acetylene",shape:"Linear",angle:"180°",grp:"Linear",atoms:[at("H",-1.66,0,0),at("C",-0.6,0,0),at("C",0.6,0,0),at("H",1.66,0,0)],bonds:[[0,1],[1,2],[2,3]]},
+    "SO2":{name:"Sulphur dioxide",shape:"Bent",angle:"≈119°",grp:"Bent",atoms:[at("S",0,-0.3,0),at("O",-1.23,0.43,0),at("O",1.23,0.43,0)],bonds:[[0,1],[0,2]]},
+    "H2O":{name:"Water",shape:"Bent",angle:"104.5°",grp:"Bent",atoms:[at("O",0,0,0),at("H",0.76,0.58,0),at("H",-0.76,0.58,0)],bonds:[[0,1],[0,2]]},
+    "H2S":{name:"Hydrogen sulphide",shape:"Bent",angle:"92°",grp:"Bent",atoms:[at("S",0,-0.4,0),at("H",0.7,0.45,0),at("H",-0.7,0.45,0)],bonds:[[0,1],[0,2]]},
+    "NO2":{name:"Nitrogen dioxide",shape:"Bent",angle:"≈134°",grp:"Bent",atoms:[at("N",0,-0.35,0),at("O",0.85,0.45,0),at("O",-0.85,0.45,0)],bonds:[[0,1],[0,2]]},
+    "O3":{name:"Ozone",shape:"Bent",angle:"≈117°",grp:"Bent",atoms:[at("O",0,0,0),at("O",-0.62,-0.5,0),at("O",0.62,-0.5,0)],bonds:[[0,1],[0,2]]},
+    "BF3":{name:"Boron trifluoride",shape:"Trigonal planar",angle:"120°",grp:"Planar",atoms:[at("B",0,0,0),at("F",1.3,0,0),at("F",-0.65,1.13,0),at("F",-0.65,-1.13,0)],bonds:[[0,1],[0,2],[0,3]]},
+    "C2H4":{name:"Ethene",shape:"Trigonal planar",angle:"120°",grp:"Planar",atoms:[at("C",-0.67,0,0),at("C",0.67,0,0),at("H",-1.22,0.95,0),at("H",-1.22,-0.95,0),at("H",1.22,0.95,0),at("H",1.22,-0.95,0)],bonds:[[0,1],[0,2],[0,3],[1,4],[1,5]]},
+    "C6H6":{name:"Benzene",shape:"Planar hexagon",angle:"120°",grp:"Planar",atoms:[at("C",1,0,0),at("C",0.5,0.86,0),at("C",-0.5,0.86,0),at("C",-1,0,0),at("C",-0.5,-0.86,0),at("C",0.5,-0.86,0)],bonds:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]},
+    "NH3":{name:"Ammonia",shape:"Trigonal pyramidal",angle:"107°",grp:"Pyramidal",atoms:[at("N",0,0,0),at("H",0.9,0.6,0),at("H",-0.45,0.6,0.78),at("H",-0.45,0.6,-0.78)],bonds:[[0,1],[0,2],[0,3]]},
+    "PH3":{name:"Phosphine",shape:"Trigonal pyramidal",angle:"93.5°",grp:"Pyramidal",atoms:[at("P",0,0,0),at("H",0.62,0.45,0),at("H",-0.31,0.45,0.62),at("H",-0.31,0.45,-0.62)],bonds:[[0,1],[0,2],[0,3]]},
+    "CH4":{name:"Methane",shape:"Tetrahedral",angle:"109.5°",grp:"Tetrahedral",atoms:[at("C",0,0,0),at("H",0.9,0.9,0),at("H",-0.9,0.9,0),at("H",0,-0.9,0.9),at("H",0,-0.9,-0.9)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "CH3Cl":{name:"Chloromethane",shape:"Tetrahedral",angle:"109.5°",grp:"Tetrahedral",atoms:[at("C",0,0,0),at("H",0.85,0.85,-0.15),at("H",-0.8,0.85,0.25),at("H",0.05,-0.9,-0.15),at("Cl",0,0,1.35)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "CCl4":{name:"Carbon tetrachloride",shape:"Tetrahedral",angle:"109.5°",grp:"Tetrahedral",atoms:[at("C",0,0,0),at("Cl",0.9,0.9,0.9),at("Cl",0.9,-0.9,-0.9),at("Cl",-0.9,0.9,-0.9),at("Cl",-0.9,-0.9,0.9)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "CH3OH":{name:"Methanol",shape:"Tetrahedral (C−O−H ≈105°)",angle:"≈109.5°",grp:"Tetrahedral",atoms:[at("C",0.4,0.12,0),at("O",-0.72,-0.14,0),at("H",1.05,0.68,0.15),at("H",0.75,-0.72,0.25),at("H",0.72,0.45,-0.82),at("H",-1.35,0.28,0.1)],bonds:[[0,1],[0,2],[0,3],[0,4],[1,5]]},
+    "PCl5":{name:"Phosphorus pentachloride",shape:"Trigonal bipyramidal",angle:"90° / 120°",grp:"Special",atoms:[at("P",0,0,0),at("Cl",0,1.6,0),at("Cl",0,-1.6,0),at("Cl",1.4,0,0),at("Cl",-0.7,0,1.21),at("Cl",-0.7,0,-1.21)],bonds:[[0,1],[0,2],[0,3],[0,4],[0,5]]},
+    "SF6":{name:"Sulphur hexafluoride",shape:"Octahedral",angle:"90°",grp:"Special",atoms:[at("S",0,0,0),at("F",1.5,0,0),at("F",-1.5,0,0),at("F",0,1.5,0),at("F",0,-1.5,0),at("F",0,0,1.5),at("F",0,0,-1.5)],bonds:[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6]]},
+    "ClF3":{name:"Chlorine trifluoride",shape:"T-shaped",angle:"90° / 180°",grp:"Special",atoms:[at("Cl",0,0,0),at("F",0,1.4,0),at("F",1.15,0,0),at("F",-1.15,0,0)],bonds:[[0,1],[0,2],[0,3]]},
+    "XeF4":{name:"Xenon tetrafluoride",shape:"Square planar",angle:"90°",grp:"Special",atoms:[at("Xe",0,0,0),at("F",1.35,0,0),at("F",-1.35,0,0),at("F",0,0,1.35),at("F",0,0,-1.35)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
   };
   const MOL_KEYS=Object.keys(MOL);
-  let sel="H2O"; let memMode=false; let memIdx=0, memFlipped=false, memScore=0, memDone=0;
+  const GRPS={"All":MOL_KEYS.slice(),"Linear":MOL_KEYS.filter(k=>MOL[k].grp==="Linear"),"Bent":MOL_KEYS.filter(k=>MOL[k].grp==="Bent"),"Planar":MOL_KEYS.filter(k=>MOL[k].grp==="Planar"),"Pyramidal":MOL_KEYS.filter(k=>MOL[k].grp==="Pyramidal"),"Tetrahedral":MOL_KEYS.filter(k=>MOL[k].grp==="Tetrahedral"),"Special":MOL_KEYS.filter(k=>MOL[k].grp==="Special")};
+  const GRP_ORDER=["All","Linear","Bent","Planar","Pyramidal","Tetrahedral","Special"];
+  let sel="H2O"; let memMode=false; let memGrp="All"; let memIdx=0, memFlipped=false, memScore=0, memDone=0;
   const canvas=h("canvas",{width:520, height:320, style:"width:100%;height:320px;background:radial-gradient(ellipse at 50% 30%, #1e293b 0%, #0d0f14 70%);border-radius:12px;border:1px solid var(--border);display:block"}); const ctx=canvas.getContext("2d");
   let rot=0; let raf=0; function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    const mol=MOL[sel]; const cx=canvas.width/2, cy=canvas.height/2, s=70;
+    const mol=MOL[sel]; const cx=canvas.width/2, cy=canvas.height/2, s=58;
+    const depth=mol.atoms.map(a=> a.z*Math.sin(rot)+a.x*Math.cos(rot));
     ctx.strokeStyle="rgba(245,237,220,0.7)"; ctx.lineWidth=3;
     mol.bonds.forEach(([a,b])=>{
       const A=mol.atoms[a], B=mol.atoms[b];
@@ -1867,28 +1882,33 @@ export function MoleculeView(root){
       const bx=cx + (B.x*Math.cos(rot)-B.z*Math.sin(rot))*s, by=cy + B.y*s;
       ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
     });
-    mol.atoms.forEach(at=>{
-      const x=cx + (at.x*Math.cos(rot)-at.z*Math.sin(rot))*s, y=cy + at.y*s;
-      const r=RAD[at.e]||18;
-      ctx.fillStyle=at.c; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle="#111"; ctx.font="700 11px sans-serif"; ctx.textAlign="center"; ctx.fillText(at.e, x, y+4);
+    const drawOrder=mol.atoms.map((_,i)=>i).sort((aa,bb)=>depth[aa]-depth[bb]);
+    drawOrder.forEach(i=>{
+      const ati=mol.atoms[i];
+      const x=cx + (ati.x*Math.cos(rot)-ati.z*Math.sin(rot))*s, y=cy + ati.y*s;
+      const r=Math.max(4, (RAD[ati.e]||18) * (0.5 + 0.5 * Math.max(-1, Math.min(1, depth[i]/2.2))));
+      ctx.fillStyle=ati.c; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#111"; ctx.font="700 11px sans-serif"; ctx.textAlign="center"; ctx.fillText(ati.e, x, y+4);
     });
     rot+=0.008; raf=requestAnimationFrame(draw);
   }
   draw();
-  const selEl=h("select",{style:"min-width:140px"}, ...MOL_KEYS.map(k=> h("option",{value:k, selected:k===sel}, `${k} — ${MOL[k].name}`)));
+  const selEl=h("select",{style:"min-width:150px"}, ...MOL_KEYS.map(k=> h("option",{value:k, selected:k===sel}, `${k} — ${MOL[k].name}`)));
   selEl.addEventListener("change",()=>{ sel=selEl.value; paintMeta(); });
   const meta=h("div",{class:"small muted", style:"margin-top:8px"});
   function paintMeta(){
     const m=MOL[sel];
-    meta.textContent=`${m.name} · ${m.shape} · bond angle ${m.angle} · ${m.atoms.length} atoms`;
+    meta.textContent=`${m.name} · ${m.shape} · bond angle ${m.angle} · ${m.atoms.length} atoms · group ${m.grp}`;
   }
   paintMeta();
-  const info=h("div",{class:"small muted", style:"margin-top:8px"}, "Drag-free 3D-ish projection · auto-rotating · pick a molecule");
+  const info=h("div",{class:"small muted", style:"margin-top:8px"}, "Auto-rotating projection · pick a molecule · Memorize drills by shape group");
   const memBox=h("div",{style:"margin-top:6px"});
   let memOrder=[];
-  function memShuffle(){ memOrder=shuffle(MOL_KEYS.slice()); memIdx=0; memFlipped=false; memScore=0; memDone=0; }
+  function memShuffle(){ memOrder=shuffle(GRPS[memGrp].slice()); memIdx=0; memFlipped=false; memScore=0; memDone=0; }
   memShuffle();
+  const grpTabs=h("div",{class:"filter-tabs", style:"margin-bottom:8px;flex-wrap:wrap"}, ...GRP_ORDER.map(g=>h("button",{class:`ftab${g==="All"?" on":""}`, onclick:()=>{
+    memGrp=g; [...grpTabs.children].forEach(x=>x.classList.toggle("on", x.textContent===g)); memShuffle(); memRender();
+  }}, g)));
   function memRender(){
     memBox.innerHTML="";
     if(memIdx>=memOrder.length){
@@ -1917,6 +1937,7 @@ export function MoleculeView(root){
         h("span",{class:"small faint"},`${memScore} known`)),
       card, row);
   }
+  memRender();
   const modeTabs=h("div",{class:"filter-tabs", style:"margin-bottom:4px"},
     ...[["view","Viewer"],["mem","Memorize"]].map(([v,label])=>{
       const b=h("button",{class:`ftab${(v==="mem")===memMode?" on":""}`, onclick:()=>{
@@ -1928,9 +1949,9 @@ export function MoleculeView(root){
       return b;
     }));
   const viewWrap=h("div",{class:"stack", style:"gap:12px"},
-    h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"Molecule"), selEl, h("span",{class:"tag"},"Three-ish · no server")), canvas, meta, info);
-  const memWrap=h("div",{hidden:true}, memBox);
-  root.innerHTML=""; root.append(page("Molecule Viewer 3D", "Rotate any molecule — 16 structures from H2 to SF6. Then flip through them in Memorize mode.",
+    h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"Molecule"), selEl, h("span",{class:"tag"},"28 structures · no server")), canvas, meta, info);
+  const memWrap=h("div",{hidden:true}, grpTabs, memBox);
+  root.innerHTML=""; root.append(page("Molecule Viewer 3D", "Rotate any molecule — 28 structures from H2 to XeF4. Then flip through them in Memorize mode, grouped by shape.",
     h("div",{class:"stack", style:"gap:10px"}, modeTabs, viewWrap, memWrap)));
   const obs=new ResizeObserver(()=>{ canvas.width=canvas.clientWidth*2; canvas.height=320*2; canvas.style.height="320px"; }); obs.observe(canvas);
   root.addEventListener("DOMNodeRemoved",()=>{ cancelAnimationFrame(raf); obs.disconnect(); }, {once:true});
@@ -3561,6 +3582,10 @@ export function NeetView(root) {
       { id: "bio-nephron", name: "Nephron & ADH", desc: "Filtrate flows the tubule; ADH decides the urine output." },
       { id: "bio-lung", name: "Breathing lung", desc: "Bronchial tree inflates alveoli on a breathing cycle." },
       { id: "bio-muscle", name: "Sarcomere contraction", desc: "Sliding filaments close the Z-discs on every beat." },
+      { id: "bio-circulation", name: "Double circulation", desc: "Heart pump pulses two blood loops around the body." },
+      { id: "bio-synapse", name: "Synaptic transmission", desc: "Vesicles fuse, transmitter crosses the cleft to the next neuron." },
+      { id: "bio-digest", name: "Digestive tract", desc: "A bolus slides down; enzymes flash at each station." },
+      { id: "bio-meiosis", name: "Meiosis stages", desc: "Pairing and reductional split down to four haploid cells." },
     ];
     const viewer = h("div");
     let mounted = null;

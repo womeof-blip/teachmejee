@@ -638,3 +638,227 @@ register("bio-muscle", ({ THREE, group }) => {
     ],
   };
 });
+
+/* Cardiac cycle: heart pump + corpuscles cruising a double circulation loop. */
+register("bio-circulation", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const heart = new THREE.Group();
+  const heartMat = new THREE.MeshStandardMaterial({ color: "#e86f52", emissive: "#e86f52", emissiveIntensity: 0.4 });
+  const h1 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), heartMat);
+  const h2 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), heartMat);
+  h2.position.x = 0.7;
+  const bs = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.9, 0.9), heartMat);
+  heart.add(h1, h2, bs);
+  heart.scale.set(1, 1, 1);
+  heart.position.set(-2.4, 0, 0);
+  g.add(heart);
+  const tubeGeo = new THREE.TorusGeometry(1.1, 0.09, 10, 40);
+  const tubeA = new THREE.Mesh(tubeGeo, new THREE.MeshStandardMaterial({ color: "#c43b31", transparent: true, opacity: 0.55 }));
+  const tubeB = new THREE.Mesh(tubeGeo, new THREE.MeshStandardMaterial({ color: "#4b6bd8", transparent: true, opacity: 0.55 }));
+  tubeA.position.set(0.6, 0, 0); tubeB.position.set(0.6, 0, 0);
+  g.add(tubeA, tubeB);
+  const pGeo = new THREE.SphereGeometry(0.12, 10, 10);
+  const pRed = new THREE.MeshStandardMaterial({ color: "#e86f52", emissive: "#e86f52", emissiveIntensity: 0.8 });
+  const pBlue = new THREE.MeshStandardMaterial({ color: "#7da8f5", emissive: "#7da8f5", emissiveIntensity: 0.8 });
+  const pcs = [];
+  for (let i = 0; i < 14; i++) {
+    const oxy = i % 2 === 0;
+    const p = new THREE.Mesh(pGeo, oxy ? pRed : pBlue);
+    p.userData = { a: (i / 14) * Math.PI * 2, oxy };
+    g.add(p);
+    pcs.push(p);
+  }
+  let rate = 0.6, pump = 0;
+  function place(p, t) {
+    const oxy = p.userData.oxy;
+    const torus = oxy ? tubeB : tubeA;
+    const major = 1.05, R = 1.1, th = p.userData.a + t * 0.5;
+    const cx = torus.position.x + R * Math.cos(th);
+    const cy = 0 + R * Math.sin(th);
+    p.position.set(cx, cy, 0);
+    void major;
+  }
+  return {
+    tick(_t, dt) {
+      pump = 0.75 + 0.25 * Math.sin(_t * rate * 6);
+      heart.scale.set(1 + pump * 0.15, 1 - pump * 0.08, 1);
+      heart.material = h1.material;
+      for (const p of pcs) { p.userData.a += dt * rate; place(p, 0); }
+    },
+    set(key, v) {
+      if (key === "rate") rate = v;
+      if (key === "pause") { /* freeze pump */ }
+    },
+    controls: [
+      { key: "rate", label: "Heart rate", min: 0.2, max: 1.4, step: 0.05, value: rate },
+    ],
+  };
+});
+
+/* Synapse: impulse arrives, vesicles fuse, transmitter crosses the cleft. */
+register("bio-synapse", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const preMat = new THREE.MeshStandardMaterial({ color: "#8fbf6f", emissive: "#8fbf6f", emissiveIntensity: 0.25 });
+  const postMat = new THREE.MeshStandardMaterial({ color: "#c678dd", emissive: "#c678dd", emissiveIntensity: 0.25 });
+  const pre = new THREE.Mesh(new THREE.SphereGeometry(0.9, 20, 20), preMat);
+  pre.position.x = -1.2;
+  const post = new THREE.Mesh(new THREE.SphereGeometry(0.9, 20, 20), postMat);
+  post.position.x = 1.2;
+  g.add(pre, post);
+  const cleft = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.6, 1.6),
+    new THREE.MeshStandardMaterial({ color: "#9db8c9", transparent: true, opacity: 0.12 }));
+  g.add(cleft);
+  const vesGeo = new THREE.SphereGeometry(0.12, 10, 10);
+  const vesMat = new THREE.MeshStandardMaterial({ color: "#ffc476", emissive: "#ffc476", emissiveIntensity: 0.9 });
+  const vesc = [];
+  for (let i = 0; i < 8; i++) {
+    const v = new THREE.Mesh(vesGeo, vesMat);
+    v.userData = { x: -1.7 + Math.random() * 0.5, z: (Math.random() - 0.5) * 0.8, t: Math.random() * 2, p: 0, on: true };
+    g.add(v);
+    vesc.push(v);
+  }
+  const ntGeo = new THREE.SphereGeometry(0.07, 8, 8);
+  const ntMat = new THREE.MeshStandardMaterial({ color: "#f5eddc", emissive: "#f5eddc", emissiveIntensity: 1 });
+  const nts = [];
+  for (let i = 0; i < 12; i++) {
+    const n = new THREE.Mesh(ntGeo, ntMat);
+    n.userData = { a: 0, on: false, dur: 0 };
+    n.visible = false;
+    g.add(n);
+    nts.push(n);
+  }
+  let rate = 0.8, burst = 0;
+  const posts = [];
+  return {
+    tick(_t, dt) {
+      burst += dt * rate * 3;
+      let freq = 0.9;
+      if (burst > 0.7) { freq = 3; burst = 0; }
+      for (const v of vesc) {
+        v.userData.t += dt;
+        if (v.userData.p < 1) {
+          v.userData.p += dt * 0.8 * freq * 0.4;
+          if (v.userData.p > 1) v.userData.p = 1;
+          v.position.set(-1.2 + v.userData.x * (1 - v.userData.p), (Math.sin(v.userData.t * 2) * 0.3) * (1 - v.userData.p), v.userData.z);
+        }
+      }
+      for (const n of nts) {
+        if (!n.userData.on && Math.random() < freq * dt * 0.5) {
+          n.userData.on = true; n.userData.a = 0; n.userData.dur = 0.8 + Math.random();
+          n.position.set(-0.9, (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.6);
+          n.visible = true;
+        }
+        if (n.userData.on) {
+          n.userData.a += dt * 1.4;
+          n.position.x = -0.9 + n.userData.a * 1.4;
+          n.userData.dur -= dt;
+          if (n.userData.dur < 0) { n.userData.on = false; n.visible = false; posts.push(1); if (posts.length > 60) posts.shift(); }
+        }
+      }
+      pre.material.emissiveIntensity = 0.2 + 0.6 * Math.max(0, Math.sin(_t * rate * 2));
+      post.material.emissiveIntensity = 0.2 + Math.min(0.8, posts.length * 0.02);
+    },
+    set(key, v) { if (key === "rate") rate = v; },
+    controls: [
+      { key: "rate", label: "Impulse frequency", min: 0.2, max: 1.6, step: 0.05, value: rate },
+    ],
+  };
+});
+
+/* Digestive tract: bolus slides down, enzymes flash at each station. */
+register("bio-digest", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const tube = new THREE.Mesh(new THREE.TorusGeometry(1.7, 0.5, 14, 48),
+    new THREE.MeshStandardMaterial({ color: "#9db8c9", transparent: true, opacity: 0.18, side: THREE.DoubleSide }));
+  tube.rotation.z = Math.PI; tube.rotation.x = Math.PI / 2;
+  g.add(tube);
+  const stations = [
+    { name: "Mouth", col: "#8fbf6f", at: 0.1 },
+    { name: "Stomach", col: "#ffc476", at: 0.55 },
+    { name: "Duodenum", col: "#69d8d2", at: 0.75 },
+    { name: "Ileum", col: "#7dd3fc", at: 0.9 },
+  ];
+  const dots = [];
+  for (const s of stations) {
+    const d = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 10),
+      new THREE.MeshStandardMaterial({ color: s.col, emissive: s.col, emissiveIntensity: 0.2 }));
+    const th = s.at * Math.PI * 2;
+    d.position.set(Math.cos(th) * 1.7, -0.9 + Math.sin(th) * 1.7 * 0.9, 0);
+    g.add(d);
+    dots.push({ m: d, s });
+  }
+  const bolus = new THREE.Mesh(new THREE.SphereGeometry(0.32, 14, 14),
+    new THREE.MeshStandardMaterial({ color: "#e0b273", emissive: "#e0b273", emissiveIntensity: 0.3 }));
+  g.add(bolus);
+  let t = 0, speed = 0.5;
+  return {
+    tick(_t, dt) {
+      t += dt * speed;
+      const a = (t % 1) * Math.PI * 2;
+      bolus.position.set(Math.cos(a) * 1.7, -0.9 + Math.sin(a) * 1.7 * 0.9, 0.1);
+      for (const { m, s } of dots) {
+        const near = Math.abs(Math.sin(a / 2 + Math.PI / 2) - Math.sin((Math.PI * 2 * s.at + Math.PI) / 2 + Math.PI / 2));
+        const glow = Math.max(0, 1 - Math.min(2, Math.abs(a - s.at * Math.PI * 2)) * 0.8);
+        m.material.emissiveIntensity = 0.2 + 0.5 * glow;
+        void near;
+      }
+    },
+    set(key, v) { if (key === "speed") speed = v; },
+    controls: [
+      { key: "speed", label: "Peristalsis speed", min: 0.1, max: 1.4, step: 0.05, value: speed },
+    ],
+  };
+});
+
+/* Meiosis stage player: prophase-I pairing through telophase-II products. */
+register("bio-meiosis", ({ THREE, group }) => {
+  const g = new THREE.Group();
+  group.add(g);
+  const cell = new THREE.Mesh(new THREE.SphereGeometry(1.9, 22, 22),
+    new THREE.MeshStandardMaterial({ color: "#9db8c9", transparent: true, opacity: 0.1, side: THREE.DoubleSide }));
+  g.add(cell);
+  const chrMat = new THREE.MeshStandardMaterial({ color: "#c678dd", emissive: "#c678dd", emissiveIntensity: 0.5 });
+  const chrGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.6, 10);
+  const chrs = [];
+  for (let i = 0; i < 8; i++) {
+    const m = new THREE.Mesh(chrGeo, chrMat);
+    g.add(m);
+    chrs.push(m);
+  }
+  const STAGES = [
+    "Prophase-I  |  pairing",
+    "Metaphase-I  |  align",
+    "Anaphase-I  |  split",
+    "Prophase-II  |  condense",
+    "Telophase-II  |  four cells",
+  ];
+  let stage = 0, t = 0;
+  function layout() {
+    chrs.forEach((m, i) => {
+      m.visible = true;
+      const pair = Math.floor(i / 2);
+      const pos = {
+        P: () => ({ x: (pair - 1.5) * 0.8, y: (i % 2) * 0.9, z: 0 }),
+        M: () => ({ x: (pair - 1.5) * 0.8, y: (Math.sin(t * 2 + i) * 0.25) + (i % 2) * 0.16, z: 0 }),
+        A: () => ({ x: (i - 5.5) * 0.4, y: Math.sin(t * 2 + i) * 0.3, z: (i % 2) * 0.5 }),
+        P2: () => ({ x: (pair % 2 === 0 ? (pair) : pair - 4) * 0.7 + (i % 2) * 0.35, y: (Math.sin(t * 3 + i) * 0.2) + (pair > 3 ? 0.6 : -0.6) + (i % 2) * 0.2, z: 0 }),
+        T: () => ({ x: (i % 4) * 0.9 - 1.35, y: (Math.floor(i / 4) * 2 - 1) * 0.95, z: (i % 2) * 0.5 }),
+      };
+      const p = (pos[["P", "M", "A", "P2", "T"][stage]] || pos.P)();
+      m.position.set(p.x, p.y, p.z);
+      m.rotation.z = Math.sin(t * 2 + i) * 0.4;
+      if (stage === 4) m.scale.set(1, 0.7, 1); else m.scale.set(1, 1, 1);
+    });
+  }
+  layout();
+  return {
+    tick(_t, dt) { t += dt; layout(); },
+    set(key, v) { if (key === "stage") { stage = (typeof v === "string" ? Math.max(0, STAGES.indexOf(v)) : v); stage = Math.min(4, Math.max(0, stage)); layout(); } },
+    controls: [
+      { key: "stage", label: "Stage", type: "select", options: STAGES, value: STAGES[stage] },
+    ],
+  };
+});

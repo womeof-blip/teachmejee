@@ -12,6 +12,8 @@ import "./simsF.js";
 import { SIM_FOR_CONCEPT as MAP_F } from "./simsF.js";
 import "./simsG.js";
 import { SIM_FOR_CONCEPT as MAP_G } from "./simsG.js";
+import "./simsH.js";
+import { SIM_FOR_CONCEPT as MAP_H } from "./simsH.js";
 
 export { mountSim, hasSim } from "./engine.js";
-export const CONCEPT_SIM_MAP = { ...MAP_D, ...MAP_E, ...MAP_F, ...MAP_G };
+export const CONCEPT_SIM_MAP = { ...MAP_D, ...MAP_E, ...MAP_F, ...MAP_G, ...MAP_H };
