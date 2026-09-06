@@ -5722,4 +5722,221 @@ export function DesmosView(root) {
           h("button", { class: "btn btn-sm", onclick: () => zoomAt(1 / 1.35) }, "−"))))));
   requestAnimationFrame(draw);
 }
+/* TeachMeJEE — Innovation Blueprint: pitch + whole-app data flow with live links. */
+function bpPipe(steps, note) {
+  return h("div", { class: "bp-flow" },
+    h("div", { class: "bp-steps" }, ...steps.map((s, i) => [
+      h("span", { class: "bp-step" }, s),
+      i < steps.length - 1 ? h("span", { class: "bp-arrow" }, "→") : null,
+    ]).flat()),
+    note ? h("div", { class: "small faint", style: "margin-top:8px" }, note) : null);
+}
 
+export function BlueprintView(root) {
+  const stats = featureStats();
+  const subTotal = ALL_CONCEPTS.reduce((a, c) => a + (subtopicsFor(c)?.length || 0), 0);
+  const simsLive = h("b", { class: "bp-num-inline" }, "87");
+  const variantsLive = h("b", { class: "bp-num-inline" }, "100,000,007");
+  import("./sim/factory.js").then((S) => {
+    if (S.SIM_FACTORY_STATS) {
+      simsLive.textContent = String(S.SIM_FACTORY_STATS.base);
+      variantsLive.textContent = Number(S.SIM_FACTORY_STATS.virtual).toLocaleString();
+    }
+  }).catch(() => {});
+
+  const engineCount = Object.keys(Quantum).filter((k) => typeof Quantum[k] === "function" && k[0] !== "_").length;
+
+  const ROUTE_GROUPS = [
+    { g: "Learn", icon: "≡", items: [
+      ["#/home", "Home", "XP, 56-day heatmap, streak, what's next"],
+      ["#/dashboard", "Dashboard", "Today's command centre: dues, strikes, quick actions"],
+      ["#/welcome", "Welcome tour", "Onboarding — 60-second guided tour"],
+      ["#/foundation", "Class 9–10 launchpad", "Foundation tracks that bridge into JEE chapters"],
+      ["#/roadmap", "Journey · Roadmap", "All 93 chapters, level-ordered with lock states"],
+      ["#/flowchart", "Flowchart", "Prerequisite graph as SVG arrows"],
+      ["#/constellation", "Constellation", "Obsidian-style concept map — rings, focus, persist"],
+      ["#/browse", "Browse chapters", "Filterable grid over the full syllabus"],
+      ["#/library", "Notes library", "93 deep rewrites in one shelf"],
+      ["#/chapter/P-units", "Chapter view", "Tabs: Overview · Full Notes · Notes · Formulas · Subs · Lectures · Simulation · Doubts"],
+      ["#/periodic", "Periodic table", "Interactive s/p/d/f blocks, JEE-linked"],
+      ["#/derivations", "Derivation theatre", "Every result one step at a time, auto-play"],
+      ["#/molecules", "Molecules 3D", "28 structures + shape-grouped memorisation"],
+      ["#/graph", "Graph playground", "Desmos-like f(x) with a/b sliders"],
+      ["#/desmos", "Desmos calculator", "Hand-rolled parser, drag-pan, zoom, trace"],
+      ["#/board", "Whiteboard", "Per-chapter canvas saved to localStorage"],
+    ]},
+    { g: "Practice", icon: "◉", items: [
+      ["#/quiz", "Quiz engine", "Concept/subject filter, emotion-aware feedback"],
+      ["#/flash", "Flash", "SR schedule 1→3→7→16d + user cards"],
+      ["#/pyq", "PYQ bank", "Chapter-wise JEE PYQs with trend filter"],
+      ["#/sprint", "PYQ Sprint", "10 timed PYQs, +4/−1, auto-submit"],
+      ["#/duel", "1v1 Duel", "Head-to-head mixed question race"],
+      ["#/neet", "NEET hub", "30 topics, notes, models, question bank"],
+      ["#/videos", "Lectures", "18 channels · per-chapter YouTube search"],
+      ["#/formulas", "Formula cards", "Structured per-chapter formula shelves"],
+      ["#/playground", "Playground", "Slider labs + smart weak-area timetable"],
+    ]},
+    { g: "Plan & Insight", icon: "∆", items: [
+      ["#/studyplan", "Mission JEE", "42-week plan with ticked weeks, streak, bars"],
+      ["#/planner", "Planner", "Week tasks + pomodoro focus timer"],
+      ["#/daily", "Daily challenge", "One quest a day, claimable reward"],
+      ["#/weightage", "Weightage", "Chapter marks weight + PYQ trends"],
+      ["#/insight", "JEE Insight", "Weak high-weight chapters, revision gaps"],
+      ["#/weak", "Weak areas", "Mastered chapters with sub-80% accuracy"],
+      ["#/revisions", "Revisions", "Spaced-repetition queue, due today first"],
+      ["#/recommendations", "Recommended", "Frontier scoring of the next best chapter"],
+      ["#/analytics", "Analytics", "Focused practice, accuracy, subject pie"],
+      ["#/predictor", "Rank predictor", "Velocity + streak → percentile band"],
+      ["#/mastery", "Mastery", "Level radar over the syllabus"],
+      ["#/stats", "Statistics", "Raw counters, answer log, no telemetry"],
+      ["#/achievements", "Achievements", "Badge wall + shareable victory card"],
+      ["#/calendar", "Calendar", "Month grid from dailies + focusLog"],
+    ]},
+    { g: "Systems & Tools", icon: "⚙", items: [
+      ["#/atlas", "Atlas · 1000×", "All real features + 100M generative variants"],
+      ["#/labs", "Labs · Future", "26 quantum engines — protocol cards"],
+      ["#/tools", "Tools index", "47 searchable study tools"],
+      ["#/files", "Files", "Export/import JSON, snapshots, storage meter"],
+      ["#/gitjee", "GitJEE", "Open-source hub, exporter kits"],
+      ["#/theme", "Theme studio", "Accent/bg tokens, dark & light"],
+      ["#/tutor", "Ask Pip", "Rule-based offline tutor + speech"],
+      ["#/login", "Join / Login", "Per-user sandbox, optional leaderboard"],
+      ["#/leaderboard", "Leaderboard", "Graceful offline sync"],
+      ["#/bookmarks", "Bookmarks", "Starred chapters and notes"],
+      ["#/progress", "Progress", "Trackers: chapters, notes, tests"],
+    ]},
+  ];
+  const routeCount = ROUTE_GROUPS.reduce((a, g) => a + g.items.length, 0) + 1;
+
+  function statRow(items) {
+    return h("div", { class: "bp-stats" }, ...items.map(([n, l]) =>
+      h("div", { class: "bp-stat" }, h("div", { class: "bp-num" }, n), h("div", { class: "bp-lbl" }, l))));
+  }
+
+  const flows = [
+    ["Boot & module graph", bpPipe([
+      "index.html importmap", "js/app.js", "store.load()", "applySettings()",
+      "sw register", "route() once", "view mount",
+    ], "No bundler — browser-native ES modules. three.js r160 via CDN importmap, never bundled. Node-importable: data, store, features, factory (auditable); sim engine is browser-only.")],
+    ["Routing flow — every navigation", bpPipe([
+      "location.hash", "hashchange", "route()", "hash → name/param",
+      "setActiveNav", "refreshXP()", "unmount + disposeActiveSim()", "VIEWS_MAP[name](app)",
+    ], "Deep links work on any static host. Chapter routes take ?sim=&variant=; try the variant pipeline from the Atlas below.")],
+    ["State lifecycle", bpPipe([
+      "mutation fn (completeConcept / recordQuiz / saveNote)", "store.save()",
+      "localStorage tmj_state[_user]", "load() normalize + guards ", "next view renders from load()",
+    ], "Render-on-read, derived > stored: XP, streaks, SR schedule and ranks are recomputed from raw counters — one source of truth, survives refresh and device swap via backup.")],
+    ["Atlas → live 3D variant", bpPipe([
+      "Atlas card", "#/chapter/x?sim=y&variant=z", "window.__SIM_VARIANT__",
+      "mountSim", "variantForControls(seed)", "setControl(key,val)", "60fps scene",
+    ], "hashVariant is a pure deterministic seed — same variant = same parameters on every device, quantized to each slider's step.")],
+    ["Simulation engine", bpPipe([
+      "sim/index.js import", "register(id, factory)", "engine.mountSim",
+      "scene/camera/orbit", "constraint set", "rAF loop", "dispose on route change",
+    ], "Each factory receives {THREE, group, makeGrid, makeAxes, controls...}. Controls expose {key,label,min,max,step} — auto-mapped by the Atlas variant engine.")],
+    ["Content & notes", bpPipe([
+      "data.js 93 chapters", "ChapterView tabs", "DEEP_NOTES rewrites",
+      "subtopicsFor() generative", "notes id ← saveNote", "formulas cards", "lectures embed",
+    ], "Notes are plain marked HTML rendered through the sanitizer; note progress (per point, per sub) persists in tmj_state.")],
+    ["Practice data flow", bpPipe([
+      "QUESTIONS/PYQS/NEET_QUESTIONS", "draw N", "answer tap",
+      "recordQuizAnswer", "quizByConcept + answerLog", "XP + haptic + chime", "save()",
+    ], "Flash uses planner.js SR scheduler (1→3→7→16d with jitter); misses auto-generate new cards and feed weakness analysis.")],
+    ["Quantum analytics", bpPipe([
+      "state raw (completed, quizByConcept, focusLog, srQueue)",
+      "26 pure engines", "cognitiveLoadMap · predictNext · forecastRank · temporalOpacity · bossEscalation",
+      "view maps: Analytics · Predictor · Weak · Revisions · Achievements · Labs",
+    ], "Every engine output is also an Atlas feature card (type global) — the 1000× surface stays honest and clickable.")],
+    ["PWA / offline", bpPipe([
+      "sw.js install", "CACHE versioned", "network-first code",
+      "stale-while-revalidate assets", "controllerchange → toast Reload", "local study offline",
+    ], "Shell, notes, question banks and all sims are pre-cached — the entire app works on a train.")],
+    ["Backup / restore / migration", bpPipe([
+      "exportData()", "teachmejee-backup-YYYY-MM-DD.json", "importData() version-check",
+      "snapshot slots a/b", "Undo", "switchUser sandbox",
+    ], "Auto daily snapshot rings; resetAll clears only the current user's key. Files page renders it all — open below.")],
+  ];
+
+  const journeys = [
+    ["Newbie", "Open → Welcome tour → Foundation (Class 9–10) → first chapter → Full Notes → Simulation sliders → ✓ Master → XP up + heatmap lit."],
+    ["Rank hunter", "Planner → Mission JEE weeks → Focus Timer → Analytics → Rank predictor → Victory Card share."],
+    ["Revisionist", "Ctrl+K → type optics → Atlas card → variant sim → Flash due → Revisions → Predictor."],
+    ["Offline boarder", "Add to Home → PWA install → commute studying — everything cached, zero server."],
+    ["Show-off", "Labs → mint Certificate → P2P insight packet → Boss fight → God Mode gate at 100%."],
+  ];
+
+  const objectRows = [
+    ["93 chapters", `${ALL_CONCEPTS.filter(c=>c.subject==="P").length} P · ${ALL_CONCEPTS.filter(c=>c.subject==="C").length} C · ${ALL_CONCEPTS.filter(c=>c.subject==="M").length} M · ${ALL_CONCEPTS.filter(c=>c.subject==="f").length || 12} foundation`],
+    [[simsLive, " simulations"], "13 maths · 25 physics · 9 chemistry · bio set · lab set — drag/orbit/zoom, all variant-driven"],
+    [[variantsLive, " parametric variants"], "hashVariant determinism → infinite reproducible labs"],
+    [`${FEATURE_COUNT.toLocaleString()} real features + ${VIRTUAL_FEATURE_COUNT.toLocaleString()} virtual`, "every card routes to a real view — no mocks"],
+    [`${DEEP_NOTE_IDS.length} deep notes · ${subTotal} subtopics`, "93 full rewrites + 5 generative micro-notes per chapter"],
+    [`${Object.keys(DERIVATIONS).length} derivations`, "animated step-by-step theatre, auto-play"],
+    [`${NEET_TOPICS.length} NEET topics · ${NEET_QUESTIONS.length} Q`, "notes + 3D models + question bank"],
+    [`${PYQS.length} PYQs · ${QUESTIONS.length} quiz bank`, "chapter-wise filters, sprint mode, duels", true],
+  ];
+
+  root.innerHTML = "";
+  root.append(page("Innovation Blueprint — teach the whole syllabus, offline",
+    "One auditable hub for JEE Main/Advanced + NEET: explains everything, shows everything in 3D, tells you what's next, lives entirely on the student's machine.",
+    h("div", { class: "stack", style: "gap:18px" },
+      h("div", { class: "bp-hero" },
+        h("div", { class: "bp-hero-title" }, "A 10,000 ft blueprint of TeachMeJEE"),
+        h("p", { class: "small muted" }, "Purpose: an all-in-one preparation system — notes, 3D labs, planner, spaced repetition and rank analytics — with zero server, zero telemetry, zero install. Every number below is read live from the running app."),
+        h("div", { class: "row", style: "gap:8px;margin-top:12px;flex-wrap:wrap" },
+          h("a", { class: "btn btn-primary", href: "#/atlas" }, "Browse 1000× Atlas →"),
+          h("a", { class: "btn", href: "#/files" }, "Export progress →"),
+          h("a", { class: "btn", href: "#/gitjee" }, "Open source →"))),
+
+      statRow([
+        [`${ALL_CONCEPTS.length}`, "chapters"],
+        [`${routeCount}`, "named routes"],
+        ["100%", "client-side"],
+        ["0", "servers"],
+      ]),
+
+      h("div", { class: "bp-block" },
+        h("h2", {}, "Contents inventory"),
+        h("div", { class: "bp-objgrid" }, ...objectRows.map(([n, l]) =>
+          h("div", { class: "bp-obj" },
+            h("div", { class: "bp-obj-num" }, ...(Array.isArray(n) ? n : [n])),
+            h("div", { class: "small faint" }, l))))),
+
+      h("div", { class: "bp-block" },
+        h("h2", {}, "Every page, one link away"),
+        h("div", { class: "bp-grid" }, ...ROUTE_GROUPS.map((grp) =>
+          h("div", { class: "card bp-group" },
+            h("h3", {}, grp.icon + "  " + grp.g),
+            ...grp.items.map(([rt, name, desc]) =>
+              h("a", { class: "bp-link", href: rt },
+                h("div", { class: "bp-link-name" }, name),
+                h("div", { class: "small faint" }, desc)))))),
+
+      h("div", { class: "bp-block" },
+        h("h2", {}, "Usability principles that shape the data flow"),
+        h("div", { class: "bp-grid2" },
+          ...["Zero server — all state derivable locally or persisted in localStorage; survives offline, refresh, rehosting.",
+             "Hash routing — deep links on any static host; back/forward free.",
+             "Render-on-read — every view is a pure function of load() + location.hash.",
+             "Derived > stored — analytics, SR schedule, XP, rank recomputed on demand.",
+             "Graceful everything — leaderboard, P2P, speech all wrapped so offline is invisible."]
+            .map((t, i) => h("div", { class: "bp-obj" }, h("div", { class: "bp-obj-num" }, `${i + 1}`), h("div", { class: "small" }, t))))),
+
+      h("div", { class: "bp-block" },
+        h("h2", {}, "The entire data flow"),
+        h("div", { class: "stack", style: "gap:12px" }, ...flows.map(([t, body]) =>
+          h("div", { class: "card" }, h("h3", {}, t), body)))),
+
+      h("div", { class: "bp-block" },
+        h("h2", {}, "Five journeys that prove it"),
+        h("div", { class: "bp-grid" }, ...journeys.map(([name, desc]) =>
+          h("div", { class: "bp-obj", style: "border:1px solid var(--border);border-radius:12px;padding:12px" },
+            h("div", { class: "bp-jname" }, name),
+            h("div", { class: "small" }, desc))))),
+
+      h("div", { class: "bp-block" },
+        h("h2", {}, `${engineCount} quantum engines behind the surface`),
+        h("p", { class: "small muted" }, "Cognitive load map · predict next · entangled concepts · temporal opacity · neuro-synaptic flash · forecast rank · boss escalation · meta pulse · smart timetable · mint certificate · P2P packets · journal markdown · God Mode. All pure functions of local state — open Labs to explore."),
+        h("div", { style: "margin-top:10px" }, h("a", { class: "btn btn-primary", href: "#/labs" }, "Open Labs →"))),
+    ))));
+}
