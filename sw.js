@@ -2,14 +2,14 @@
    - Network-first for HTML/JS/CSS so updates always land (cache = offline fallback)
    - Stale-while-revalidate for other same-origin assets
    - Version bump + skipWaiting + clients claim => no stale mixed-version ghosts */
-const CACHE = "tmj-v25";
+const CACHE = "tmj-v26";
 const CORE = [
   "./",
   "./index.html",
   "./css/style.css",
   "./manifest.json",
   "./js/app.js", "./js/views.js", "./js/store.js", "./js/api.js", "./js/data.js",
-  "./js/planner.js", "./js/questions.js", "./js/pyq.js", "./js/neet.js", "./js/tutor.js",
+  "./js/adaptive.js", "./js/planner.js", "./js/questions.js", "./js/pyq.js", "./js/neet.js", "./js/tutor.js",
   "./js/fx.js", "./js/extras.js", "./js/settings.js", "./js/foundation.js",
   "./js/notes/index.js", "./js/notes/p1.js", "./js/notes/p2.js", "./js/notes/p3.js",
   "./js/notes/c1.js", "./js/notes/c2.js", "./js/notes/c3.js", "./js/notes/m1.js", "./js/notes/m2.js", "./js/notes/advanced.js", "./js/quantum.js", "./js/features.js", "./js/notes/subtopics.js", "./js/sim/factory.js",

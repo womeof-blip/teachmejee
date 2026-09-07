@@ -11,7 +11,7 @@ import {
   PredictorView, AnalyticsView, QuestsView, LeaderboardView, AuthView,
   NotesView, BookmarksView, WeakAreasView, RevisionsView, ProgressView,
   RecommendationsView, MasteryView, StatsView, AchievementsView, CalendarView,
-  PYQView, NeetView, WelcomeView, TutorView, buildTutorChat, VideosView, FoundationView, LibraryView, refreshXP, disposeActiveSim, ConstellationView, LabsView, PlaygroundView, PeriodicView, DerivationView, AtlasView, MoleculeView, GraphView, BoardView, ThemeView, StudyPlanView, WeightageView, InsightView, ToolsView, FilesView,   GitJEEView, DashboardView, SprintView, DesmosView, BlueprintView,
+  PYQView, NeetView, WelcomeView, TutorView, buildTutorChat, VideosView, FoundationView, LibraryView, refreshXP, disposeActiveSim, ConstellationView, LabsView, PlaygroundView, PeriodicView, DerivationView, AtlasView, MoleculeView, GraphView, BoardView, ThemeView, StudyPlanView, WeightageView, InsightView, ToolsView, FilesView,   GitJEEView, DashboardView, SprintView, DesmosView, BlueprintView, AdaptiveView, PremiumView,
 } from "./views.js";
 import { DuelView, openSettings, zenToggle, feedDuelQuestions } from "./extras.js";
 import { isLoggedIn, getSession, logout, syncProgress } from "./api.js";
@@ -46,6 +46,8 @@ const VIEWS_MAP = {
   sprint: SprintView,
   desmos: DesmosView,
   blueprint: BlueprintView,
+  adaptive: AdaptiveView,
+  premium: PremiumView,
   flowchart: FlowchartView,
   browse: BrowseView,
   pyq: PYQView,
@@ -248,6 +250,8 @@ function refreshUserChip() {
 const PALETTE_VIEWS = [
   ["#/welcome", "Welcome tour"],
   ["#/home", "Home"],
+  ["#/adaptive", "Adaptive Path (Eagle — premium)"],
+  ["#/premium", "Eagle premium preview"],
   ["#/tutor", "Ask Pip (study brain)"],
   ["#/foundation", "Class 9-10 launchpad"],
   ["#/daily", "Daily challenge"],

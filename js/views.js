@@ -17,6 +17,7 @@ import { h, makeToast, confettiBurst, xpFly, showModal, notifySync } from "./fx.
 import * as Quantum from "./quantum.js";
 import { allFeatures, featureStats, VIRTUAL_FEATURE_COUNT, FEATURE_COUNT, virtualFeatureAt } from "./features.js";
 import { subtopicsFor } from "./notes/subtopics.js";
+import { adaptiveLogAnswer, stats as adaptStats, weakList, recommendPath, dueCount, adaptiveRound, dailyLoad, zoneText } from "./adaptive.js";
 
 /* ----------- DOM helpers ----------- */
 
@@ -6092,6 +6093,10 @@ export function BlueprintView(root) {
       ["#/theme", "Theme studio", "Make it yours, dark & light"],
       ["#/board", "Whiteboard", "Per-chapter canvas"],
     ]},
+    { g: "Premium (Eagle)", icon: "★", items: [
+      ["#/adaptive", "Adaptive Path", "Plan + difficulty that recalibrate to your pace and accuracy"],
+      ["#/premium", "Eagle preview", "Mind maps, advanced sims / notes / videos — live demo"],
+    ]},
   ];
 
   const FEATURE_SET = [
@@ -6109,6 +6114,7 @@ export function BlueprintView(root) {
     ["#/gitjee", "Open source", "Every line of this app is public, rehostable, exportable — nothing hidden, nothing sold."],
     ["#/files", "Your data, yours", "Progress exports to a file you control. Back it up, move it, keep it forever."],
     ["#/neet", "NEET hub", "The same engine pointed at medicine: topics, notes, models and a question bank."],
+    ["#/adaptive", "Adaptive path", "Eagle watches how you answer, how fast you finish chapters and where memory fades — then rewrites today's plan to match. Difficulty rises only when you're ready, reviews return right before they'd fade, and the daily load fits your pace."],
   ];
 
   const COMPARISON = [
@@ -6223,15 +6229,17 @@ export function BlueprintView(root) {
               h("div", { class: "pch-perk" }, "✓ 100% offline · no server"),
               h("a", { class: "btn btn-primary", style: "width:100%;margin-top:14px", href: "#/roadmap" }, "Start free")),
             h("div", { class: "pch-plan" },
-              h("div", { class: "pch-plan-badge", style: "color:var(--muted)" }, "COMING SOON"),
-              h("h3", { class: "pch-plan-name" }, "Eagle — sync + community"),
+              h("div", { class: "pch-plan-badge", style: "color:var(--muted)" }, "OPTIONAL · PREVIEW LIVE"),
+              h("h3", { class: "pch-plan-name" }, "Eagle — the adaptive layer"),
               h("div", { class: "pch-plan-price" }, "₹99 / year"),
-              h("div", { class: "small faint" }, "optional · one payment · nothing leaves your device without asking"),
-              h("div", { class: "pch-perk" }, "✓ everything in Sparrow"),
-              h("div", { class: "pch-perk" }, "✓ cloud sync across devices"),
-              h("div", { class: "pch-perk" }, "✓ leaderboard & 1v1 duels"),
-              h("div", { class: "pch-perk" }, "✓ mastery certificate"),
-              h("div", { class: "pch-perk pale" }, "still no ads · no telemetry"))),
+              h("div", { class: "small faint" }, "optional · one payment · 3-day preview free · nothing leaves your device without asking"),
+              h("div", { class: "pch-perk" }, "✓ everything in Sparrow, unchanged"),
+              h("div", { class: "pch-perk" }, "✓ adaptive path — plan, difficulty & daily load follow you"),
+              h("div", { class: "pch-perk" }, "✓ mind maps for every chapter"),
+              h("div", { class: "pch-perk" }, "✓ advanced sims, notes walk-throughs & video tracks"),
+              h("div", { class: "pch-perk" }, "✓ cloud sync across devices + mastery certificate"),
+              h("div", { class: "pch-perk pale" }, "still no ads · no telemetry"),
+              h("a", { class: "btn", style: "width:100%;margin-top:14px", href: "#/premium" }, "Preview Eagle →"))),
           pchNote("The free tier is the product, not a hook. The core learning, the 3D labs and the analytics stay free forever; the optional year pays for the few servers that only the sync features touch.")),
 
         /* ── WHO IT'S FOR ── */
@@ -6276,3 +6284,319 @@ function moleculeCount() {
   try { return Object.keys(window.__PITCH_MOL__ || {}).length || 54; } catch { return 54; }
 }
 function pchNote(text) { return h("p", { class: "pch-note small muted" }, text); }
+
+/* ----------- Premium layer: local, honest state ----------- */
+const PREMIUM_KEY = "tmj_premium";
+function premiumState() {
+  try { return JSON.parse(localStorage.getItem(PREMIUM_KEY) || "null") || null; } catch { return null; }
+}
+function premiumActive() {
+  const p = premiumState();
+  if (!p) return false;
+  if (p.full) return true;
+  return !!(p.trial && p.until && Date.now() < p.until);
+}
+function startPremiumTrial() {
+  try { localStorage.setItem(PREMIUM_KEY, JSON.stringify({ trial: true, until: Date.now() + 3 * 86400000 })); } catch {}
+}
+function zoneChip(zone) {
+  return h("span", { class: `ad-zone ${zone}` }, "Zone: " + zoneText(zone));
+}
+
+/* ----------- Adaptive Path — the Eagle "learns you" view ----------- */
+export function AdaptiveView(root) {
+  const st = load();
+  const s = adaptStats(st);
+
+  function render() {
+    root.innerHTML = "";
+    if (!premiumActive()) return renderLocked();
+    renderUnlocked();
+  }
+
+  function renderLocked() {
+    root.append(page("Adaptive Path",
+      "The Eagle plan — a route that recalibrates to how you study, not the other way round.",
+      h("div", { class: "stack", style: "gap:16px" },
+        h("div", { class: "card ad-hero" },
+          h("div", { class: "pm-row" }, mascotSVG(76, "cheer"),
+            h("div", {},
+              h("h2", { style: "margin:0" }, "This is the adaptive layer — and it's an Eagle feature"),
+              h("p", { class: "muted small", style: "margin:6px 0 0" }, "Free TeachMeJEE tracks your progress honestly. Eagle goes further: it watches how you answer, how fast you finish chapters and where memory fades, then rewrites your plan, difficulty and daily load to match. The engine below is real — it's just paused until you unlock it.")))),
+        h("div", { class: "card", style: "padding:14px 16px" },
+          h("h3", { style: "margin:0 0 10px" }, "It's already reading your study data"),
+          h("div", { class: "ad-stats" },
+            stat(`${s.velocity.toFixed(1)}`, "chapters / week"),
+            stat(s.acc == null ? "—" : `${Math.round(s.acc * 100)}%`, "accuracy · 28 days"),
+            stat(`${s.streak}`, "day streak"),
+            stat(`${dueCount(st)}`, "reviews due")),
+          h("div", { class: "row", style: "gap:10px;margin-top:14px;flex-wrap:wrap" },
+            h("button", { class: "btn btn-primary btn-lg", onclick: () => { startPremiumTrial(); makeToast("Eagle preview unlocked — 3 days on this device.", true); render(); } }, "Try 3-day preview"),
+            h("a", { class: "btn btn-lg", href: "#/premium" }, "See what Eagle adds"),
+            h("a", { class: "btn btn-lg", href: "#/roadmap" }, "Free roadmap"))),
+        h("div", { class: "card" },
+          h("h3", {}, "How it adapts"),
+          h("div", { class: "ad-rules" },
+            h("div", { class: "ad-rule" }, h("b", {}, "Difficulty"), " stays in your learning zone — above 75% accuracy it raises, below 50% it rebuilds the floor, in between it flows."),
+            h("div", { class: "ad-rule" }, h("b", {}, "Pace"), " sets your daily load — fewer finished chapters, smaller days; fast movers get more new topics, so nobody is dragged or starved."),
+            h("div", { class: "ad-rule" }, h("b", {}, "Memory"), " — strong topics stretch to longer gaps, but every one returns as a recall check before it fades."))))));
+  }
+
+  function renderUnlocked() {
+    const today = recommendPath(st, ALL_CONCEPTS, 5);
+    const weakSeed = weakList(st, ALL_CONCEPTS, 6);
+    const load_ = dailyLoad(st);
+    root.append(page("Adaptive Path",
+      "Your route, recalculated from how you actually study. Eagle active on this device.",
+      h("div", { class: "stack", style: "gap:16px" },
+        h("div", { class: "card ad-hero" },
+          h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap" },
+            h("div", {},
+              h("div", { class: "pm-legend" }, "EAGLE ACTIVE · 3-DAY PREVIEW · ADAPTIVE LAYER"),
+              h("h2", { style: "margin:4px 0 0" }, `Today's path — ${today.length} steps, tuned to your pace`)),
+            h("a", { class: "btn btn-sm", href: "#/premium" }, "Eagle overview"))),
+        h("div", { class: "ad-stats" },
+          stat(`${s.velocity.toFixed(1)}`, "chapters / week"),
+          stat(s.acc == null ? "—" : `${Math.round(s.acc * 100)}%`, "accuracy · 28 days"),
+          stat(`${s.streak}`, "day streak"),
+          stat(`${dueCount(st)}`, "reviews due")),
+        h("div", { class: "card ad-path" },
+          h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap" },
+            h("h3", { style: "margin:0" }, "Today's path"),
+            h("span", { class: "small faint" }, `${load_.reviews} reviews due · ${load_.news} new topic${load_.news > 1 ? "s" : ""} a day`)),
+          h("div", { class: "stack", style: "gap:8px;margin-top:10px" },
+            ...(today.length ? today.map(adPathItem) : [h("p", { class: "small faint" }, "Path is empty — complete a chapter or answer a few quiz questions and it fills in.")]))),
+        adaptSprintCard(render),
+        h("div", { class: "card" },
+          h("h3", {}, "Your weakest floors"),
+          h("div", { class: "stack", style: "gap:9px;margin-top:10px" },
+            ...(weakSeed.length ? weakSeed.map((w) => {
+              const pct = Math.round(w.score * 100);
+              return h("div", { class: "ad-bar-row" },
+                h("div", { class: "small", style: "flex:1;min-width:0;text-align:left" }, w.c.name),
+                h("div", { class: "ad-bar" }, h("i", { style: `width:${Math.max(4, pct)}%` })),
+                h("span", { class: "small faint", style: "width:36px;text-align:right" }, `${pct}%`));
+            }) : [h("p", { class: "small faint" }, "No weak floors yet — attempt a quiz and the radar will show what needs the floor rebuilt.")]))),
+        h("div", { class: "card" },
+          h("h3", {}, "How it adapts to you"),
+          h("div", { class: "ad-rules" },
+            h("div", { class: "ad-rule" }, h("b", {}, "Difficulty"), " — above 75% accuracy we raise the level, below 50% we rebuild the floor, in between it keeps flowing."),
+            h("div", { class: "ad-rule" }, h("b", {}, "Pace"), ` — at ${s.velocity.toFixed(1)} chapters a week, your days carry ${load_.news} new topic${load_.news > 1 ? "s" : ""}; finish faster and the days grow with you.`),
+            h("div", { class: "ad-rule" }, h("b", {}, "Memory"), " — strong topics fade to longer gaps, but every one returns as a recall check before it's gone."),
+            h("div", { class: "ad-rule" }, h("b", {}, "Order"), " — reviews first, weakest floors next, then the highest-weight unlocked chapter."))))));
+  }
+
+  render();
+}
+
+function adPathItem(item) {
+  const kindTxt = { review: "Review", recall: "Recall", weak: "Rebuild", next: "New" }[item.kind] || "Step";
+  return h("a", { class: `ad-path-item ${item.kind}`, href: `#/chapter/${item.c.id}` },
+    h("span", { class: "ad-kind" }, kindTxt),
+    h("div", { style: "flex:1;min-width:0;text-align:left" },
+      h("div", { class: "ad-name" }, item.c.name),
+      h("div", { class: "small faint" }, item.reason)),
+    h("span", { class: "ad-arrow" }, "→"));
+}
+
+function adaptSprintCard(resume) {
+  const card = h("div", { class: "card ad-sprint" });
+  let round = null;
+
+  function paint() {
+    if (!round) round = { qs: adaptiveRound(load(), QUESTIONS, 6), i: 0, score: 0 };
+    card.innerHTML = "";
+    const zone = adaptStats(load()).zone;
+    card.append(
+      h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap" },
+        h("h3", { style: "margin:0" }, "Adaptive sprint"),
+        zoneChip(zone)),
+      h("div", { class: "small faint" }, `Six questions. The difficulty follows your answers — a run of corrects push it up, stumbles pull it back.`));
+    const q = round.qs[round.i];
+    if (!q) return;
+    card.append(
+      h("p", { style: "font-weight:600;margin:12px 0 8px" }, `Q${round.i + 1}. ${q.q}`),
+      h("div", { class: "stack", style: "gap:8px" },
+        ...q.opts.map((o, k) => h("button", { class: "quiz-opt", onclick: () => answer(k, q.a) },
+          h("span", { class: "q-key" }, "ABCD"[k]), o))),
+      h("div", { class: "quiz-why", hidden: true }, q.why),
+      h("button", { class: "btn quiz-next", hidden: true, onclick: () => next() }, round.i + 1 < round.qs.length ? "Next" : "Finish"));
+
+    function answer(chosen, correct) {
+      const ok = chosen === correct;
+      adaptiveLogAnswer(q.c, ok);
+      recordQuizAnswer(q.c, ok);
+      if (ok) round.score++;
+      [...card.querySelectorAll(".quiz-opt")].forEach((b) => { b.disabled = true; });
+      [...card.querySelectorAll(".quiz-opt")][correct].classList.add("correct");
+      if (!ok) [...card.querySelectorAll(".quiz-opt")][chosen].classList.add("wrong");
+      card.querySelector(".quiz-why").hidden = false;
+      card.querySelector(".quiz-next").hidden = false;
+      const chip = card.querySelector(".ad-zone");
+      if (chip) chip.textContent = "Zone: " + zoneText(adaptStats(load()).zone);
+    }
+    function next() {
+      round.i++;
+      if (round.i >= round.qs.length) {
+        addBonusXp(round.score * 3);
+        addEvent(`Adaptive sprint: ${round.score}/${round.qs.length} (+${round.score * 3} XP)`);
+        makeToast(`Adaptive sprint finished: ${round.score}/${round.qs.length} (+${round.score * 3} XP)`, round.score >= 4);
+        round = null;
+        resume();
+        return;
+      }
+      paint();
+    }
+  }
+  paint();
+  return card;
+}
+
+/* ----------- Eagle — premium preview page ----------- */
+export function PremiumView(root) {
+  const MIND_SAMPLES = ["P-kinematics", "C-mole", "M-trig"];
+  let active = MIND_SAMPLES[0];
+
+  const PM_FEATURES = [
+    ["◉", "Adaptive path", "Free keeps a static weak/next list. Eagle rewrites your plan daily — reviews, weak floors and the next high-weight chapter, sized to your pace.", "Static weak / next radar", "Live daily path, difficulty + load"],
+    ["◈", "Simulations", "150+ engines stay free. Eagle adds per-lab difficulty, hints and step pacing, plus new engines on a schedule.", "150+ labs", "Config-aware labs + new engines"],
+    ["◫", "Mind maps", "Every chapter as a living map — the topic, its subtopics and the lens for each branch. Live sample below.", "—", "Interactive maps for every chapter"],
+    ["¶", "Notes", "The deep-notes library stays free. Eagle layers derivation walk-throughs, memory hooks and weekly expansions.", "74+ deep notes", "Walk-throughs + hooks + weekly drops"],
+    ["▶", "Video track", "Free pins any YouTube lecture you choose. Eagle adds a per-chapter track: concept, solved example, then PYQ.", "Pinned lectures", "Structured chapter tracks"],
+    ["↻", "Memory", "Free uses fixed 1→3→7→16 day spacing. Eagle re-spaces every topic from your real accuracy — strong topics widen, weak ones double back.", "Fixed schedule", "Mastery-aware rescheduling"],
+  ];
+
+  function demoCard() {
+    const demo = { stream: [] };
+    const out = h("div", { class: "card pm-demo" });
+    function recalc() {
+      const last10 = demo.stream.slice(-10);
+      const att = last10.filter((x) => x != null);
+      const acc = att.length ? att.reduce((a, b) => a + b, 0) / att.length : null;
+      const zone = acc == null ? "flow" : acc >= 0.75 ? "advancing" : acc >= 0.5 ? "flow" : "consolidating";
+      const pct = acc == null ? 0 : Math.round(acc * 100);
+      out.innerHTML = "";
+      out.append(
+        h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap" },
+          h("h3", { style: "margin:0" }, "Watch difficulty adapt — live"),
+          zoneChip(zone)),
+        h("p", { class: "small faint" }, "Tap the buttons as you'd actually answer. The zone re-reads your last 10 taps — the exact same signal the real engine uses from your quiz history."),
+        h("div", { class: "pm-demo-bar" },
+          h("i", { style: `width:${Math.max(2, pct)}%` }),
+          h("span", {}, `${pct}%`)),
+        h("div", { class: "pm-demo-zones" }, h("span", {}, "consolidating"), h("span", {}, "flow"), h("span", {}, "advancing")),
+        h("div", { class: "row", style: "gap:8px;margin-top:12px;flex-wrap:wrap" },
+          h("button", { class: "btn btn-sm ok", onclick: () => { demo.stream.push(1); recalc(); } }, "Got it right"),
+          h("button", { class: "btn btn-sm bad", onclick: () => { demo.stream.push(0); recalc(); } }, "Stumbled"),
+          h("button", { class: "btn btn-sm", onclick: () => { demo.stream = []; recalc(); } }, "Reset")));
+    }
+    recalc();
+    return out;
+  }
+
+  function mindMapSection() {
+    const map = h("div", { class: "pm-mindmap" });
+    function render() {
+      const c = CONCEPTS[active];
+      map.innerHTML = "";
+      if (c) map.append(mindMapSVG(c));
+    }
+    render();
+    return h("div", { class: "pm-block" },
+      h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap" },
+        h("div", {},
+          h("h2", { class: "pch-h2", style: "margin:0" }, "Mind maps — one chapter, five branches"),
+          h("p", { class: "small faint", style: "margin:4px 0 0" }, "Every branch is a learning lens. Premium ships this for all 93 chapters.")),
+        h("div", { class: "row mindmap-chips", style: "gap:6px;flex-wrap:wrap" },
+          ...MIND_SAMPLES.map((id) => h("button", {
+            class: `chip${id === active ? " on" : ""}`,
+            onclick: () => { active = id; render(); },
+          }, (CONCEPTS[id] && CONCEPTS[id].name) || id)))),
+      h("div", { class: "card", style: "margin-top:12px;padding:12px" }, map));
+  }
+
+  function compareCard() {
+    const rows = [
+      ["Plan & reviews", "Static weak / next lists", "Live daily path, reviewed as you go"],
+      ["Difficulty", "You pick everything", "Zone-kept — advances only when ready"],
+      ["Mind maps", "—", "Every chapter, branch-by-branch"],
+      ["Simulations", "150+ engines", "Config-aware + new engines on a schedule"],
+      ["Notes", "74+ deep notes", "Walk-throughs + weekly expansions"],
+      ["Video track", "Pinned lectures", "Concept → example → PYQ per chapter"],
+      ["Pace", "You set the hours", "Daily load sized to measured velocity"],
+    ];
+    return h("div", { class: "card pm-compare" },
+      h("h3", {}, "Sparrow (free) vs Eagle"),
+      ...rows.map(([a, b, c]) => h("div", { class: "pm-crow" },
+        h("div", { class: "small pm-crow-a" }, a),
+        h("div", { class: "pm-cfree" }, b),
+        h("div", { class: "pm-ceagle" }, c))));
+  }
+
+  root.innerHTML = "";
+  root.append(page("Eagle — the premium preview",
+    "Everything Sparrow (free) already has, with an adaptive layer on top. This page is a live preview — the demo below really recomputes as you click.",
+    h("div", { class: "stack", style: "gap:18px" },
+      h("div", { class: "card pm-hero" },
+        h("div", { class: "pm-row" },
+          h("div", {},
+            h("div", { class: "pm-legend" }, premiumActive() ? "EAGLE ACTIVE ON THIS DEVICE" : "EAGLE · ₹99 / YEAR · OPTIONAL"),
+            h("h2", { style: "margin:6px 0 0" }, "The layer that adapts to you"),
+            h("p", { class: "muted small", style: "margin:8px 0 0;max-width:640px" }, "Free TeachMeJEE is the whole toolbox. Eagle is the co-pilot on top: it watches your pace, your accuracy and your memory window, then changes difficulty, daily load and review order to match — so the app fits you, instead of you fitting the app.")),
+          h("div", { class: "pm-price-nub" },
+            h("div", { class: "pm-price-tag" }, "₹99 / year"),
+            h("div", { class: "small faint" }, "3-day preview free on this device")))),
+      demoCard(),
+      h("div", { class: "pm-block" },
+        h("h2", { class: "pch-h2", style: "margin:0" }, "What Eagle adds on top of free"),
+        h("p", { class: "small faint", style: "margin:4px 0 12px" }, "Nothing in Sparrow shrinks. Eagle only layers on more."),
+        h("div", { class: "pm-grid" }, ...PM_FEATURES.map(([ic, name, blurb, freeTxt, eagleTxt]) =>
+          h("div", { class: "card pm-feat" },
+            h("div", { class: "pm-feat-head" },
+              h("span", { class: "pm-feat-ic" }, ic),
+              h("div", {},
+                h("h3", { style: "margin:0" }, name),
+                h("p", { class: "small faint", style: "margin:4px 0 0" }, blurb))),
+            h("div", { class: "pm-versions" },
+              h("div", { class: "pm-ver pm-free" }, h("div", { class: "pm-ver-tag" }, "SPARROW · FREE"), h("div", { class: "small" }, freeTxt)),
+              h("div", { class: "pm-ver pm-eagle" }, h("div", { class: "pm-ver-tag" }, "EAGLE"), h("div", { class: "small" }, eagleTxt))))))),
+      mindMapSection(),
+      compareCard(),
+      h("div", { class: "card pm-price" },
+        h("div", { class: "pm-price-row" },
+          h("div", {},
+            h("div", { class: "pm-legend" }, premiumActive() ? "Eagle preview unlocked" : "EAGLE · OPTIONAL"),
+            h("h2", { style: "margin:6px 0 0" }, premiumActive() ? "Preview live for 3 days" : "₹99 a year — about a bus ticket"),
+            h("p", { class: "small faint", style: "margin:6px 0 0" }, premiumActive() ? "Open Adaptive Path and let it take command of your day." : "One payment, no auto-renew, nothing leaves your device without asking. The preview below is free and reversible.")),
+          h("div", { class: "row", style: "gap:8px;flex-wrap:wrap" },
+            h("button", { class: "btn btn-primary", onclick: () => { startPremiumTrial(); makeToast("3-day Eagle preview unlocked on this device.", true); location.hash = "#/adaptive"; } }, premiumActive() ? "Extend preview" : "Start 3-day preview"),
+            h("a", { class: "btn", href: "#/adaptive" }, "Open Adaptive Path")))),
+      h("p", { class: "small faint" }, "Honest bit: this preview runs entirely on your device — the unlock is local, nothing is charged and nothing is sent anywhere. A real payment + cloud-sync layer would come with the account system; the free tier never shrinks."))));
+}
+
+function mindMapSVG(chapter) {
+  const subs = subtopicsFor(chapter);
+  const W = 560, H = 312, cx = 170, cy = H / 2, R = 132;
+  let html = `<svg viewBox="0 0 ${W} ${H}" class="mind-map" role="img" aria-label="Mind map of ${esc(chapter.name)}">`;
+  const lines = [], nodes = [];
+  subs.forEach((s, i) => {
+    const ang = -90 + i * 72;
+    const rad = (ang * Math.PI) / 180;
+    const x = cx + R * Math.cos(rad), y = cy + R * Math.sin(rad);
+    lines.push(`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" class="mm-line"/>`);
+    const label = s.title.split("—").pop().trim();
+    const lens = s.lens.length > 30 ? s.lens.slice(0, 30) + "…" : s.lens;
+    nodes.push(`<g>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="40" class="mm-node"/>
+      <text x="${x.toFixed(1)}" y="${(y - 4).toFixed(1)}" class="mm-n" text-anchor="middle">${esc(label.length > 20 ? label.slice(0, 20) + "…" : label)}</text>
+      <text x="${x.toFixed(1)}" y="${(y + 11).toFixed(1)}" class="mm-l" text-anchor="middle">${esc(lens)}</text>
+    </g>`);
+  });
+  html += lines.join("") + nodes.join("") +
+    `<circle cx="${cx}" cy="${cy}" r="46" class="mm-center"/>
+     <text x="${cx}" y="${(cy - 5).toFixed(1)}" class="mm-c" text-anchor="middle">${esc(chapter.name.length > 26 ? chapter.name.slice(0, 26) + "…" : chapter.name)}</text>
+     <text x="${cx}" y="${(cy + 13).toFixed(1)}" class="mm-cs" text-anchor="middle">L${chapter.level} · ${SUBJECTS[chapter.subject] ? SUBJECTS[chapter.subject].name : chapter.subject}</text>
+   </svg>`;
+  const wrap = h("div", { html });
+  return wrap.firstElementChild || h("div", {}, "");
+}

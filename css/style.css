@@ -2442,3 +2442,91 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
   color: var(--muted);
 }
 .neet-para:first-of-type { margin-top: 6px; }
+
+/* ─────── ADAPTIVE PATH (Eagle) ─────── */
+.pm-row { display: flex; gap: 14px; align-items: center; }
+.pm-legend {
+  font-size: 10.5px; font-weight: 800; letter-spacing: 0.12em;
+  color: var(--accent); text-transform: uppercase;
+}
+.ad-hero { background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface) 55%); }
+.ad-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.ad-path { }
+.ad-path-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface); color: var(--text); text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.ad-path-item:hover { border-color: var(--accent); transform: translateX(2px); }
+.ad-kind {
+  font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+  background: color-mix(in srgb, var(--muted) 18%, transparent); color: var(--muted);
+}
+.ad-path-item.review .ad-kind { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+.ad-path-item.recall .ad-kind { background: color-mix(in srgb, #69a7d8 20%, transparent); color: #69a7d8; }
+.ad-path-item.weak .ad-kind { background: color-mix(in srgb, #e86f52 18%, transparent); color: #e86f52; }
+.ad-path-item.next .ad-kind { background: color-mix(in srgb, #8ec07c 18%, transparent); color: #8ec07c; }
+.ad-name { font-weight: 650; }
+.ad-arrow { color: var(--muted); }
+.ad-zone {
+  font-size: 11.5px; font-weight: 700; padding: 4px 11px; border-radius: 999px; white-space: nowrap;
+  border: 1px solid var(--border); color: var(--muted);
+}
+.ad-zone.advancing { border-color: color-mix(in srgb, #8ec07c 60%, transparent); color: #8ec07c; background: color-mix(in srgb, #8ec07c 12%, transparent); }
+.ad-zone.flow { border-color: color-mix(in srgb, var(--accent) 60%, transparent); color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.ad-zone.consolidating { border-color: color-mix(in srgb, #e86f52 60%, transparent); color: #e86f52; background: color-mix(in srgb, #e86f52 12%, transparent); }
+.ad-bar-row { display: flex; align-items: center; gap: 10px; }
+.ad-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.ad-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #e86f52, var(--accent)); }
+.ad-rules { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.ad-rule { font-size: 13.5px; line-height: 1.55; color: var(--muted); border-left: 2px solid var(--border); padding-left: 10px; }
+.ad-rule b { color: var(--text); }
+
+/* ─────── EAGLE PREMIUM PREVIEW ─────── */
+.btn.ok { border-color: color-mix(in srgb, #8ec07c 55%, transparent); color: #8ec07c; }
+.btn.ok:hover { background: color-mix(in srgb, #8ec07c 14%, transparent); }
+.btn.bad { border-color: color-mix(in srgb, #e86f52 55%, transparent); color: #e86f52; }
+.btn.bad:hover { background: color-mix(in srgb, #e86f52 14%, transparent); }
+.pm-hero { }
+.pm-price-nub { text-align: center; }
+.pm-price-tag { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--accent); }
+.pm-demo { }
+.pm-demo-bar { position: relative; height: 26px; border-radius: 999px; background: var(--surface-3); overflow: hidden; margin-top: 12px; }
+.pm-demo-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #e86f52, var(--accent) 55%, #8ec07c); transition: width 0.3s ease; }
+.pm-demo-bar span { position: absolute; right: 10px; top: 5px; font-size: 11px; font-weight: 800; color: var(--text); }
+.pm-demo-zones { display: flex; justify-content: space-between; font-size: 10px; color: var(--faint); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.06em; }
+.pm-block { }
+.pm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 12px; }
+.pm-feat { display: flex; flex-direction: column; gap: 10px; }
+.pm-feat-head { display: flex; gap: 10px; align-items: flex-start; }
+.pm-feat-ic { font-size: 20px; line-height: 1; color: var(--accent); }
+.pm-versions { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+.pm-ver { padding: 8px 10px; border-radius: 9px; border: 1px solid var(--border-soft); background: var(--surface-2); }
+.pm-ver-tag { font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 3px; color: var(--muted); }
+.pm-ver.pm-eagle { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 8%, var(--surface-2)); }
+.pm-ver.pm-eagle .pm-ver-tag { color: var(--accent); }
+.pm-crow { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 10px; padding: 9px 2px; border-top: 1px solid var(--border-soft); align-items: start; }
+.pm-crow:first-of-type { border-top: 0; }
+.pm-crow-a { font-weight: 700; }
+.pm-cfree { font-size: 12.5px; color: var(--muted); }
+.pm-ceagle { font-size: 12.5px; color: var(--accent); font-weight: 550; }
+.pm-price { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.pm-price-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pm-mindmap { display: flex; justify-content: center; overflow: hidden; }
+.mind-map { width: 100%; max-width: 580px; height: auto; }
+.mind-map .mm-line { stroke: var(--border); stroke-width: 1.5; }
+.mind-map .mm-center { fill: color-mix(in srgb, var(--accent) 85%, var(--surface)); stroke: var(--accent); stroke-width: 1.5; }
+.mind-map .mm-c { fill: var(--accent-ink); font-size: 12.5px; font-weight: 800; }
+.mind-map .mm-cs { fill: var(--muted); font-size: 9.5px; }
+.mind-map .mm-node { fill: var(--surface-2); stroke: color-mix(in srgb, var(--accent) 55%, transparent); stroke-width: 1.2; }
+.mind-map .mm-n { fill: var(--text); font-size: 10.5px; font-weight: 750; }
+.mind-map .mm-l { fill: var(--muted); font-size: 8.5px; }
+
+.chip.on {
+  color: var(--accent-ink);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.chip.on:hover { background: var(--accent); }
