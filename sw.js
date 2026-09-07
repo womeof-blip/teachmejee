@@ -1,8 +1,8 @@
-/* TeachMeJEE service worker v2.
+﻿/* TeachMeJEE service worker v2.
    - Network-first for HTML/JS/CSS so updates always land (cache = offline fallback)
    - Stale-while-revalidate for other same-origin assets
    - Version bump + skipWaiting + clients claim => no stale mixed-version ghosts */
-const CACHE = "tmj-v23";
+const CACHE = "tmj-v25";
 const CORE = [
   "./",
   "./index.html",

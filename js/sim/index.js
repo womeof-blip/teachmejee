@@ -5,6 +5,7 @@ import "./simsB.js";
 import "./simsB2.js";
 import "./simsC.js";
 import "./simsBio.js";
+import "./simsBio2.js";
 import "./simsD.js";
 import { SIM_FOR_CONCEPT as MAP_D } from "./simsD.js";
 import { SIM_FOR_CONCEPT as MAP_E } from "./simsE.js";
@@ -14,6 +15,8 @@ import "./simsG.js";
 import { SIM_FOR_CONCEPT as MAP_G } from "./simsG.js";
 import "./simsH.js";
 import { SIM_FOR_CONCEPT as MAP_H } from "./simsH.js";
+import "./simsI.js";
+import { SIM_FOR_CONCEPT as MAP_I } from "./simsI.js";
 
 export { mountSim, hasSim } from "./engine.js";
-export const CONCEPT_SIM_MAP = { ...MAP_D, ...MAP_E, ...MAP_F, ...MAP_G, ...MAP_H };
+export const CONCEPT_SIM_MAP = { ...MAP_D, ...MAP_E, ...MAP_F, ...MAP_G, ...MAP_H, ...MAP_I };

@@ -37,7 +37,7 @@ add(S("f-numbers", "Number Systems & Real Numbers", "M", 0, [], "numberline", 20
  { n: "Decimals", d: "Rational ↔ terminating/repeating decimal; irrational ↔ never repeating." },
  { n: "Modulus", d: "|x| = x for x≥0, −x for x<0. Distance from origin." }]));
 
-add(S("f-arithmetic", "Arithmetic, Ratio & Percentages", "M", 0, ["f-numbers"], "numberline", 20,
+add(S("f-arithmetic", "Arithmetic, Ratio & Percentages", "M", 0, ["f-numbers"], "ratio-scale", 20,
 `Arithmetic is the engine of problem solving — ratios, percentages, averages, speed, profit-loss and mixtures appear in every JEE chapter as hidden arithmetic (mole concept, calorimetry, probability).`,
 [`Percentage is just a fraction with denominator 100.`,
 `Ratio a:b means a parts to b parts; solve by cross-multiplication.`,
@@ -61,7 +61,7 @@ add(S("f-algebra", "Basic Algebra: Expressions, Linear Equations, Factors", "M",
 [{ n: "Substitution", d: "Replace variable with value to evaluate expressions." },
  { n: "Systems", d: "Two linear equations solved by substitution/elimination." }]));
 
-add(S("f-geometry", "Basic Geometry: Lines, Triangles, Circles", "M", 0, ["f-numbers"], "3dgeo", 20,
+add(S("f-geometry", "Basic Geometry: Lines, Triangles, Circles", "M", 0, ["f-numbers"], "angle-tracer", 20,
 `Geometry builds visual intuition for the whole syllabus. Properties of triangles, circles, parallel lines and angle rules are used directly in vector algebra, conics, 3D geometry and ray optics.`,
 [`Angle sum of a triangle = 180°.`,
 `Pythagoras: in a right triangle, a² + b² = c² (hypotenuse c).`,
@@ -73,7 +73,7 @@ add(S("f-geometry", "Basic Geometry: Lines, Triangles, Circles", "M", 0, ["f-num
 [{ n: "Congruence", d: "Same size & shape (SAS, SSS, ASA, RHS)." },
  { n: "Tangent", d: "Line touching circle at exactly one point." }]));
 
-add(S("f-mensuration", "Mensuration: Areas, Volumes & Surface Areas", "M", 0, ["f-geometry","f-arithmetic"], "solids", 20,
+add(S("f-mensuration", "Mensuration: Areas, Volumes & Surface Areas", "M", 0, ["f-geometry","f-arithmetic"], "volume-morph", 20,
 `Mensuration gives the formulas for 2D areas and 3D volumes/surface areas. These exact formulas reappear in integral calculus (area under curves, volumes of revolution) and in physics (centre of mass, moments of inertia).`,
 [`Area of circle = πr², circumference = 2πr.`,
 `Volumes: sphere 4/3πr³, cylinder πr²h, cone 1/3πr²h.`,
@@ -97,7 +97,7 @@ add(S("f-trig", "Introduction to Trigonometry", "M", 0, ["f-geometry","f-algebra
 [{ n: "Complementary", d: "sin(90°−θ)=cosθ, tan(90°−θ)=cotθ." },
  { n: "Heights", d: "Find height h = d·tanθ with distance d and angle of elevation θ." }]));
 
-add(S("f-stats", "Basic Statistics & Probability", "M", 0, ["f-arithmetic"], "particles", 20,
+add(S("f-stats", "Basic Statistics & Probability", "M", 0, ["f-arithmetic"], "histo-lab", 20,
 `Statistics organises data (mean, median, mode) and probability quantifies chance. Probability is the foundation of combinatorics and random processes in physics (kinetic theory, radioactivity).`,
 [`Mean = sum/count; median = middle value; mode = most frequent.`,
 `Probability = favourable outcomes / total outcomes.`,
@@ -121,7 +121,7 @@ add(S("f-physics", "Physical Quantities, Units & Measurement", "P", 0, [], "part
 [{ n: "Scalar", d: "Magnitude only: time, mass, distance, energy." },
  { n: "Vector", d: "Magnitude + direction: velocity, force, momentum." }]));
 
-add(S("f-motion", "Motion Basics: Distance, Speed, Velocity, Acceleration", "P", 0, ["f-physics","f-arithmetic"], "projectile", 25,
+add(S("f-motion", "Motion Basics: Distance, Speed, Velocity, Acceleration", "P", 0, ["f-physics","f-arithmetic"], "speed-timer", 25,
 `Kinematics begins here: describing motion with position, velocity and acceleration. Distance is a scalar, displacement a vector. Acceleration is the rate of change of velocity — the idea that powers all of mechanics.`,
 [`Speed = distance/time (scalar); velocity = displacement/time (vector).`,
 `Acceleration a = Δv/Δt — velocity changing per second.`,
@@ -144,7 +144,7 @@ add(S("f-matter", "Matter & Its States", "C", 0, [], "gas", 20,
 [{ n: "Diffusion", d: "Particles spread from high to low concentration." },
  { n: "Brownian motion", d: "Random particle jiggle — proof of molecular motion." }]));
 
-add(S("f-atoms", "Atoms, Molecules & Chemical Reactions", "C", 0, ["f-matter"], "atom", 25,
+add(S("f-atoms", "Atoms, Molecules & Chemical Reactions", "C", 0, ["f-matter"], "reaction-balancer", 25,
 `Chemistry's building blocks: atoms (nucleus + electrons) bond into molecules. A chemical reaction rearranges atoms — mass is conserved. Balancing equations is the first skill for mole concept and stoichiometry.`,
 [`Atom: protons (⁺), neutrons (0) in nucleus, electrons (⁻) around.`,
 `Element = one kind of atom; compound = atoms of 2+ elements bonded.`,
@@ -156,7 +156,7 @@ add(S("f-atoms", "Atoms, Molecules & Chemical Reactions", "C", 0, ["f-matter"], 
 [{ n: "Compound vs mixture", d: "Compound: fixed ratio, chemical change; mixture: physical blend." },
  { n: "Symbols", d: "One/two-letter Latin symbols: H, He, Na, Cl." }]));
 
-add(S("f-periodic", "Periodic Table Basics", "C", 0, ["f-atoms"], "crystal", 25,
+add(S("f-periodic", "Periodic Table Basics", "C", 0, ["f-atoms"], "trend-drift", 25,
 `The periodic table arranges elements by increasing atomic number, grouping elements with similar properties in columns. It's the master map of inorganic chemistry — trends explain bonding, reactivity and everything that follows.`,
 [`Periods (rows) add electron shells; groups (columns) share outer electron count.`,
 `Metals left/centre, non-metals right, metalloids on the staircase.`,
@@ -169,7 +169,7 @@ add(S("f-periodic", "Periodic Table Basics", "C", 0, ["f-atoms"], "crystal", 25,
 
 
 /* Physics */
-add(S("P-units", "Units, Dimensions & Errors", "P", 1, ["f-physics","f-arithmetic"], "vectors", 30,
+add(S("P-units", "Units, Dimensions & Errors", "P", 1, ["f-physics","f-arithmetic"], "dimension-checks", 30,
 `Dimensional analysis checks whether an equation is even possible by comparing the dimensions of every term. Combined with error analysis, it lets you verify answers fast — a huge JEE time-saver.`,
 [`Dimensions: [M]ᵃ[L]ᵇ[T]ᶜ for each quantity (force = MLT⁻²).`,
 `Only quantities with the same dimensions can be added/equated.`,
@@ -181,7 +181,7 @@ add(S("P-units", "Units, Dimensions & Errors", "P", 1, ["f-physics","f-arithmeti
 [{ n: "Limitation", d: "Dimensions can't fix dimensionless constants (π, e)." },
  { n: "Systematic vs random", d: "Systematic = bias; random = scatter, reduced by averaging." }]));
 
-add(S("P-kinematics", "Kinematics: Motion in 1D & 2D, Projectile", "P", 1, ["P-units","f-motion","f-trig","f-algebra"], "projectile", 45,
+add(S("P-kinematics", "Kinematics: Motion in 1D & 2D, Projectile", "P", 1, ["P-units","f-motion","f-trig","f-algebra"], "motion-graphs", 45,
 `Kinematics is the full toolkit for describing motion. The three equations of motion govern uniform acceleration; in 2D, horizontal and vertical motion are independent — giving projectile motion its parabolic path.`,
 [`Equations of motion hold only for uniform acceleration.`,
 `Gravity acts only vertically in projectiles — horizontal velocity stays constant.`,
@@ -196,7 +196,7 @@ add(S("P-kinematics", "Kinematics: Motion in 1D & 2D, Projectile", "P", 1, ["P-u
  { n: "Graph analysis", d: "Slope of x-t = velocity; area of v-t = displacement." },
  { n: "Uniform circular motion", d: "a = v²/r towards centre, v = ωr." }]));
 
-add(S("P-laws", "Laws of Motion & Friction", "P", 1, ["P-kinematics"], "collisions", 45,
+add(S("P-laws", "Laws of Motion & Friction", "P", 1, ["P-kinematics"], "force-bleed", 45,
 `Newton's three laws connect force and motion. A net force changes momentum (F = dp/dt). Friction — static and kinetic — opposes relative motion and is ubiquitous in JEE problems, along with free-body diagrams.`,
 [`1st law: no net force ⇒ no acceleration (inertia).`,
 `2nd law: F = ma (vector equation — split into components).`,
@@ -210,7 +210,7 @@ add(S("P-laws", "Laws of Motion & Friction", "P", 1, ["P-kinematics"], "collisio
  { n: "Pseudo force", d: "In an accelerated frame add −ma to apply Newton's laws." },
  { n: "Lift problems", d: "Apparent weight = m(g ± a)." }]));
 
-add(S("P-wpe", "Work, Power & Energy", "P", 1, ["P-laws"], "energy", 45,
+add(S("P-wpe", "Work, Power & Energy", "P", 1, ["P-laws"], "work-machines", 45,
 `Energy is the currency of physics. Work transfers energy; potential + kinetic sum to mechanical energy, conserved when only conservative forces act. This principle solves problems that kinematics cannot easily touch.`,
 [`Work W = F·d·cosθ (scalar product of force and displacement).`,
 `Kinetic energy KE = ½mv²; gravitational PE = mgh.`,
@@ -224,7 +224,7 @@ add(S("P-wpe", "Work, Power & Energy", "P", 1, ["P-laws"], "energy", 45,
  { n: "Non-conservative", d: "Friction dissipates energy as heat." },
  { n: "Pendulum", d: "KE ↔ PE exchange continuously." }]));
 
-add(S("P-rotation", "Rotational Motion", "P", 1, ["P-laws"], "rotation", 50,
+add(S("P-rotation", "Rotational Motion", "P", 1, ["P-laws"], "gyro-spin", 50,
 `Rotation generalises linear mechanics: torque plays the role of force, moment of inertia that of mass, angular momentum that of linear momentum. Everything rotates — wheels, gyroscopes, planets, electrons.`,
 [`τ = Iα (torque = moment of inertia × angular acceleration).`,
 `Moment of inertia depends on axis: ring ½MR²... (ring = MR², disc = ½MR², sphere = ⅖MR²).`,
@@ -238,7 +238,7 @@ add(S("P-rotation", "Rotational Motion", "P", 1, ["P-laws"], "rotation", 50,
  { n: "Gyroscope", d: "Torque changes the direction (not magnitude) of angular momentum." },
  { n: "Toppling", d: "Stability requires COM to stay inside the base." }]));
 
-add(S("P-gravitation", "Gravitation", "P", 1, ["P-kinematics"], "gravitation", 40,
+add(S("P-gravitation", "Gravitation", "P", 1, ["P-kinematics"], "orbit-prop", 40,
 `Newton's law of gravitation explains planetary orbits, tides and satellite motion. Kepler's laws describe how planets move; escape velocity and orbital velocity solve satellite problems.`,
 [`F = Gm₁m₂/r² — universal attraction between masses.`,
 `g on Earth's surface = 9.8 m/s²; g varies with altitude, depth and rotation.`,
@@ -252,7 +252,7 @@ add(S("P-gravitation", "Gravitation", "P", 1, ["P-kinematics"], "gravitation", 4
  { n: "Kepler III", d: "T² ∝ a³." },
  { n: "Weightlessness", d: "Free fall: normal reaction = 0." }]));
 
-add(S("P-shm", "Simple Harmonic Motion", "P", 1, ["P-wpe","M-trig"], "pendulum-lab", 45,
+add(S("P-shm", "Simple Harmonic Motion", "P", 1, ["P-wpe","M-trig"], "phase-circle", 45,
 `SHM is the prototype of all oscillations. A restoring force proportional to displacement drives sinusoidal motion. It's the foundation of waves, sound, AC circuits and molecular vibrations.`,
 [`Restoring force F = −kx gives acceleration a = −ω²x.`,
 `Displacement x = A sin(ωt + φ); ω = √(k/m) for spring, √(g/L) for pendulum.`,
@@ -280,7 +280,7 @@ add(S("M-sets", "Sets, Relations & Functions", "M", 1, ["f-algebra"], "venn", 40
 [{ n: "De Morgan", d: "(A∪B)ᶜ = Aᶜ∩Bᶜ and vice versa." },
  { n: "Graph of function", d: "Set of points (x, f(x)); even/odd symmetries." }]));
 
-add(S("M-quad", "Quadratic Equations & Inequalities", "M", 1, ["f-algebra"], "functions", 40,
+add(S("M-quad", "Quadratic Equations & Inequalities", "M", 1, ["f-algebra"], "parabola-walk", 40,
 `Quadratics are the most tested single topic in JEE. The discriminant decides the nature of roots; relations between roots and coefficients give quick answers. Inequalities and sign charts follow naturally.`,
 [`Roots via quadratic formula; discriminant D = b² − 4ac.`,
 `D > 0 two real roots, D = 0 one repeated root, D < 0 complex roots.`,
@@ -292,7 +292,7 @@ add(S("M-quad", "Quadratic Equations & Inequalities", "M", 1, ["f-algebra"], "fu
 [{ n: "Vertex", d: "Turning point at x = −b/2a." },
  { n: "Sign chart", d: "Solution of ax²+bx+c > 0 via intervals between roots." }]));
 
-add(S("M-complex", "Complex Numbers", "M", 1, ["M-quad"], "complex", 45,
+add(S("M-complex", "Complex Numbers", "M", 1, ["M-quad"], "complex-rotate", 45,
 `Complex numbers extend the reals by i = √−1. They are the algebra of rotation — multiplying by i rotates by 90°, and Euler's formula e^{iθ} = cosθ + i sinθ powers every AC and wave problem in physics.`,
 [`z = a + bi; modulus |z| = √(a²+b²); argument arg(z) = θ.`,
 `Polar form z = r(cosθ + i sinθ) = re^{iθ}.`,
@@ -306,7 +306,7 @@ add(S("M-complex", "Complex Numbers", "M", 1, ["M-quad"], "complex", 45,
  { n: "Roots of unity", d: "n-th roots lie on unit circle equally spaced." },
  { n: "Rotation", d: "Multiply by e^{iα} rotates by angle α." }]));
 
-add(S("M-seq", "Sequences & Series", "M", 1, ["f-algebra"], "functions", 40,
+add(S("M-seq", "Sequences & Series", "M", 1, ["f-algebra"], "sequence-stars", 40,
 `Sequences list numbers in order; series sum them. Arithmetic and geometric progressions are the workhorses — they appear in installments, growth/decay, compound interest and physics of damping.`,
 [`AP: a, a+d, ... n-th term aₙ = a+(n−1)d; sum = n/2(2a+(n−1)d).`,
 `GP: a, ar, ... aₙ = arⁿ⁻¹; sum = a(1−rⁿ)/(1−r); infinite sum a/(1−r), |r|<1.`,
@@ -319,7 +319,7 @@ add(S("M-seq", "Sequences & Series", "M", 1, ["f-algebra"], "functions", 40,
 [{ n: "AM/GM", d: "(a+b)/2 ≥ √(ab), equality at a=b." },
  { n: "Summation", d: "Σk = n(n+1)/2 · Σk² = n(n+1)(2n+1)/6." }]));
 
-add(S("M-trig", "Trigonometric Functions & Identities", "M", 1, ["f-trig","M-sets"], "unitcircle", 45,
+add(S("M-trig", "Trigonometric Functions & Identities", "M", 1, ["f-trig","M-sets"], "sine-circle", 45,
 `Extending ratios to all angles via the unit circle. Compound-angle, double-angle and transformation formulas turn trig expressions into algebra — essential for integration, waves, vectors and rotation matrices.`,
 [`Compound angles: sin(A±B), cos(A±B), tan(A±B).`,
 `Double angle: sin2A = 2sinAcosA; cos2A = cos²A − sin²A.`,
@@ -345,7 +345,7 @@ add(S("M-lines", "Straight Lines", "M", 1, ["M-trig","M-quad"], "line-lab", 40,
 [{ n: "Section formula", d: "Point dividing A-B in m:n ratio." },
  { n: "Angle between lines", d: "tanφ = |(m₁−m₂)/(1+m₁m₂)|." }]));
 
-add(S("M-perm", "Permutations & Combinations", "M", 1, ["f-stats"], "tree", 40,
+add(S("M-perm", "Permutations & Combinations", "M", 1, ["f-stats"], "slot-tree", 40,
 `Counting without listing: permutations arrange (order matters), combinations select (order doesn't). P&C is the engine behind probability and the binomial theorem.`,
 [`nPr = n!/(n−r)! — arranging r from n.`,
 `nCr = n!/(r!(n−r)!) — choosing r from n.`,
@@ -371,7 +371,7 @@ add(S("C-mole", "Mole Concept & Stoichiometry", "C", 1, ["f-atoms","f-arithmetic
 [{ n: "Empirical formula", d: "From % composition: divide by atomic mass, get integer ratio." },
  { n: "Dilution", d: "M₁V₁ = M₂V₂." }]));
 
-add(S("C-atomic", "Atomic Structure", "C", 1, ["C-mole"], "atom", 45,
+add(S("C-atomic", "Atomic Structure", "C", 1, ["C-mole"], "orbital-shell", 45,
 `How electrons arrange around the nucleus. The Bohr model explains hydrogen's spectrum; quantum mechanics gives orbitals (s, p, d, f). Quantum numbers and the aufbau principle order electrons into shells and subshells.`,
 [`Bohr: energy Eₙ = −13.6/n² eV for hydrogen.`,
 `de Broglie: λ = h/mv; Heisenberg uncertainty: Δx·Δp ≥ h/4π.`,
@@ -384,7 +384,7 @@ add(S("C-atomic", "Atomic Structure", "C", 1, ["C-mole"], "atom", 45,
 [{ n: "Isoelectronic", d: "Same electron count, different nuclear charge." },
  { n: "Photoelectric link", d: "E = hν — the same quantum idea appears in modern physics." }]));
 
-add(S("C-bonding", "Chemical Bonding", "C", 1, ["C-atomic","f-periodic"], "molecule", 45,
+add(S("C-bonding", "Chemical Bonding", "C", 1, ["C-atomic","f-periodic"], "lewis-orbit", 45,
 `Why atoms stick together: ionic (transfer), covalent (sharing), metallic. VSEPR predicts 3D shapes from electron-pair repulsion; hybridisation (sp, sp², sp³) explains geometry; polarity comes from electronegativity differences.`,
 [`Ionic: metal + non-metal, lattice of ions.`,
 `Covalent: shared pairs; bond order (single, double, triple).`,
@@ -396,7 +396,7 @@ add(S("C-bonding", "Chemical Bonding", "C", 1, ["C-atomic","f-periodic"], "molec
 [{ n: "Hydrogen bond", d: "Weak bond H–(F/O/N); explains water's anomalies." },
  { n: "Lattice energy", d: "Ionic crystals are held by strong Coulomb attraction." }]));
 
-add(S("C-gas", "States of Matter & Gaseous Laws", "C", 1, ["C-mole"], "gas", 40,
+add(S("C-gas", "States of Matter & Gaseous Laws", "C", 1, ["C-mole"], "boyle-chamber", 40,
 `Gases obey the ideal gas equation PV = nRT. Kinetic molecular theory explains pressure and temperature in terms of molecular motion. Real gases deviate — corrected by van der Waals forces.`,
 [`Boyle: P ∝ 1/V; Charles: V ∝ T; Avogadro: V ∝ n (same T,P).`,
 `Ideal gas: PV = nRT; R = 0.0821 L·atm/(mol·K).`,
@@ -409,7 +409,7 @@ add(S("C-gas", "States of Matter & Gaseous Laws", "C", 1, ["C-mole"], "gas", 40,
 [{ n: "Diffusion", d: "Graham: rate ∝ 1/√M." },
  { n: "Vapour pressure", d: "Pressure of vapour in equilibrium with liquid." }]));
 
-add(S("C-thermo", "Thermodynamics (Chemistry)", "C", 1, ["C-mole"], "calorimeter-lab", 40,
+add(S("C-thermo", "Thermodynamics (Chemistry)", "C", 1, ["C-mole"], "enthalpy-shot", 40,
 `Energy changes in reactions. Enthalpy (ΔH) measures heat at constant pressure; entropy (ΔS) measures disorder; Gibbs free energy ΔG = ΔH − TΔS decides spontaneity. Hess's law sums reaction enthalpies.`,
 [`Exothermic ΔH<0, endothermic ΔH>0.`,
 `Hess's law: ΔH is path-independent — add reaction steps.`,
@@ -422,7 +422,7 @@ add(S("C-thermo", "Thermodynamics (Chemistry)", "C", 1, ["C-mole"], "calorimeter
 [{ n: "Heat capacity", d: "q = mCΔT; C_v, C_p differ for gases." },
  { n: "Standard state", d: "ΔH°f, ΔH°c measured at 1 bar, 25°C." }]));
 
-add(S("C-equil", "Chemical Equilibrium", "C", 1, ["C-thermo"], "equilibrium", 45,
+add(S("C-equil", "Chemical Equilibrium", "C", 1, ["C-thermo"], "shift-balance", 45,
 `Most reactions don't go to completion — they settle at equilibrium. The equilibrium constant K (and Q, the reaction quotient) tells you the balance. Le Chatelier's principle predicts how balance shifts with stress.`,
 [`K = [products]/[reactants] (powers = coefficients), constant at fixed T.`,
 `K > 1 favours products; K < 1 favours reactants.`,
@@ -434,7 +434,7 @@ add(S("C-equil", "Chemical Equilibrium", "C", 1, ["C-thermo"], "equilibrium", 45
 [{ n: "Degree of dissociation", d: "α = moles dissociated / initial moles." },
  { n: "Extent", d: "K very large ⇒ reaction effectively complete." }]));
 
-add(S("C-ionic", "Ionic Equilibrium", "C", 1, ["C-equil"], "titration-lab", 45,
+add(S("C-ionic", "Ionic Equilibrium", "C", 1, ["C-equil"], "ph-titration", 45,
 `Equilibrium among ions in solution: acids, bases, salts and buffers. pH = −log[H⁺], weak acid/base dissociation (Ka, Kb), common-ion effect and buffer action (Henderson–Hasselbalch).`,
 [`pH 7 neutral; pH = −log₁₀[H⁺]; [H⁺][OH⁻] = 10⁻¹⁴ at 25°C.`,
 `Weak acid: Ka = [H⁺]²/c (approx, small α).`,
@@ -447,7 +447,7 @@ add(S("C-ionic", "Ionic Equilibrium", "C", 1, ["C-equil"], "titration-lab", 45,
 [{ n: "Solubility", d: "Ksp = product of ion concentrations at saturation." },
  { n: "Buffer", d: "Acidic: weak acid + its salt; basic: weak base + its salt." }]));
 
-add(S("C-redox", "Redox Reactions", "C", 1, ["C-atomic","f-periodic"], "electrolysis", 40,
+add(S("C-redox", "Redox Reactions", "C", 1, ["C-atomic","f-periodic"], "cell-stack", 40,
 `Oxidation = losing electrons, reduction = gaining. Redox powers electrochemistry, batteries, corrosion and a huge slice of inorganic reactions. Balancing by ion–electron method and oxidation numbers is a core skill.`,
 [`Oxidation number tracks electron ownership per atom.`,
 `Oxidising agent is reduced; reducing agent is oxidised.`,
@@ -484,7 +484,7 @@ add(S("C-orgbasic", "Organic Chemistry Basics: Nomenclature & Isomerism", "C", 1
  { n: "Reaction types", d: "Addition, elimination, substitution, rearrangement." }]));
 
 /* Physics */
-add(S("P-com", "Centre of Mass & Collisions", "P", 2, ["P-wpe"], "collisions", 50,
+add(S("P-com", "Centre of Mass & Collisions", "P", 2, ["P-wpe"], "com-balance", 50,
 `The centre of mass moves as if all mass were concentrated there and all external forces act there. Collisions conserve momentum (and energy only if elastic). This is the bridge between particle mechanics and extended bodies.`,
 [`COM: x_cm = Σmᵢxᵢ/Σmᵢ (weighted average of positions).`,
 `Momentum conservation: total p unchanged when no external force.`,
@@ -496,7 +496,7 @@ add(S("P-com", "Centre of Mass & Collisions", "P", 2, ["P-wpe"], "collisions", 5
 [{ n: "Inelastic", d: "KE lost to heat/sound; bodies may stick (e=0)." },
  { n: "Explosion", d: "Internal forces split a body; COM continues unaffected." }]));
 
-add(S("P-fluids", "Mechanical Properties of Solids & Fluids", "P", 2, ["P-laws","P-wpe"], "fluids", 45,
+add(S("P-fluids", "Mechanical Properties of Solids & Fluids", "P", 2, ["P-laws","P-wpe"], "pressure-tower", 45,
 `How materials respond to force: stress/strain, elasticity (Young's modulus), and how fluids flow — pressure, Archimedes' buoyancy, Bernoulli's equation, viscosity and surface tension.`,
 [`Stress/Strain: Young's modulus Y = FL/(A·ΔL).`,
 `Pressure in fluid: P = P₀ + ρgh; Pascal's law transmits pressure.`,
@@ -509,7 +509,7 @@ add(S("P-fluids", "Mechanical Properties of Solids & Fluids", "P", 2, ["P-laws",
 [{ n: "Viscosity", d: "Stokes: F = 6πηrv; terminal velocity ∝ r²." },
  { n: "Surface tension", d: "Force per unit length; capillary rise h = 2Tcosθ/(ρgr)." }]));
 
-add(S("P-thermal", "Thermal Properties & Heat Transfer", "P", 2, ["P-wpe"], "thermo", 40,
+add(S("P-thermal", "Thermal Properties & Heat Transfer", "P", 2, ["P-wpe"], "expand-rod", 40,
 `Heat, temperature and how energy flows: conduction, convection, radiation. Calorimetry tracks heat exchange (q = mcΔT), thermal expansion changes dimensions, and blackbody radiation leads to modern physics.`,
 [`Heat: q = mcΔT; phase change q = mL.`,
 `Conduction rate: dQ/dt = kAΔT/L.`,
@@ -522,7 +522,7 @@ add(S("P-thermal", "Thermal Properties & Heat Transfer", "P", 2, ["P-wpe"], "the
 [{ n: "Expansion", d: "ΔL = L₀αΔT; bimetallic strips bend." },
  { n: "Calorimetry", d: "Heat lost = heat gained (water equivalent of calorimeter)." }]));
 
-add(S("P-thermo", "Thermodynamics (Physics)", "P", 2, ["P-thermal","C-thermo"], "thermo", 45,
+add(S("P-thermo", "Thermodynamics (Physics)", "P", 2, ["P-thermal","C-thermo"], "cycle-pv", 45,
 `The laws of energy and entropy. First law: ΔU = Q − W. Processes (isothermal, adiabatic, isobaric, isochoric) change how work and heat enter. Entropy and the second law limit efficiency — Carnot's engine is the benchmark.`,
 [`First law: ΔU = Q − W (work done by gas).`,
 `Isothermal (T const): W = nRT ln(V₂/V₁); ΔU = 0.`,
@@ -535,7 +535,7 @@ add(S("P-thermo", "Thermodynamics (Physics)", "P", 2, ["P-thermal","C-thermo"], 
 [{ n: "Cyclic process", d: "ΔU = 0 over a full cycle; net W = net Q." },
  { n: "Entropy", d: "ΔS = Q_rev/T; total entropy of isolated system never decreases." }]));
 
-add(S("P-ktg", "Kinetic Theory of Gases", "P", 2, ["P-thermo","C-gas"], "gas", 40,
+add(S("P-ktg", "Kinetic Theory of Gases", "P", 2, ["P-thermo","C-gas"], "speed-dist", 40,
 `Gases modelled as billions of molecules in random motion. Pressure = molecular collisions with walls; temperature = average kinetic energy. Leads to PV = nRT and the equipartition of energy.`,
 [`Pressure: P = ⅓ρv̄² = ⅓(nm/V)v̄².`,
 `Average KE per molecule = (3/2)k_BT.`,
@@ -547,7 +547,7 @@ add(S("P-ktg", "Kinetic Theory of Gases", "P", 2, ["P-thermo","C-gas"], "gas", 4
 [{ n: "Degrees of freedom", d: "monoatomic f=3, diatomic f=5 (T not too high)." },
  { n: "Mean free path", d: "λ ∝ 1/(n·σ); inversely proportional to density." }]));
 
-add(S("P-waves", "Waves: Sound & Wave Motion", "P", 2, ["P-shm"], "standing-wave", 45,
+add(S("P-waves", "Waves: Sound & Wave Motion", "P", 2, ["P-shm"], "wave-superpose", 45,
 `Waves transfer energy without transferring matter. Transverse vs longitudinal; wave equation y = A sin(ωt − kx); superposition, interference, standing waves and resonance. Sound waves and the Doppler effect follow.`,
 [`Speed of wave v = fλ; on string v = √(T/μ); in air v = √(γP/ρ).`,
 `Standing waves: nodes (rest) and antinodes (max amplitude).`,
@@ -561,7 +561,7 @@ add(S("P-waves", "Waves: Sound & Wave Motion", "P", 2, ["P-shm"], "standing-wave
  { n: "Open/closed pipes", d: "Open both ends: all harmonics; closed: odd only." }]));
 
 /* Mathematics */
-add(S("M-binomial", "Binomial Theorem", "M", 2, ["M-perm"], "tree", 40,
+add(S("M-binomial", "Binomial Theorem", "M", 2, ["M-perm"], "pascal-triangle", 40,
 `Expanding (a+b)ⁿ without multiplying: (a+b)ⁿ = ΣⁿCᵣ aⁿ⁻ʳbʳ. General term, middle terms, greatest coefficient and the binomial series for fractional indices.`,
 [`General term T_{r+1} = ⁿCᵣ aⁿ⁻ʳbʳ.`,
 `Sum of all coefficients = 2ⁿ (put a=b=1).`,
@@ -573,7 +573,7 @@ add(S("M-binomial", "Binomial Theorem", "M", 2, ["M-perm"], "tree", 40,
 [{ n: "Approximation", d: "(1+x)ⁿ ≈ 1 + nx (|x|≪1, n real)." },
  { n: "Greatest term", d: "Compare successive term ratios." }]));
 
-add(S("M-circles", "Circles", "M", 2, ["M-lines"], "conics", 40,
+add(S("M-circles", "Circles", "M", 2, ["M-lines"], "circle-family", 40,
 `Circle: the set of points at fixed distance from a centre. Equation forms, tangents, chords, director circle, and intersection with lines — the geometry foundation that conic sections generalise.`,
 [`Standard: (x−h)² + (y−k)² = r².`,
 `General: x² + y² + 2gx + 2fy + c = 0, centre (−g,−f), r = √(g²+f²−c).`,
@@ -585,7 +585,7 @@ add(S("M-circles", "Circles", "M", 2, ["M-lines"], "conics", 40,
 [{ n: "Two circles", d: "Intersect, touch, or separate — check d vs r₁±r₂." },
  { n: "Radical axis", d: "Line of equal powers w.r.t. two circles." }]));
 
-add(S("M-conics", "Parabola, Ellipse & Hyperbola", "M", 2, ["M-circles"], "conics", 50,
+add(S("M-conics", "Parabola, Ellipse & Hyperbola", "M", 2, ["M-circles"], "conic-sweep", 50,
 `Conic sections are curves sliced from a cone. Parabola (e=1), ellipse (e<1), hyperbola (e>1) share the focus-directrix definition. Each has standard equations, chords, tangents, normals and focal properties.`,
 [`Parabola y² = 4ax: focus (a,0), directrix x = −a, latus rectum 4a.`,
 `Ellipse x²/a² + y²/b² = 1: c² = a²−b², e = c/a.`,
@@ -598,7 +598,7 @@ add(S("M-conics", "Parabola, Ellipse & Hyperbola", "M", 2, ["M-circles"], "conic
 [{ n: "Latus rectum", d: "Chord through focus perpendicular to axis." },
  { n: "Parametric", d: "Parabola (at², 2at); ellipse (acosθ, bsinθ)." }]));
 
-add(S("M-limits", "Limits & Continuity", "M", 2, ["M-sets","M-quad","M-trig"], "functions", 45,
+add(S("M-limits", "Limits & Continuity", "M", 2, ["M-sets","M-quad","M-trig"], "limit-climb", 45,
 `Limits formalise "approaching". They are the gateway to calculus. Standard limits (sinx/x → 1, (eˣ−1)/x → 1), L'Hôpital's rule, and continuity (no breaks in the graph).`,
 [`lim sinx/x = 1 as x→0; lim (1+x)^(1/x) = e.`,
 `L'Hôpital: 0/0 or ∞/∞ ⇒ differentiate numerator & denominator.`,
@@ -623,7 +623,7 @@ add(S("M-diff", "Differentiation & Its Applications", "M", 2, ["M-limits"], "sec
 [{ n: "Product/Quotient", d: "(uv)' = u'v + uv'; (u/v)' = (u'v−uv')/v²." },
  { n: "Log differentiation", d: "Take ln both sides for xˣ type functions." }]));
 
-add(S("M-vectors", "Vector Algebra", "M", 2, ["M-lines","M-trig"], "vectors", 45,
+add(S("M-vectors", "Vector Algebra", "M", 2, ["M-lines","M-trig"], "vector-field", 45,
 `Vectors carry magnitude and direction. Scalar (dot) product measures projection; vector (cross) product measures area/rotation. Vectors are the language of mechanics, electrostatics, magnetism and 3D geometry.`,
 [`Dot: a·b = |a||b|cosθ — scalar, commutative.`,
 `Cross: a×b = |a||b|sinθ n̂ — vector, anticommutative.`,
@@ -635,7 +635,7 @@ add(S("M-vectors", "Vector Algebra", "M", 2, ["M-lines","M-trig"], "vectors", 45
 [{ n: "Projection", d: "Projection of a on b = (a·b)/|b|." },
  { n: "Area", d: "|a×b| = area of parallelogram." }]));
 
-add(S("M-prob", "Probability", "M", 2, ["M-perm","M-sets"], "binomial-dist", 45,
+add(S("M-prob", "Probability", "M", 2, ["M-perm","M-sets"], "urn-draw", 45,
 `Formal probability: sample space, events, conditional probability, Bayes' theorem, and random variables. Bernoulli trials and binomial distribution model repeated independent experiments.`,
 [`P(A|B) = P(A∩B)/P(B).`,
 `Bayes: P(A|B) = P(B|A)P(A) / Σ P(B|Aᵢ)P(Aᵢ).`,
@@ -647,7 +647,7 @@ add(S("M-prob", "Probability", "M", 2, ["M-perm","M-sets"], "binomial-dist", 45,
 [{ n: "Random variable", d: "Mean E[X] = Σxp(x); variance = E[X²] − (E[X])²." },
  { n: "Mutually exclusive", d: "P(A∪B) = P(A)+P(B) when A∩B = ∅." }]));
 
-add(S("M-stats", "Statistics & Mathematical Reasoning", "M", 2, ["f-stats","M-perm"], "functions", 35,
+add(S("M-stats", "Statistics & Mathematical Reasoning", "M", 2, ["f-stats","M-perm"], "box-whisker", 35,
 `Statistics: mean, median, variance, standard deviation of raw and grouped data. Mathematical reasoning: statements, quantifiers, truth tables, valid/invalid arguments and reasoning — a guaranteed easy marks chapter.`,
 [`Variance σ² = Σ(xᵢ−x̄)²/n; SD = √σ².`,
 `Shortcut: σ² = Σxᵢ²/n − x̄².`,
@@ -732,7 +732,7 @@ add(S("C-surface", "Surface Chemistry", "C", 2, ["C-equil"], "particles", 30,
 
 
 /* Physics */
-add(S("P-electro", "Electrostatics & Capacitance", "P", 3, ["P-units","M-vectors","C-atomic"], "field-dipole", 55,
+add(S("P-electro", "Electrostatics & Capacitance", "P", 3, ["P-units","M-vectors","C-atomic"], "field-line", 55,
 `Electric charges, fields and potentials. Coulomb's law, Gauss's law, potential energy, capacitors and dielectrics. Electrostatics is the conceptual core of all of electricity and magnetism.`,
 [`Coulomb: F = kq₁q₂/r², k = 1/4πε₀ = 9×10⁹ Nm²/C².`,
 `Field E = F/q; potential V = kq/r; E = −dV/dr.`,
@@ -745,7 +745,7 @@ add(S("P-electro", "Electrostatics & Capacitance", "P", 3, ["P-units","M-vectors
 [{ n: "Dipole", d: "p = q·2a; torque τ = p×E." },
  { n: "Dielectric", d: "Reduces field by k: C = kC₀." }]));
 
-add(S("P-current", "Current Electricity", "P", 3, ["P-electro"], "drift-lab", 50,
+add(S("P-current", "Current Electricity", "P", 3, ["P-electro"], "ohm-walk", 50,
 `Electric current, resistance, Ohm's law, Kirchhoff's rules, and circuit analysis. Heating (Joule's law), series/parallel, metre bridge, potentiometer and instruments. The most calculation-heavy physics chapter.`,
 [`Ohm: V = IR; resistance R = ρL/A.`,
 `Kirchhoff: junction (current in = out) + loop (ΣV = 0).`,
@@ -758,7 +758,7 @@ add(S("P-current", "Current Electricity", "P", 3, ["P-electro"], "drift-lab", 50
 [{ n: "Wheatstone", d: "Balanced bridge: P/Q = R/S." },
  { n: "Thermoelectric", d: "Seebeck effect: temperature difference → EMF." }]));
 
-add(S("P-magnet", "Magnetic Effects of Current & Magnetism", "P", 3, ["P-current","M-vectors"], "cyclotron-lab", 50,
+add(S("P-magnet", "Magnetic Effects of Current & Magnetism", "P", 3, ["P-current","M-vectors"], "field-coil", 50,
 `Currents make magnetic fields. Biot–Savart law, Ampere's law, force on moving charges (Lorentz) and current-carrying conductors, plus the magnetic properties of materials.`,
 [`Biot–Savart: dB = μ₀I dl×r̂/(4πr²).`,
 `Straight wire: B = μ₀I/2πr; loop centre: B = μ₀I/2R; solenoid: B = μ₀nI.`,
@@ -771,7 +771,7 @@ add(S("P-magnet", "Magnetic Effects of Current & Magnetism", "P", 3, ["P-current
 [{ n: "Cyclotron motion", d: "Charged particle spirals; r = mv/qB." },
  { n: "Earth's magnetism", d: "Declination, dip, horizontal component." }]));
 
-add(S("P-emi", "Electromagnetic Induction", "P", 3, ["P-magnet"], "emi", 50,
+add(S("P-emi", "Electromagnetic Induction", "P", 3, ["P-magnet"], "flux-coil", 50,
 `Changing magnetic flux induces EMF. Faraday's law, Lenz's law (energy conservation), motional EMF, self/mutual inductance and energy in inductors. This chapter powers generators and transformers.`,
 [`Faraday: ε = −dΦ/dt; Φ = BA cosθ.`,
 `Lenz: induced current opposes the change that produced it.`,
@@ -784,7 +784,7 @@ add(S("P-emi", "Electromagnetic Induction", "P", 3, ["P-magnet"], "emi", 50,
 [{ n: "Transformer", d: "V₂/V₁ = N₂/N₁ (ideal)." },
  { n: "Eddy currents", d: "Circulating currents from changing flux; braking." }]));
 
-add(S("P-ac", "Alternating Current", "P", 3, ["P-emi"], "ac", 45,
+add(S("P-ac", "Alternating Current", "P", 3, ["P-emi"], "phasor-plot", 45,
 `AC: voltage and current that oscillate at 50 Hz. RMS values, impedance of R, L, C, resonance in series LCR, power factor and transformers.`,
 [`V_rms = V₀/√2; I_rms = I₀/√2.`,
 `Impedance: Z = √(R² + (X_L−X_C)²); X_L = ωL, X_C = 1/ωC.`,
@@ -797,7 +797,7 @@ add(S("P-ac", "Alternating Current", "P", 3, ["P-emi"], "ac", 45,
 [{ n: "Phasors", d: "Vectors in rotating reference represent AC quantities." },
  { n: "LC oscillation", d: "Energy sloshes between capacitor and inductor." }]));
 
-add(S("P-emw", "Electromagnetic Waves", "P", 3, ["P-emi"], "polarizer-lab", 40,
+add(S("P-emw", "Electromagnetic Waves", "P", 3, ["P-emi"], "em-wave", 40,
 `Maxwell unified electricity and magnetism: changing fields generate each other, propagating as EM waves at c = 3×10⁸ m/s. The EM spectrum spans radio to gamma rays.`,
 [`c = 1/√(μ₀ε₀) = 3 × 10⁸ m/s.`,
 `E and B in phase, perpendicular to each other and to propagation.`,
@@ -809,7 +809,7 @@ add(S("P-emw", "Electromagnetic Waves", "P", 3, ["P-emi"], "polarizer-lab", 40,
 [{ n: "Applications", d: "UV sterilisation, X-ray imaging, γ therapy." },
  { n: "Poynting", d: "Energy flows along propagation direction." }]));
 
-add(S("P-rayoptics", "Ray Optics", "P", 3, ["f-geometry","M-trig"], "optics", 45,
+add(S("P-rayoptics", "Ray Optics", "P", 3, ["f-geometry","M-trig"], "ray-mirror", 45,
 `Light as rays: reflection, refraction, Snell's law, lenses and mirrors with their sign conventions, prisms, total internal reflection, optical instruments (microscope, telescope).`,
 [`Snell: n₁sinθ₁ = n₂sinθ₂; TIR when θ > critical angle.`,
 `Mirror: 1/f = 1/v + 1/u; f = R/2.`,
@@ -822,7 +822,7 @@ add(S("P-rayoptics", "Ray Optics", "P", 3, ["f-geometry","M-trig"], "optics", 45
 [{ n: "TIR", d: "Fiber optics, mirage, diamond brilliance." },
  { n: "Prism", d: "δ = i₁ + i₂ − A; minimum deviation at symmetric pass." }]));
 
-add(S("P-waveoptics", "Wave Optics", "P", 3, ["P-rayoptics","P-waves"], "double-slit", 45,
+add(S("P-waveoptics", "Wave Optics", "P", 3, ["P-rayoptics","P-waves"], "interfere-fringe", 45,
 `Light as waves: Huygens' principle, interference (Young's double slit), diffraction, and polarisation. Wave nature explains effects rays cannot.`,
 [`YDSE: fringe width β = λD/d.`,
 `Path difference = nλ constructive, (n+½)λ destructive.`,
@@ -835,7 +835,7 @@ add(S("P-waveoptics", "Wave Optics", "P", 3, ["P-rayoptics","P-waves"], "double-
 [{ n: "Coherence", d: "Constant phase difference ⇒ sustained interference." },
  { n: "Polaroid", d: "Selective absorption; sunglasses, 3D glasses." }]));
 
-add(S("P-dual", "Dual Nature of Matter & Photoelectric Effect", "P", 3, ["P-emw","C-atomic"], "photo", 45,
+add(S("P-dual", "Dual Nature of Matter & Photoelectric Effect", "P", 3, ["P-emw","C-atomic"], "photoelectric-plot", 45,
 `Light behaves as particles (photons); matter behaves as waves. Photoelectric effect proved quantisation. Einstein's equation, work function, threshold frequency, and de Broglie wavelength.`,
 [`Photon energy E = hν = hc/λ; momentum p = h/λ.`,
 `Photoelectric: KE_max = hν − φ = eV₀.`,
@@ -847,7 +847,7 @@ add(S("P-dual", "Dual Nature of Matter & Photoelectric Effect", "P", 3, ["P-emw"
 [{ n: "Stopping potential", d: "V₀ = (hν − φ)/e." },
  { n: "Matter waves", d: "Electron microscope uses λ_e ≈ 0.05 nm." }]));
 
-add(S("P-atoms", "Atoms & Nuclei", "P", 3, ["P-dual"], "nucleus", 45,
+add(S("P-atoms", "Atoms & Nuclei", "P", 3, ["P-dual"], "spectrum-ladder", 45,
 `Inside atoms and nuclei: Bohr model, hydrogen spectrum, radioactivity (α, β, γ), decay laws, half-life, binding energy, nuclear fission and fusion.`,
 [`Bohr: Eₙ = −13.6/n² eV; spectral lines from level transitions.`,
 `Radioactive decay: N = N₀e^{−λt}; t½ = 0.693/λ.`,
@@ -860,7 +860,7 @@ add(S("P-atoms", "Atoms & Nuclei", "P", 3, ["P-dual"], "nucleus", 45,
 [{ n: "α decay", d: "He-4 nucleus emitted; Z−2, A−4." },
  { n: "β decay", d: "Neutron → proton + electron; Z+1, A same." }]));
 
-add(S("P-semi", "Semiconductors & Logic Gates", "P", 3, ["P-dual","C-bonding"], "transistor-lab", 45,
+add(S("P-semi", "Semiconductors & Logic Gates", "P", 3, ["P-dual","C-bonding"], "diode-curve", 45,
 `The physics of electronics: energy bands, intrinsic/extrinsic semiconductors, p-n junction diode, rectifiers, transistors, and digital logic gates. The most scoring chapter for JEE Main.`,
 [`Band gap: insulators > 3 eV, semiconductors ~1 eV, conductors 0.`,
 `p-type: acceptor (trivalent) dopant → holes; n-type: donor (pentavalent) → electrons.`,
@@ -873,7 +873,7 @@ add(S("P-semi", "Semiconductors & Logic Gates", "P", 3, ["P-dual","C-bonding"], 
  { n: "Rectifier", d: "Half-wave vs full-wave; ripple filtered by capacitor." }]));
 
 /* Mathematics */
-add(S("M-3dgeo", "Three-Dimensional Geometry", "M", 3, ["M-vectors"], "3dgeo", 50,
+add(S("M-3dgeo", "Three-Dimensional Geometry", "M", 3, ["M-vectors"], "solid-spin", 50,
 `Geometry in space: direction cosines, lines and planes in 3D, angles and distances between them, and the shortest distance between skew lines. Direct application of vector algebra.`,
 [`Direction ratios (a,b,c): line x = x₁ + at, ...`,
 `Line: (x−x₁)/a = (y−y₁)/b = (z−z₁)/c.`,
@@ -885,7 +885,7 @@ add(S("M-3dgeo", "Three-Dimensional Geometry", "M", 3, ["M-vectors"], "3dgeo", 5
 [{ n: "Skew lines", d: "Shortest distance via common perpendicular." },
  { n: "Angle between planes", d: "cosφ = |n₁·n₂|/|n₁||n₂|." }]));
 
-add(S("M-integ", "Indefinite Integration", "M", 3, ["M-diff"], "integral", 50,
+add(S("M-integ", "Indefinite Integration", "M", 3, ["M-diff"], "area-sweep", 50,
 `Integration is antidifferentiation — and the tool that calculus uses to accumulate. Techniques: substitution, by parts, partial fractions, standard forms.`,
 [`∫xⁿdx = xⁿ⁺¹/(n+1) + C (n ≠ −1).`,
 `By parts: ∫u dv = uv − ∫v du (LIATE order).`,
@@ -897,7 +897,7 @@ add(S("M-integ", "Indefinite Integration", "M", 3, ["M-diff"], "integral", 50,
 [{ n: "Partial fractions", d: "Split rational functions into simpler pieces." },
  { n: "Trick", d: "For ∫eˣ(f+f')dx = eˣf + C." }]));
 
-add(S("M-defint", "Definite Integration & Area", "M", 3, ["M-integ"], "integral", 50,
+add(S("M-defint", "Definite Integration & Area", "M", 3, ["M-integ"], "reimann-slices", 50,
 `Definite integrals give net area and accumulated change. Properties (symmetry, periodic), substitution with limits, and area between curves. Newton-Leibniz theorem connects integration to antiderivatives.`,
 [`∫ₐᵇ f(x)dx = F(b) − F(a) (F = antiderivative).`,
 `Even function: ∫₋ₐᵃ f = 2∫₀ᵃ f; odd: 0.`,
@@ -909,7 +909,7 @@ add(S("M-defint", "Definite Integration & Area", "M", 3, ["M-integ"], "integral"
 [{ n: "Periodic", d: "∫ₐ^{a+nT} f = n∫₀ᵀ f if f has period T." },
  { n: "Wallis", d: "∫₀^{π/2} sinⁿx dx reduction formula." }]));
 
-add(S("M-diffeq", "Differential Equations", "M", 3, ["M-integ"], "slope-field", 45,
+add(S("M-diffeq", "Differential Equations", "M", 3, ["M-integ"], "slope-flow", 45,
 `Equations with derivatives. Order & degree, variable-separable, homogeneous, linear (integrating factor), and applications (growth/decay, cooling, population).`,
 [`Variable separable: rearrange, integrate both sides.`,
 `Homogeneous: y = vx substitution.`,
@@ -1191,48 +1191,57 @@ export const ALL_CONCEPTS = Object.values(CONCEPTS);
 /* Derivations: each concept's key result shown as a chain from basic principles. */
 export const DERIVATIONS = {
   "f-numbers": "Counting gives the naturals; requiring subtraction closes them to integers and division to rationals p/q. Irrationals like √2 (provably irrational by infinite descent) fill the gaps, and limits complete the real line so it is dense — between any two reals there is always another. Axioms, the least upper bound property, and the Archimedean ordering make real arithmetic rigorous. Complex numbers then add √−1=i so every quadratic resolves, with z=a+bi and modulus |z|=√(a²+b²). Euler's identity e^{iθ}=cosθ+i sinθ unifies exponential and trigonometric worlds.",
-  "f-arithmetic": "A percentage is a fraction scaled to 100; comparing ratios is cross-multiplication a/b vs c/d ⟺ ad vs bc. Unitary method and proportional change (new = old × (1±r/100)) follow from treating one unit as the base.",
+  "f-arithmetic": "Step 1 — A percentage is a fraction with denominator 100: 30% means 30/100 = 0.30. Step 2 — Ratios compare by cross-multiplying: a/b versus c/d is decided by comparing ad and bc. Step 3 — A change of r% scales the original: new = old × (1 + r/100) for growth, old × (1 − r/100) for reduction. Step 4 — Successive changes compound by multiplication: two 10% rises multiply to 1.1 × 1.1 = 1.21, a net 21% not 20%. Step 5 — Compound interest repeats the scaling C = P(1 + r/100)^t; the unitary method finds the one-unit base first.",
+
   "f-algebra": "An equation is a balanced scale: whatever you do to one side you do to the other, so ax+b=c inverts to x=(c−b)/a. Factorisation inverts expansion (x+a)(x+b)=x²+(a+b)x+ab, so solving quadratics is undoing a product. The zero product property splits (x−r₁)(x−r₂)=0 into two linear equations. Algebraic identities (difference of squares, perfect squares, cube sums) restructure expressions, and inequalities follow the same balance law with a flip when multiplied by a negative. Systems of linear equations solve by substitution, elimination, or matrix row-reduction.",
-  "f-geometry": "Euclid built everything from a few postulates: angles of a triangle sum to 180° via the parallel postulate, and Pythagoras follows from cutting a square of side a+b into two smaller squares plus four triangles — equating areas gives a²+b²=c².",
-  "f-mensuration": "Area counts unit squares, so a rectangle is length×breadth and a triangle is half its bounding rectangle. Volume stacks area along a height (cuboid = base×height), and curved figures (circle, sphere) are pinned down by limits — circles as many-sided polygons.",
+  "f-geometry": "Step 1 — Euclidean shapes follow from a few postulates; the triangle angle sum is 180° because a transversal across parallels makes alternate angles equal. Step 2 — Congruent figures match exactly under SSS, SAS or ASA; similar figures scale, keeping corresponding sides proportional. Step 3 — Pythagoras drops a perpendicular from the right angle and uses the similarity of the two smaller triangles to prove c² = a² + b². Step 4 — Areas reduce to rectangles: triangle ½·base·height, circle πr², trapezium ½(a + b)·h. Step 5 — Similar figures scale areas by the square of the length ratio and volumes by the cube.",
+
+  "f-mensuration": "Step 1 — A prism's volume is base area × height, and its lateral surface unwraps into rectangles. Step 2 — A cylinder is a prism with circular base: V = πr²h with curved surface 2πrh. Step 3 — A cone is one-third of its enclosing cylinder: V = ⅓πr²h with curved surface πrl, where l = √(r² + h²) is the slant height. Step 4 — A sphere has V = 4/3·πr³ and A = 4πr², enclosing the greatest volume for the least surface. Step 5 — Standalone shapes split into these primitives; remove holes, add shells, and keep every dimension in the same units.",
+
   "f-trig": "Similar right triangles fix the side ratios sin/cos/tan that depend only on the angle. The unit-circle extension defines them for any angle, converting repeating motion into rotating coordinates. The Pythagorean identity sin²+cos²=1 and the angle-sum formulas (sin(A+B), cos(A+B)) are all derivable from the circle's geometry. Radian measure ties angle to arc length: s=rθ, so trig becomes calculus-ready. Period 2π and the graph transformations (amplitude, phase, period) complete the toolkit.",
-  "f-stats": "Averages are balance points of data: mean = Σx/n distributes the total evenly. Spread is measured by deviations, squared to remove sign (variance = E[(x−μ)²]), and probability counts favourable outcomes out of equally likely ones.",
+  "f-stats": "Step 1 — Data condenses into ordered lists or frequency tables before any measure is computed. Step 2 — The mean is the balance point: x̄ = Σfᵢxᵢ/Σfᵢ with f the frequencies. Step 3 — The median is the middle of sorted data, splitting the mass in half and shrugging off outliers. Step 4 — The mode is the most frequent value or class, read straight from the table. Step 5 — Spread matters as much as location: the range is crude, the mean deviation Σ|x − x̄|/n is fair, and variance σ² = Σf(x − x̄)²/N squares every deviation so none cancels; σ is its square root.",
+
   "f-physics": "Physics begins with measurement: every quantity is a number times a unit, and dimensions must match across an equation. Dimensional analysis (setting exponents of [M],[L],[T]) can derive and check formulas without full derivation. Errors — absolute, relative, and percentage — quantify uncertainty, and significant figures keep honesty in answers. The SI base set (metre, kilogram, second, ampere, kelvin, mole, candela) plus derived units (newton, joule, watt from combinations) put every measurement on one scale. Scalars (magnitude) vs vectors (magnitude + direction) is the first modelling choice of every problem.",
-  "f-motion": "Average speed is distance/time; shrinking the time interval to nothing gives instantaneous speed as a limit, the derivative. Acceleration is the rate of change of velocity, so motion with constant a builds v=u+at and s=ut+½at² by integration.",
+  "f-motion": "Step 1 — Distance is total path length while displacement is straight-line change of position; speed = distance/time, velocity = displacement/time. Step 2 — In uniform motion the distance–time graph is a straight line whose slope is the speed. Step 3 — Acceleration curves the graph: for constant a the displacement is s = ut + ½at², exactly the average of starting and ending velocities over the time. Step 4 — Uniform circular motion always changes direction, so it accelerates toward the centre with a = v²/r even though the speed never changes. Step 5 — Relative motion subtracts velocity vectors: approaching bodies close with the sum of their speeds along the line, overtaking ones with the difference.",
+
   "f-matter": "Matter is made of moving particles; the three states differ in inter-particle spacing and energy (solid held, liquid sliding, gas free). Adding or removing energy changes state at constant temperature — latent heat — because the energy goes into separation, not speed.",
-  "f-atoms": "Chemistry is atoms recombining. Reactions conserve atoms (and so mass), which is why equations balance; the mole (6.022×10²³ particles) connects the count of atoms to weighable grams through atomic mass.",
-  "f-periodic": "The periodic table sorts elements by proton count; as shells fill, size, ionisation energy and electronegativity vary periodically. Elements in a group share the same valence configuration, which is what their chemistry really is.",
-  "P-units": "Start with seven base units (kg, m, s, A, K, mol, cd) and build every other quantity from them. A physical equation must be dimensionally homogeneous: both sides carry identical [M L T] powers, so checking dimensions catches wrong formulas instantly. Assume a relation like T ∝ l^a g^b, match powers of M, L, T on both sides, and solve to get a = 1/2, b = −1/2 — this is how dimensional analysis derives the pendulum period up to a constant. In measurements, addition keeps decimal places while multiplication keeps significant figures, and fractional errors add in products (ΔR/R = ΔA/A + ΔB/B) but blow up with powers (a relative error δ in x becomes nδ in x^n). Least count sets the floor: no reading is more precise than one scale division.",
-  "P-kinematics": "Position x(t) differentiates to velocity v = dx/dt, and velocity differentiates to acceleration a = dv/dt — area under a–t is Δv, area under v–t is displacement. For constant acceleration, integrating once gives v = u + at, integrating again gives x = ut + at²/2, and eliminating t between them gives v² = u² + 2ax. Projectile motion splits cleanly: horizontal velocity stays u·cosθ while vertical motion is free fall with u·sinθ, so eliminating t yields the parabola y = x·tanθ − gx²/(2u²cos²θ). Time of flight 2u·sinθ/g and range R = u²sin2θ/g follow by setting y = 0, with maximum height H = u²sin²θ/2g at the vertex. Maximum range lands at θ = 45°, and complementary angles give equal ranges. Relative velocity is vector subtraction: velocity of A as seen from B is v_A − v_B, which turns river-boat and rain-man problems into single-body motion.",
-  "P-laws": "Force is defined as the rate of change of momentum F = dp/dt, which reduces to F = ma for constant mass — the second law contains the first (F = 0 keeps v constant) and the third (action–reaction pairs on different bodies). Free-body diagrams isolate one body: weight down, normal perpendicular to the surface, tension along strings, friction opposing relative motion or its tendency. Static friction self-adjusts up to the cap f_max = μ_s·N, while kinetic friction stays fixed at μ_k·N, with the angle of repose satisfying tanθ = μ_s. Connected bodies share constraint relations from fixed string lengths (e.g. a₁ + 2a₂ = 0 for a movable pulley), and solving F = ma along each allowed direction with these constraints cracks every pulley problem. In accelerating frames add the pseudo-force −ma₀ opposite the frame's acceleration, and in circular motion the required centripetal force mv²/r must be supplied by tension, friction, or a banked-road component.",
-  "P-wpe": "Work is the path integral W = ∫F·ds, positive when force has a component along displacement. Substituting F = ma and integrating over displacement gives the work–energy theorem W_net = ΔK, so you never need time when displacement and speeds are known. Power is the rate P = dW/dt = F·v, with 1 HP = 746 W. A force is conservative exactly when its work is path-independent, letting us define potential energy through F = −dU/dx: gravity gives U = mgh and springs give U = kx²/2. Mechanical energy E = K + U is then conserved whenever only conservative forces act, which solves oscillations, slides, and orbits in one line. For a vertical circle, energy plus radial dynamics N + mg·cosθ = mv²/r demands v_top ≥ √(gr) to keep the string taut (N ≥ 0). Elastic collisions conserve both momentum and kinetic energy, giving v₁ = (m₁−m₂)u₁/(m₁+m₂) + 2m₂u₂/(m₁+m₂) in 1D, while perfectly inelastic ones stick together and lose maximum energy.",
-  "P-rotation": "Rotation mirrors translation exactly: torque τ = r×F replaces force, moment of inertia I = Σmr² (or ∫r²dm) replaces mass, and τ = Iα replaces F = ma. Standard results come from integration: rod about centre ML²/12, ring MR², disc MR²/2, solid sphere 2MR²/5, with parallel axes I = I_cm + Md² and perpendicular axes I_z = I_x + I_y for laminas. Pure rolling ties translation to spin through v = ωR, so kinetic energy splits as K = mv²/2 + Iω²/2 and instantaneous contact-point velocity vanishes. Angular momentum L = Iω (or r×p) is conserved when net external torque is zero, which is why a collapsing skater spins faster and planets sweep equal areas. Static equilibrium needs both ΣF = 0 and Στ = 0, and toppling begins when the normal reaction shifts to the edge.",
-  "P-gravitation": "Kepler's ellipses with the Sun at a focus imply a central inverse-square force, which Newton identifies as F = GMm/r² between point masses (or outside uniform spheres). Surface gravity g = GM/R² falls with height as g(1 − 2h/R) for h ≪ R and with depth as g(1 − d/R), vanishing at the centre. A satellite needs centripetal balance mv²/r = GMm/r², giving orbital speed √(GM/r) and Kepler's third law T² = 4π²r³/GM. Escape velocity follows from zero total energy: (1/2)mv² = GMm/R gives v_e = √(2GM/R) = √(2gR) ≈ 11.2 km/s on Earth. Bound orbits carry negative total energy E = −GMm/2r, so the binding energy GMm/2r is the work needed to free the satellite. Geostationary orbits sit at ≈35,800 km with a 24 h period in the equatorial plane.",
-  "P-shm": "A restoring force F = −kx gives acceleration a = −(k/m)x, and since the second derivative of sine is minus itself, x = A·sin(ωt + φ) with ω = √(k/m) is the solution. Velocity v = ω√(A² − x²) peaks at the centre while acceleration a = −ω²x peaks at the extremes, and energy ½kA² sloshes between kinetic ½mv² and potential ½kx². The simple pendulum is SHM for small angles with ω = √(g/l), so T = 2π√(l/g) — this is where the dimensional guess from units gets its 2π. Springs in parallel add stiffness (k = k₁ + k₂) while series springs share extension (1/k = 1/k₁ + 1/k₂). Forced oscillation at the natural frequency builds amplitude without bound (resonance), while damping bleeds energy and lowers the peak.",
-  "P-com": "The centre of mass R = Σmᵢrᵢ/Σmᵢ moves as if all mass and external force lived there: M·dV/dt = F_ext, with internal forces cancelling pairwise. In collisions momentum is always conserved, and the coefficient of restitution e = (separation speed)/(approach speed) grades elasticity from e = 1 (elastic) to e = 0 (stuck together). For 1D elastic impact the velocities exchange cleanly when masses are equal, and the general formulas follow from solving momentum plus energy together. Oblique impact splits into components: tangential velocities pass through unchanged while the normal direction obeys the 1D restitution rule. Explosions and variable-mass systems (rockets, thrust = v_rel·dm/dt) are momentum conservation with changing mass. The centre-of-mass frame, where total momentum is zero, makes every collision symmetric and the algebra far shorter.",
-  "P-fluids": "Pressure is force per area, and a fluid column pushes with its own weight, giving hydrostatic p = p₀ + ρgh with pressure equal at equal depths. Pascal's principle transmits applied pressure undiminished, which is the entire idea behind hydraulic lifts. Archimedes follows from pressure on a submerged body: buoyant force equals the weight of displaced fluid, so floating needs average density below the fluid's. Steady flow obeys continuity A₁v₁ = A₂v₂, and applying work–energy to a fluid element yields Bernoulli p + ρv²/2 + ρgh = constant along a streamline. A draining tank is Bernoulli with one free surface: Torricelli v = √(2gh). Viscous drag grows with speed (Stokes F = 6πηrv for spheres), so falling bodies approach a terminal velocity where drag balances weight.",
-  "P-thermal": "Temperature measures average molecular kinetic energy, so heat flows spontaneously from hot to cold until equilibrium. Solids expand as ΔL = LαΔT (area 2α, volume 3α for isotropic bodies), with bimetallic strips bending from differential expansion. Calorimetry balances heat lost against heat gained: Q = msΔT for temperature change plus Q = mL at phase changes, with the mixture settling where the books balance. Conduction carries Q/t = kAΔT/d through slabs (resistances add in series like electrical ones), convection moves fluid, and radiation needs no medium. Newton's law of cooling dT/dt ∝ ΔT integrates to exponential decay toward ambient. Blackbodies radiate E = σT⁴ (Stefan–Boltzmann) with peak wavelength sliding as λT = b (Wien), which is how stellar temperatures are read from colour.",
-  "P-thermo": "The first law ΔU = Q − W is energy conservation with sign discipline: heat in and work out are positive. Isothermal processes hold T fixed so PV = constant and ΔU = 0, with work W = nRT·ln(V₂/V₁) as the area under the hyperbola. Adiabatic processes exchange no heat, so PV^γ = constant and all work comes from internal energy: W = (P₁V₁ − P₂V₂)/(γ − 1). Isochoric processes do no work (all heat becomes ΔU) and isobaric ones do W = PΔV. Applying the first law to heating at constant pressure versus volume, using PV = nRT, proves Mayer's relation Cp − Cv = R. The Carnot cycle (two isotherms + two adiabats) is the most efficient possible engine with η = 1 − Tc/Th, and the second law (no perfect engine, no unaided uphill heat flow) makes entropy the arrow of time.",
-  "P-ktg": "Gas pressure is molecular bombardment: each wall hit transfers ≈2mvₓ, and averaging over directions gives P = (1/3)ρv_rms². Combining with PV = nRT shows internal energy is purely kinetic, U = (3/2)nRT for a monatomic gas. Equipartition grants (1/2)kT per quadratic degree of freedom, so Cv = fR/2 with f = 3 (mono), 5 (diatomic), 6+ (polyatomic), and γ = Cp/Cv = 1 + 2/f. Root-mean-square speed v_rms = √(3RT/M) outruns the average speed, and both grow as √T while Graham's law makes effusion rate scale as 1/√M. Mean free path λ = 1/(√2πd²n) explains why gases diffuse slowly despite molecular speeds near the speed of sound. Real gases deviate at high pressure and low temperature, where the van der Waals terms (P + a(n/V)²)(V − nb) = nRT restore the fit.",
-  "P-waves": "A wave carries energy without carrying matter: in one period T each crest advances one wavelength, so v = fλ. The disturbance y = A·sin(kx − ωt + φ) has wave number k = 2π/λ and angular frequency ω = 2πf, with phase (kx − ωt) tracking each crest. String speed √(T/μ) rises with tension while sound speed √(γP/ρ) = √(γRT/M) rises with temperature, not pressure. Intensity scales as amplitude squared, and superposition creates standing waves when identical waves counter-propagate: strings quantise as L = nλ/2 with nodes at the ends. Slightly detuned sources beat at |f₁ − f₂| per second, and organ pipes quantise as open L = nλ/2 versus closed L = (2n−1)λ/4. A moving source or observer shifts pitch by f′ = f(v ± vₒ)/(v ∓ vₛ) — numerator for observer motion, denominator for source motion.",
-  "P-electro": "Coulomb's inverse-square law F = kq₁q₂/r² is the experimental seed, with k = 1/4πε₀. Field is force per unit charge (E = kQ/r² for a point), and a dipole on axis feels E = 2kP/r³ while torque τ = P×E aligns it. Gauss's law ∮E·dA = Q/ε₀ turns symmetry into answers: shells act as point charges outside and zero inside, infinite sheets give uniform σ/2ε₀, and lines give λ/2πε₀r. Potential V = kQ/r accumulates scalarly, energy is U = qV, and field is the downhill slope E = −dV/dr. Capacitors in parallel add (C = C₁ + C₂) while series reciprocate, the parallel-plate result C = ε₀A/d scales with area over gap, dielectrics multiply by K, and stored energy is CV²/2 whatever the charging path.",
-  "P-current": "Current is charge flow I = dQ/dt, and in metals drift gives I = neAv_d with current density J = σE leading to Ohm's law. Resistance R = ρl/A rises with temperature as R = R₀(1 + αΔT) for conductors, and resistors add directly in series but reciprocally in parallel. Kirchhoff's junction rule (charge conservation) plus loop rule (energy conservation) solve any network. The Wheatstone bridge balances at P/Q = R/S because no current through the galvanometer means equal potentials — the meter bridge and potentiometer are this null idea in action, with potentiometer voltage strictly proportional to balancing length. Cells add EMF in series but internal resistance limits current to I = E/(R + r), and maximum power transfer needs R = r. Heating P = VI = I²R = V²/R bills energy in kilowatt-hours, and fuses exploit I²R melting.",
-  "P-magnet": "Moving charges make fields: Biot–Savart dB = μ₀I·dl×r̂/4πr² integrates to μ₀I/4πa·(sinθ₁ + sinθ₂) for a finite wire and μ₀I/2R at a loop centre, while Ampere's law ∮B·dl = μ₀I_enc gives solenoids B = μ₀nI directly. The Lorentz force F = q(v×B) bends charges into circles of radius mv/qB at cyclotron frequency qB/2πm — velocity selectors (v = E/B) and mass spectrometers are this geometry. Parallel currents attract with force μ₀I₁I₂l/2πd per length, defining the ampere itself. A current loop carries magnetic moment μ = NIA with torque τ = μ×B, which is exactly how galvanometers deflect; shunts convert them to ammeters and series multipliers to voltmeters. Earth's field splits into horizontal/vertical components with dip angle, and soft iron shields by rerouting flux.",
-  "P-emi": "Faraday found that changing flux induces EMF ξ = −dΦ/dt, with Lenz's minus sign enforcing energy conservation (the induced current always fights the change). Motional EMF Blv is the same physics seen from the charge's frame: magnetic Lorentz force separates charges until electric balance. A rotating coil in uniform B gives sinusoidal ξ = NBAω·sinωt — the generator principle behind AC mains. Self-inductance L = NΦ/I (μ₀N²A/l for solenoids) stores energy LI²/2 in the field, and LR circuits grow/decay as I₀(1 − e^(−Rt/L)) with time constant L/R. Mutual inductance couples coils through shared flux (transformers), and eddy currents in bulk metal oppose motion — exploited in brakes and damping, laminated away in transformer cores.",
-  "P-ac": "Sinusoidal sources are handled with phasors: resistors stay in phase while capacitors lag current by 90° (Xc = 1/ωC) and inductors lead by 90° (XL = ωL). Series LCR impedance is Z = √(R² + (XL − Xc)²) with current I₀ = V₀/Z lagging voltage by tanφ = (XL − Xc)/R. At resonance ω₀ = 1/√(LC) the reactances cancel, impedance bottoms at R, and current peaks — the tuning principle of radios, with sharpness set by quality factor. Average power is Vrms·Irms·cosφ, so pure reactances are wattless and only resistance dissipates. Transformers scale voltage by turns ratio Vs/Vp = Ns/Np with current inverse, conserving (ideal) power across the core. LC circuits oscillate by trading electric and magnetic energy at ω = 1/√(LC), mirroring mechanical SHM.",
-  "P-emw": "Maxwell completed Ampere's law with displacement current Id = ε₀·dΦE/dt, so changing E makes B exactly as changing B makes E — the two sustain each other as a wave. The wave equation falls out with speed c = 1/√(μ₀ε₀) ≈ 3×10⁸ m/s, and E/B = c with E, B, and propagation mutually perpendicular. The spectrum orders by frequency: radio, micro, IR, visible, UV, X-ray, gamma — each with signature uses from broadcasting to medical imaging. Intensity is I = cε₀E₀²/2, and momentum p = U/c gives radiation pressure I/c on absorbers (2I/c on mirrors), which is how solar sails work. Polarization filters the transverse direction, with Malus I = I₀cos²θ through an analyzer.",
-  "P-rayoptics": "Fermat's least-time principle derives everything: reflection gives θᵢ = θᵣ, and refraction gives Snell's n₁sinθ₁ = n₂sinθ₂. Beyond the critical angle sinC = 1/μ (denser to rarer) light cannot escape — total internal reflection behind prisms, fibres, and sparkling diamonds. A small-angle prism deviates by δ = (μ − 1)A, and measuring minimum deviation pins refractive index as μ = sin((A + δm)/2)/sin(A/2). Refraction at one spherical surface obeys μ₂/v − μ₁/u = (μ₂ − μ₁)/R, and stacking two such surfaces yields the lens maker formula 1/f = (μ − 1)(1/R₁ − 1/R₂). The lens equation 1/v − 1/u = 1/f with magnification m = v/u then locates every image, powers add as P = P₁ + P₂, and microscopes/telescopes just chain magnifications (1 + D/fₑ and fₒ/fₑ).",
-  "P-waveoptics": "Huygens builds every wavefront from secondary wavelets, which is why light bends around obstacles. In Young's double slit, path difference d·sinθ = nλ makes bright fringes spaced β = λD/d apart, with the central maximum brightest. Thin films add a half-wave flip on denser reflection, so 2μt·cosr = nλ or (n + ½)λ depending on the coating stack. Single-slit diffraction zeroes at a·sinθ = nλ with a broad central maximum of width 2λD/a, and circular apertures resolve down to 1.22λ/D. Polarization selects one transverse direction: Brewster's tanθB = μ gives fully polarized reflection, and analyzers transmit I = I₀cos²θ (Malus). Coherence length sets how far fringes survive, which is why lasers show crisp interference.",
-  "P-dual": "Photoemission is instant, needs threshold frequency, and stopping potential grows linearly with frequency — wave theory fails all three, photons E = hν explain all three. Einstein's equation Kmax = eV₀ = h(ν − ν₀) reads work function as the intercept and Planck's constant as the slope of the V₀–ν line. Brighter light ejects more electrons (not faster ones), and intensity only sets the count rate. Matter inherits wavelength λ = h/p = h/√(2mqV), confirmed when Davisson–Germer scattered electrons exactly like X-rays off nickel. Bohr's atom quantises mvr = nh/2π with Coulomb centripetal force, giving Eₙ = −13.6/n² eV and the Rydberg formula 1/λ = R(1/n₁² − 1/n₂²) for every spectral line. X-ray cutoff follows the same photon logic: λmin = hc/eV (Duane–Hunt), with Moseley √ν ∝ (Z − b) ordering the table.",
-  "P-atoms": "Rutherford's alpha scattering — most pass through, a few rebound — proved a tiny dense nucleus with the atom mostly empty. Bohr postulates stationary orbits with quantised mvr = nh/2π; combined with Coulomb attraction this gives radii rₙ = n²h²ε₀/πme² and energies Eₙ = −me⁴/8ε₀²h²n² = −13.6/n² eV. Transitions between levels emit photons hν = Eᵢ − Eⱼ, producing Lyman (UV), Balmer (visible), Paschen and beyond. Nuclei with Z protons and N neutrons bind with E = Δmc², and the binding-energy-per-nucleon curve peaks at iron — fusion climbs the left slope, fission slides down the right. Radioactive decay is statistical: N = N₀e^(−λt) with half-life ln2/λ, activity A = λN, and carbon dating is just this clock applied to archaeology.",
-  "P-semi": "Isolated atomic levels broaden into bands in solids: conductors overlap valence and conduction bands, insulators gap them widely, semiconductors gap them narrowly (~1 eV). Heat lifts a few electrons across silicon's gap (intrinsic), while doping plants majority carriers — pentavalent donors make n-type, trivalent acceptors make p-type. The p-n junction's depletion region builds a barrier potential; forward bias shrinks it (exponential current) while reverse bias widens it (µA leakage until Zener breakdown). Half-wave rectifiers pass one lobe and full-wave bridges pass both, with filters smoothing to DC. LEDs, solar cells, and photodiodes are the same junction run in reverse roles (emit, generate, detect). Logic gates are voltage thresholds: AND/OR/NOT plus NAND/NOR universality, from which every digital circuit — including the transistor switch and amplifier — is assembled.",
+  "f-atoms": "Step 1 — Atoms assemble from protons and neutrons packed in the nucleus with light electrons around it. Step 2 — The atomic number Z counts protons and fixes the element; the mass number A = Z + N counts all nucleons. Step 3 — Isotopes share the same Z but differ in N, so they occupy one box in the periodic table with different masses. Step 4 — Ions form by gaining or losing electrons: the nucleus sets the element, the electron count sets the charge. Step 5 — Relative atomic mass averages the isotopes by natural abundance; the mole then bridges atoms and grams.",
+
+  "f-periodic": "Step 1 — Mendeleev ordered elements by atomic mass; Moseley's X-ray work fixed the real key as atomic number Z. Step 2 — The table wraps by electron configuration: each period adds a shell and each block s, p, d, f fills one subshell. Step 3 — Chemistry repeats because configurations repeat: elements in a group share valence electrons and therefore reactivity. Step 4 — Across a period the nuclear charge climbs with weaker shielding, so atomic size shrinks and ionisation energy rises. Step 5 — Down a group new shells dominate: size grows, ionisation energy drops, and electronegativity follows ionisation and affinity along the diagonal.",
+
+  "P-units": "Step 1 — Every derived quantity carries dimensions built from mass, length and time; the period of a pendulum cannot involve mass because none appears in the restoring force. Step 2 — Write the candidate law T = k·lᵃgᵇ and substitute dimensions: [T] = [L]ᵃ[LT⁻²]ᵇ = [L]ᵃ⁺ᵇ[T]⁻²ᵇ. Step 3 — Match exponents: for time −2b = 1 gives b = −½; for length a + b = 0 gives a = ½. Step 4 — So T = k√(l/g); the dimensionless constant k = 2π comes from solving the equation of motion, which dimensional analysis alone cannot provide. Step 5 — The same powering gives velocity [LT⁻¹], acceleration [LT⁻²] and force [MLT⁻²]; a wrong formula never balances both sides and gets caught instantly.",
+  "P-kinematics": "Step 1 — Velocity is the instantaneous rate of position change, v = dx/dt; acceleration is the rate of velocity change, a = dv/dt. Step 2 — Under constant acceleration integrate dv = a·dt from u at t = 0 to v at time t: v = u + at. Step 3 — Integrate once more: x = ∫(u + at)dt = ut + ½at² measured from the start. Step 4 — Eliminate t using t = (v − u)/a: x = u(v − u)/a + ½a(v − u)²/a², which simplifies to v² = u² + 2ax. Step 5 — Each equation ties together two of displacement, velocity, time and acceleration; pick the pair the problem hands you. Step 6 — Under gravity replace a with g and let motion be vertical, sign depending on the chosen axis.",
+  "P-laws": "Step 1 — Newton's second law reads F = dp/dt, so a force is the rate of change of momentum; with constant mass this reduces to F = ma. Step 2 — Impulse is the integral ∫F·dt = Δp, which is why collisions deliver huge forces for tiny times yet a modest fixed change of momentum. Step 3 — The third law is a momentum-conservation statement: in an isolated pair Δp₁ + Δp₂ = 0, so the forces exchanged are equal and opposite. Step 4 — Weight is the earth's pull W = mg with g ≈ 9.8 m/s², itself a special case of universal gravitation. Step 5 — For every problem draw a free-body diagram: isolate the body, list all forces, then apply F_net = ma along each axis separately.",
+  "P-wpe": "Step 1 — Work is force times displacement along the force: W = F·s = Fs cosθ. Step 2 — Combine F = ma with the kinematic identity v² − u² = 2as to get W = m·a·s = ½m(v² − u²). Step 3 — Net work therefore equals the change in kinetic energy: W_net = ΔK = ½mv² − ½mu² — the work–energy theorem. Step 4 — For conservative gravity the work is stored: lifting a mass through height h takes W = −mgh, defining potential energy U = mgh. Step 5 — A spring stores U = ½kx² because the force grows linearly, so the average force over extension x is ½kx. Step 6 — Total mechanical energy then stays constant, answering motion questions without touching forces at every instant.",
+  "P-rotation": "Step 1 — Torque is the rotational analogue of force, τ = r × F; angular momentum is L = r × p, and Newton's law rotates to dL/dt = τ. Step 2 — For a rigid body about a fixed axis, L = Iω where the moment of inertia I = ∫r²dm, hence τ = Iα with α = dω/dt. Step 3 — Rotational kinetic energy follows as K = ½Iω², the twin of ½mv². Step 4 — In pure rolling the point of contact is instantaneously at rest, so v_cm = ωR and the total energy is ½mv² + ½Iω². Step 5 — The parallel-axis theorem I = I_cm + Md² moves the inertia from the centre to any parallel axle. Step 6 — With zero external torque angular momentum holds steady — the physics of spinning tops, figure skaters and gyroscopes.",
+  "P-gravitation": "Step 1 — Universal gravitation is F = GMm/r², an inverse-square attraction between every pair of masses. Step 2 — The surface acceleration g = GM/R² reconstructs 9.8 m/s² from the earth's mass and radius alone. Step 3 — A point mass sets up potential V = −GM/r, gentle far away and deepening near the source. Step 4 — To escape, give the body just enough kinetic energy to climb from −GMm/R to zero: ½mv² − GMm/R = 0, so v_esc = √(2GM/R) ≈ 11.2 km/s on earth. Step 5 — Circular orbits balance GMm/r² = mv²/r, giving v = √(GM/r) and T² ∝ r³ — Kepler's third law. Step 6 — Satellites, tides and planetary motion all fall out of this single inverse-square force.",
+  "P-shm": "Step 1 — A restoring force proportional to displacement gives a = −(k/m)x. Step 2 — Guess harmonic motion x = A sin(ωt + φ); differentiating twice yields a = −ω²x. Step 3 — Comparing with step 1 fixes ω² = k/m, so the oscillation is sinusoidal with angular frequency ω = √(k/m). Step 4 — Velocity peaks at equilibrium with v_max = Aω, where energy is entirely kinetic. Step 5 — Total mechanical energy E = ½kA² is constant, sloshing between kinetic and potential as the block swings. Step 6 — The period follows as T = 2π/ω = 2π√(m/k); for a pendulum small-angle restoring force mg sinθ ≈ mgθ gives ω = √(g/L), hence T = 2π√(L/g).",
+  "P-com": "Step 1 — The centre of mass is the mass-weighted average position: R = (Σmᵢrᵢ)/M. Step 2 — Differentiate once: total momentum P = M·dR/dt equals the sum of all individual momenta; differentiate twice: F_ext = M·d²R/dt². Step 3 — Internal forces cancel pairwise by Newton's third law, so only external forces can move the centre of mass. Step 4 — For a continuous body replace the sum by the integral R = (1/M)∫r·dm. Step 5 — In collisions the centre-of-mass momentum is untouched by the impact, which is why recoil and fragmentation problems become simple. Step 6 — In a two-body system the CM sits closer to the heavier mass, splitting the separation in inverse mass ratio.",
+  "P-fluids": "Step 1 — Hydrostatic pressure comes from the weight of the column above: a depth h adds ρgh, so P = P₀ + ρgh, acting equally in all directions. Step 2 — The pressure difference between the top and bottom of a submerged body multiplies into a net upward force equal to the weight of displaced fluid: F_b = ρVg — Archimedes' principle. Step 3 — Continuity conserves flow: A₁v₁ = A₂v₂, so fluid speeds up where the tube narrows. Step 4 — Bernoulli's equation P + ½ρv² + ρgh = constant follows from applying work–energy to a small parcel of fluid. Step 5 — It explains aerofoil lift, venturi metres and why a fast stream over the roof lowers the pressure. Step 6 — Viscosity dissipates energy; fully developed pipe flow obeys Poiseuille's law.",
+  "P-thermal": "Step 1 — Thermal expansion is linear to first order: L = L₀(1 + αΔT); area and volume expand with 2α and 3α. Step 2 — Heat needed to warm a body is Q = mcΔT, storing energy while the temperature rises. Step 3 — Calorimetry is energy conservation: the heat released by the hot body equals that absorbed by the cold one and the vessel. Step 4 — A phase change consumes latent heat Q = mL at constant temperature, breaking the mcΔT form. Step 5 — Conduction pushes heat down the gradient: H = kA·ΔT/L — Fourier's law. Step 6 — At steady state the flux through every layer is equal, so stacked slabs behave like resistors in series.",
+  "P-thermo": "Step 1 — The first law restates energy conservation: ΔU = Q − W, heat added minus work done. Step 2 — Work during a volume change is W = ∫P·dV; for an isobaric process it is simply PΔV. Step 3 — Isothermal (constant T) expansion of an ideal gas uses PV = nRT so P = nRT/V; integrating gives W = nRT·ln(V₂/V₁). Step 4 — An adiabatic process (Q = 0) converts internal energy into work; combining dU = C_v·dT with PV = nRT yields PV^γ = constant where γ = C_p/C_v. Step 5 — Around a complete cycle U returns to its starting value, so net work equals net heat — the economy of every heat engine. Step 6 — Carnot's reversible cycle sets the ceiling η = 1 − T_c/T_h that all real engines approach.",
+  "P-ktg": "Step 1 — Kinetic theory treats a gas as molecules bouncing elastically off the container walls. Step 2 — A molecule with speed component v_x flips momentum on a hit, transferring 2mv_x to the wall. Step 3 — Summing hits per second over all molecules gives pressure P = (1/3)ρ⟨v²⟩. Step 4 — The average translational kinetic energy is pinned to temperature: ½m⟨v²⟩ = (3/2)kT. Step 5 — Substituting into the pressure relation reproduces the ideal gas law PV = nRT, now derived rather than assumed. Step 6 — The rms speed is v_rms = √(3kT/m) = √(3RT/M): light molecules such as hydrogen and helium dart around fastest at any temperature.",
+  "P-waves": "Step 1 — A taut string obeys the wave equation; substituting a travelling wave y = A sin(kx − ωt) gives the speed v = ω/k = √(T/μ), where μ is the mass per length. Step 2 — Sound travels as a compression wave with v = √(B/ρ) through bulk modulus B. Step 3 — Superposition: two identical waves offset by phase φ combine to amplitude 2A cos(φ/2). Step 4 — Reflections lock into standing waves with nodes every λ/2, so a string of length L holds harmonics L = nλ/2 at frequencies f = nv/2L. Step 5 — Beats come from two close frequencies moving in and out of phase: f_beat = |f₁ − f₂|. Step 6 — Motion of source or observer stretches or bunches the wavelength: f' = f·(v ± v_o)/(v ∓ v_s).",
+  "P-electro": "Step 1 — Coulomb's inverse-square law is F = kq₁q₂/r² with k = 1/(4πε₀). Step 2 — The electric field E = F/q is the force per unit charge on a test charge. Step 3 — Potential is the work per unit charge brought in from infinity: V(r) = kq/r for a point charge. Step 4 — Field and potential link through E = −dV/dr, so the field points downhill along the potential. Step 5 — Electrostatic energy is U = qV, the currency of capacitors and batteries. Step 6 — Superposition adds fields or potentials from many charges, while Gauss's law ∮E·dA = q_enc/ε₀ resolves symmetric charge clouds instantly.",
+  "P-current": "Step 1 — Current is the flow rate of charge: I = dq/dt, measured in amperes. Step 2 — In drift terms I = nAev_d; electrons crawl slowly yet carry large currents because their number density n is colossal. Step 3 — Collisions endow materials with resistance R = ρL/A, the resistivity ρ set by the substance. Step 4 — Ohm's law V = IR holds when ρ is constant; metals obey it while diodes and thermistors defy it. Step 5 — Series resistors add R = R₁ + R₂ because current is shared; parallel resistors add their conductances 1/R = 1/R₁ + 1/R₂ because voltage is shared. Step 6 — Kirchhoff's laws embody conservation: current in equals current out at a node, and directed voltages sum to zero around each loop.",
+  "P-magnet": "Step 1 — A moving charge in a field feels F = qv × B, perpendicular to both, so magnetic forces never do work and can only bend the trajectory. Step 2 — The Biot–Savart law builds fields from currents: dB = (μ₀/4π)·Idl×r̂/r². Step 3 — Integrating around a circular loop gives B = μ₀I/2R at its centre; a long solenoid holds a nearly uniform B = μ₀nI inside. Step 4 — Ampère's law ∮B·dl = μ₀I_enc yields the fields of symmetric wire geometries directly. Step 5 — A current loop is a magnetic dipole with moment m = IA, feeling torque τ = m × B in an external field. Step 6 — Parallel currents attract when they point the same way, each sitting inside the other's field lines.",
+  "P-emi": "Step 1 — Faraday's law states that a changing magnetic flux induces an emf ε = −dΦ/dt, with flux Φ = B·A. Step 2 — Lenz's law fixes the sign: the induced current opposes the change that created it — the origin of the minus. Step 3 — A rod of length ℓ moving at speed v through a field B sweeps flux at the rate Bℓv, so ε = Bℓv follows directly from dΦ/dt. Step 4 — Generators use the same law: a coil rotating as Φ = BA·cos ωt delivers ε = NBAω·sin ωt. Step 5 — An inductor stores magnetic energy: ε = L·dI/dt and U = ½LI². Step 6 — Mutual induction transfers emf from one coil to another and is the working principle of the transformer.",
+  "P-ac": "Step 1 — An AC generator is Faraday's law in a loop: flux Φ = BA·cos ωt gives ε = −dΦ/dt = NBAω·sin ωt, at frequency f = ω/2π. Step 2 — In a capacitor the relation I = C·dV/dt makes current lead voltage by 90°, with reactance X_C = 1/ωC. Step 3 — An inductor obeys V = L·dI/dt, so current lags by 90° with reactance X_L = ωL. Step 4 — Phasors add like vectors, giving the series impedance Z = √(R² + (X_L − X_C)²). Step 5 — Ohm's law generalises to V_rms = I_rms·Z, and average power is P = V_rms·I_rms·cos φ with power factor cos φ = R/Z. Step 6 — At resonance X_L = X_C, impedance collapses to R and the current peaks — the heart of tuning circuits.",
+  "P-emw": "Step 1 — Maxwell augmented Ampère's law with the displacement current so that charge conservation holds in changing fields. Step 2 — The added term means a changing electric field generates a magnetic field, exactly as a changing magnetic field generates an electric one. Step 3 — Eliminating the coupled curl equations yields a wave equation whose speed is c = 1/√(μ₀ε₀); the number matches the measured speed of light, so light is electromagnetic. Step 4 — In an EM wave the fields are perpendicular to each other and to the direction of travel, with E/B = c. Step 5 — Energy density is u = ½ε₀E² + ½B²/μ₀ and its flow is the Poynting vector S = E×B/μ₀. Step 6 — The whole spectrum from radio to gamma rays is one phenomenon at different frequencies.",
+  "P-rayoptics": "Step 1 — Snell's law n₁ sinθ₁ = n₂ sinθ₂ follows from Fermat's principle: light picks the path of least time. Step 2 — Total internal reflection sets in when the refracted angle would reach 90°: sinθ_c = n₂/n₁ — the secret of optical fibres. Step 3 — The lens-maker formula 1/f = (μ − 1)(1/R₁ − 1/R₂) emerges from applying Snell's law at two curved surfaces in succession. Step 4 — A thin lens then obeys 1/v − 1/u = 1/f under the Cartesian sign convention, turning ray diagrams into algebra. Step 5 — A spherical mirror performs the same geometry: 1/v + 1/u = 1/f with f = R/2. Step 6 — Magnification m = v/u (mirror) or m = v/u (lens) converts sizes into simple ratios.",
+  "P-waveoptics": "Step 1 — In Young's double slit the path difference between the two rays is d sinθ; bright fringes require d sinθ = nλ. Step 2 — Destructive interference erases light at d sinθ = (n + ½)λ, so equally spaced dark fringes alternate with bright ones. Step 3 — The angular step between fringes is λ/d, which on a screen at distance D becomes fringe width β = λD/d. Step 4 — So longer wavelength spreads the fringes while a larger slit separation compresses them. Step 5 — A single slit of width a spreads into a central maximum flanked by minima at a sinθ = nλ. Step 6 — When the wavelength is comparable to the obstacle size, diffraction becomes strong — why sound bends round corners but light barely does.",
+  "P-dual": "Step 1 — Planck quantised oscillator energies as E = hf; Einstein extended the idea to light itself, a photon carrying E = hf. Step 2 — The photoelectric law hf = φ + K_max explains why dim light below the threshold frequency ejects nothing — energy arrives in indivisible quanta. Step 3 — Photon momentum follows from the energy–momentum link p = E/c = h/λ. Step 4 — de Broglie demanded the symmetry: matter with momentum p carries wavelength λ = h/p. Step 5 — Davisson and Germer scattered electrons off a nickel crystal and saw diffraction at exactly that predicted wavelength. Step 6 — Heisenberg's uncertainty Δx·Δp ≥ h/4π caps how precisely position and momentum can be known together.",
+  "P-atoms": "Step 1 — Rutherford shot alpha particles through gold foil: most passed straight, so atoms are mostly empty space with a tiny dense positive nucleus. Step 2 — Classical electrodynamics would make an orbiting electron radiate and spiral in, so Bohr imposed quantisation. Step 3 — Bohr's rule: angular momentum comes in lumps, mvr = nh/2π. Step 4 — Balancing centripetal force against Coulomb attraction gives orbit radii r ∝ n² and energies E_n = −13.6/n² eV for hydrogen. Step 5 — Transitions between levels emit photons with hf = E_i − E_f, reproducing the Balmer series exactly. Step 6 — The Rydberg formula 1/λ = R(1/n_f² − 1/n_i²) bundles every spectral line into one expression.",
+  "P-semi": "Step 1 — In a crystal, atomic levels merge into bands; a semiconductor carries a narrow gap E_g ≈ 1 eV between the filled valence band and the empty conduction band. Step 2 — Exciting an electron across the gap leaves a hole behind, so conduction carries two kinds of charge with the law of mass action n·p = n_i². Step 3 — Intrinsic carrier density climbs steeply with temperature as more electrons gain enough thermal energy to cross the gap. Step 4 — Doping tips the balance: pentavalent donors add free electrons (n-type), trivalent acceptors add holes (p-type). Step 5 — At a p–n junction a depletion zone forms; forward bias shrinks the barrier and drives current while reverse bias blocks it — the rectifier. Step 6 — In a transistor a small base current steers the emitter–collector flow, switching logic and amplifying signals.",
   "M-sets": "A set is a well-defined collection; a function assigns each input exactly one output. Relations and functions inherit their properties — domain, range, injective (one-to-one), surjective (onto) — and composition (f∘g)(x)=f(g(x)) chains them, the foundation of all later algebra.",
   "M-quad": "Complete the square to solve: ax²+bx+c=0 ⟹ (x+b/2a)²=(b²−4ac)/4a² ⟹ x = (−b±√(b²−4ac))/2a. The discriminant D=b²−4ac decides nature: D>0 real distinct, D=0 repeated, D<0 complex conjugate. Root conditions are the coefficients: sum = −b/a, product = c/a, and symmetric expressions like α²+β²=(α+β)²−2αβ evaluate without solving. Inequalities ax²+bx+c≷0 are signs of the parabola between/outside the roots, read off the leading coefficient a. Factorisation and quadratic residues (min/max of a quadratic = value at vertex −b/2a) round out the toolkit used in every later chapter.",
-  "M-complex": "To solve x²=−1, define i with i²=−1. Writing z=a+bi as a point (a,b) makes |z| the distance and arg z the angle, so multiplying complex numbers is rotation plus scaling — hence De Moivre (cosθ+i sinθ)ⁿ=cos(nθ)+i sin(nθ), the engine of complex analysis.",
+  "M-complex": "Step 1 — The equation x² = −1 has no real answer, so define i with i² = −1 and build numbers z = a + bi. Step 2 — Read (a, b) as a point: the modulus |z| = √(a² + b²) is its distance from the origin and the argument θ is its angle. Step 3 — The polar form z = r(cosθ + i sinθ) encodes both pieces. Step 4 — Multiplication now adds angles and multiplies radii — rotation combined with scaling. Step 5 — Iterating that geometric rule yields De Moivre: (cosθ + i sinθ)ⁿ = cos(nθ) + i sin(nθ). Step 6 — Roots of unity, rotations and AC circuits all ride on this single identity.",
+
   "M-seq": "A sequence is a function from indices; an arithmetic progression has constant difference d, so the nth term is a+(n−1)d and the sum of n terms is (n/2)(2a+(n−1)d) = n·(first+last)/2. A geometric progression multiplies by r, so the nth term is arⁿ⁻¹ and the sum is a(rⁿ−1)/(r−1); if |r|<1 the infinite sum converges to a/(1−r). Insert means to make the middle equal (AM = (a+b)/2, GM = √(ab), HM = 2ab/(a+b)), with AM ≥ GM ≥ HM by the (x−y)²≥0 trick. The sum of natural series Σk=n(n+1)/2, Σk²=n(n+1)(2n+1)/6 and Σk³=[n(n+1)/2]² are proven by induction or telescoping. Harmonic progressions are reciprocals of APs, and sigma notation converts a recurrence into closed form.",
   "M-trig": "The unit circle defines cos, sin as coordinates of a rotating point; everything follows from geometry. Rotating by A then B gives the addition law cos(A+B)=cosAcosB−sinAsinB and sin(A+B)=sinAcosB+cosAsinB. Double angles drop out (sin2A=2sinAcosA) and half-angle formulas give the sin/cos of bisected angles. Pythagoras on the circle gives the identifications: sin²A+cos²A=1, 1+tan²A=sec²A, 1+cot²A=cosec²A. Solved triangles come from sine rule a/sinA=b/sinB=c/sinC=2R and cosine rule c²=a²+b²−2ab cosC; their derivations are altitude dropping, and they then solve every in-circle and out-circle geometry problem.",
   "M-lines": "A line is a direction, so every equation is the point–slope condition: slope m = (y₂−y₁)/(x₂−x₁), and y − y₁ = m(x − x₁). The general form ax+by+c=0 has slope −a/b and distance from origin |c|/√(a²+b²); the perpendicular distance of the general point (x₁,y₁) is (ax₁+by₁+c)/√(a²+b²). Two lines are perpendicular iff m₁m₂ = −1 and parallel iff m₁ = m₂; angle between them is tanθ = |(m₂−m₁)/(1+m₁m₂)|. The foot of perpendicular from a point onto a line, and the image of a point across it, follow the same normal-vector projection formula. This machinery feeds directly into coordinate geometry, conics and 3D — every later equation is just this distance/angle arithmetic generalised.",
-  "M-perm": "Permutations fill r ordered slots from n items: n(n−1)…(n−r+1)=n!/(n−r)!. Combinations ignore order, so divide by the r! arrangements of each group: C(n,r)=n!/(r!(n−r)!). Repetitions, identical items and inclusion–exclusion extend the count.",
+  "M-perm": "Step 1 — The fundamental counting principle multiplies independent choices. Step 2 — Arranging r distinct objects from n: the first pick offers n choices, the next n − 1, down to n − r + 1, giving P(n, r) = n!/(n − r)!. Step 3 — Factorials compress the product: n! = n(n − 1)···1, with 0! = 1 keeping formulas consistent. Step 4 — Circular arrangements divide out a degree of freedom: (n − 1)! orders. Step 5 — Identical items cancel the double counting: permutations of n items with p alike reduce to n!/p!.",
+
   "M-binomial": "Expanding (a+b)ⁿ picks b from k of n brackets, giving each term C(n,k)aⁿ⁻ᵏbᵏ with binomial coefficients C(n,k)=n!/(k!(n−k)!). Pascal's triangle and the symmetry C(n,k)=C(n,n−k) fall out of the combinatorial definition. The general term T(k+1)=C(n,k)aⁿ⁻ᵏbᵏ lets you fish the middle term or the k-th independently of full expansion. The binomial theorem is the engine behind deriving the exponential: (1+x)ⁿ ≈ 1+nx+... for small x (approximation) — and its approximation for (1+x)^(1/2) and negative n becomes the series for e and √. Independent questions of coefficient comparison turn it into algebra.",
   "M-circles": "A circle fixes distance: (x−h)²+(y−k)² = r². Expanding and matching coefficients turns any x²+y²+2gx+2fy+c=0 into centre (−g,−f) and radius √(g²+f²−c). The tangent at (x₁,y₁) to x²+y²=r² is xx₁+yy₁=r², obtained by substituting half the crossing terms (T = 0), the same trick that works for conics. Chord of contact, length of tangent from an external point (√(S₁)), and power of a point (product of chord segments) all come from Pythagoras in the tangent triangle. Two circles intersect iff the distance between centres lies strictly between |r₁−r₂| and r₁+r₂; their radical axis is the line obtained by subtracting the two circle equations.",
   "M-conics": "Project a circle in perspective and stretch it: a horizontal cut is a circle, tilted cut an ellipse, a cut parallel to the cone edge a parabola, and a steeper cut a hyperbola. Parametrically these are (a cos t, b sin t), (at², 2at) and sec/cosh pairs — all satellites of the focus-directrix law e·distance-to-directrix = distance-to-focus. With focus (ae,0) and e<1, e=1, e>1 you get ellipse, parabola, hyperbola respectively, and the same T=0 substitution generates every tangent. The ellipse's key lengths: latus rectum 2b²/a, focal distances sum to 2a; the hyperbola's asymptotes y=±(b/a)x and e = √(1+b²/a²). Rotation of axes and shifting homogenise general quadratics ax²+2hxy+by²+...=0 into standard form.",

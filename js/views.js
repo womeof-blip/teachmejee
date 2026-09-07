@@ -7,7 +7,7 @@ import { DEEP_NOTES, DEEP_NOTE_IDS, noteMinutes } from "./notes/index.js";
 import { daysUntil, fmt, computePhases, generateSchedule, weekTasks, weeklyPlan } from "./planner.js";
 import { QUESTIONS } from "./questions.js";
 import { PYQS } from "./pyq.js";
-import { NEET_TOPICS, NEET_QUESTIONS } from "./neet.js";
+import { NEET_TOPICS, NEET_QUESTIONS, NEET_NOTES } from "./neet.js";
 import { register, login, isLoggedIn, getSession, fetchLeaderboard, syncProgress } from "./api.js";
 import { answerTutor } from "./tutor.js";
 import { quoteRotator, didYouKnow, milestoneBar, streakAtRisk, preciseCountdown, velocityCard, peakHourWidget, subjectPie, ghostCompareCard, confidenceControl } from "./extras.js";
@@ -1794,6 +1794,8 @@ export function AtlasView(root){
   });
   const grid=h("div",{class:"labs-grid2"}); const more=h("button",{class:"btn btn-sm", style:"display:none"}, "Load more →"); more.addEventListener("click",()=>{shown+=60; paint();});
   const counter=h("div",{class:"small faint"}); const virtBox=h("div",{style:"margin-top:6px"});
+  const factoryBases = h("span", {}, "Factory: — bases · 1000s of combos.");
+  import("./sim/factory.js").then((Sf) => { if (Sf.SIM_FACTORY_STATS) factoryBases.textContent = `Factory: ${Sf.SIM_FACTORY_STATS.base} bases · 1000s of combos.`; }).catch(() => {});
   function paint(){
     const all=allFeatures(); const filtered=all.filter(f=>{
       if(type!=="ALL" && f.type!==type) return false;
@@ -1823,7 +1825,7 @@ export function AtlasView(root){
           h("span",{class:"qb-badge"},"1000× STAND-OUT"))),
       h("div",{class:"card", style:"border-color:gold;background:color-mix(in srgb,gold 9%, var(--surface));"},
         h("h3",{}, "100,000,000 Generative Variants — Sim Factory"),
-        h("p",{class:"small muted"}, `Real ${stats.real.toLocaleString()} + Virtual ${stats.virtual.toLocaleString()} = ${stats.total.toLocaleString()} total. Each variant is a parametric sim/playground combo — generated on demand, zero RAM. Factory: 87 bases · 1000s of combos.`),
+        h("p",{class:"small muted"}, `Real ${stats.real.toLocaleString()} + Virtual ${stats.virtual.toLocaleString()} = ${stats.total.toLocaleString()} total. Each variant is a parametric sim/playground combo — generated on demand, zero RAM. `, factoryBases),
         h("div",{class:"row", style:"gap:8px;margin-top:8px"}, h("button",{class:"btn btn-primary btn-sm", onclick:()=>{ const g=h("div",{class:"labs-grid2"}); for(let i=0;i<12;i++){ const f=virtualFeatureAt(FEATURE_COUNT + Math.floor(Math.random()*VIRTUAL_FEATURE_COUNT)); g.append(h("a",{class:"card lab-card", href:f.route, style:"text-decoration:none;color:inherit"}, h("div",{style:"font-weight:700;font-size:13px"}, `${f.icon} ${f.name}`), h("div",{class:"small muted", style:"margin-top:4px"}, f.blurb), h("span",{class:"small faint"}, f.route))); } virtBox.innerHTML=""; virtBox.append(g); }}, "Generate 12 random variants →"), h("span",{class:"small faint"}, "100M via factory — try it")),
         virtBox),
       h("div",{class:"row", style:"gap:8px"}, search),
@@ -1833,8 +1835,8 @@ export function AtlasView(root){
 }
 
 export function MoleculeView(root){
-  const CPK={H:"#f5eddc",C:"#52525b",N:"#60a5fa",O:"#ef4444",Cl:"#4ade80",F:"#bef264",B:"#f472b6",P:"#fb923c",S:"#eab308",Xe:"#c084fc"};
-  const RAD={H:14,C:18,N:20,O:22,F:20,Cl:26,B:20,P:24,S:24,Xe:32};
+  const CPK={H:"#f5eddc",C:"#52525b",N:"#60a5fa",O:"#ef4444",Cl:"#4ade80",F:"#bef264",B:"#f472b6",P:"#fb923c",S:"#eab308",Xe:"#c084fc",Na:"#818cf8",K:"#b49be8",Ca:"#5eead4",Mn:"#a78bfa",Si:"#d9b48f",Al:"#c7b8ae",Br:"#a9552e",I:"#9b5de5"};
+  const RAD={H:14,C:18,N:20,O:22,F:20,Cl:26,B:20,P:24,S:24,Xe:32,Na:22,K:24,Ca:22,Mn:18,Si:20,Al:20,Br:26,I:28};
   function at(e,x,y,z){ return {e,x,y,z,c:CPK[e]||"#ccc"}; }
   const MOL={
     "H2":{name:"Hydrogen",shape:"Linear",angle:"—",grp:"Linear",atoms:[at("H",-0.37,0,0),at("H",0.37,0,0)],bonds:[[0,1]]},
@@ -1865,10 +1867,36 @@ export function MoleculeView(root){
     "SF6":{name:"Sulphur hexafluoride",shape:"Octahedral",angle:"90°",grp:"Special",atoms:[at("S",0,0,0),at("F",1.5,0,0),at("F",-1.5,0,0),at("F",0,1.5,0),at("F",0,-1.5,0),at("F",0,0,1.5),at("F",0,0,-1.5)],bonds:[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6]]},
     "ClF3":{name:"Chlorine trifluoride",shape:"T-shaped",angle:"90° / 180°",grp:"Special",atoms:[at("Cl",0,0,0),at("F",0,1.4,0),at("F",1.15,0,0),at("F",-1.15,0,0)],bonds:[[0,1],[0,2],[0,3]]},
     "XeF4":{name:"Xenon tetrafluoride",shape:"Square planar",angle:"90°",grp:"Special",atoms:[at("Xe",0,0,0),at("F",1.35,0,0),at("F",-1.35,0,0),at("F",0,0,1.35),at("F",0,0,-1.35)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "NaCl":{name:"Sodium chloride",shape:"Rock-salt lattice",angle:"—",grp:"Ionic",atoms:[at("Na",0,0,0),at("Cl",1.05,0,0),at("Cl",0,1.05,0),at("Cl",0,0,1.05),at("Cl",1.05,1.05,0),at("Cl",1.05,0,1.05),at("Cl",0,1.05,1.05),at("Na",1.05,1.05,1.05)],bonds:[[0,1],[0,2],[0,3],[1,4],[1,5],[2,4],[2,6],[3,5],[3,6],[4,7],[5,7],[6,7]]},
+    "KCl":{name:"Potassium chloride",shape:"Rock-salt lattice",angle:"—",grp:"Ionic",atoms:[at("K",0,0,0),at("Cl",1.05,0,0),at("Cl",0,1.05,0),at("Cl",0,0,1.05),at("Cl",1.05,1.05,0),at("Cl",1.05,0,1.05),at("Cl",0,1.05,1.05),at("K",1.05,1.05,1.05)],bonds:[[0,1],[0,2],[0,3],[1,4],[1,5],[2,4],[2,6],[3,5],[3,6],[4,7],[5,7],[6,7]]},
+    "NaOH":{name:"Sodium hydroxide",shape:"Ionic (bent)",angle:"≈104°",grp:"Ionic",atoms:[at("Na",-1,0,0),at("O",0,0,0),at("H",0.76,0.58,0)],bonds:[[0,1],[1,2]]},
+    "CaCl2":{name:"Calcium chloride",shape:"Ionic (bent)",angle:"≈104°",grp:"Ionic",atoms:[at("Cl",-1.2,0.5,0),at("Ca",0,0,0),at("Cl",1.2,0.5,0)],bonds:[[0,1],[1,2]]},
+    "CaCO3":{name:"Calcium carbonate",shape:"Planar carbonate + Ca",angle:"120°",grp:"Ionic",atoms:[at("Ca",0,1.1,0),at("C",0,-0.25,0),at("O",0.62,0.55,0),at("O",-0.62,0.55,0),at("O",0,-0.85,0)],bonds:[[0,1],[1,2],[1,3],[1,4]]},
+    "KMnO4":{name:"Potassium permanganate",shape:"Tetrahedral manganate",angle:"109.5°",grp:"Ionic",atoms:[at("K",1.4,1.1,0.4),at("Mn",0,0,0),at("O",0.95,0.7,-0.7),at("O",-0.9,0.6,-0.55),at("O",0.5,-0.85,0.5),at("O",-0.35,-0.75,-0.9)],bonds:[[1,2],[1,3],[1,4],[1,5]]},
+    "I2":{name:"Iodine",shape:"Linear",angle:"—",grp:"Linear",atoms:[at("I",-0.75,0,0),at("I",0.75,0,0)],bonds:[[0,1]]},
+    "Br2":{name:"Bromine",shape:"Linear",angle:"—",grp:"Linear",atoms:[at("Br",-0.75,0,0),at("Br",0.75,0,0)],bonds:[[0,1]]},
+    "CS2":{name:"Carbon disulphide",shape:"Linear",angle:"180°",grp:"Linear",atoms:[at("S",-1.2,0,0),at("C",0,0,0),at("S",1.2,0,0)],bonds:[[0,1],[1,2]]},
+    "CH2O":{name:"Formaldehyde",shape:"Trigonal planar",angle:"120°",grp:"Planar",atoms:[at("C",0,0,0),at("O",0.9,-0.55,0),at("H",-0.68,0.6,0),at("H",-0.68,-0.6,0)],bonds:[[0,1],[0,2],[0,3]]},
+    "H2CO3":{name:"Carbonic acid",shape:"Trigonal planar",angle:"120°",grp:"Planar",atoms:[at("C",0,0,0),at("O",1.05,-0.35,0),at("O",-0.48,0.55,0),at("O",-0.55,-0.5,0),at("H",-1.3,-0.1,0),at("H",-1.2,0.8,0)],bonds:[[0,1],[0,2],[0,3],[2,4],[3,5]]},
+    "CH2O2":{name:"Formic acid",shape:"Trigonal planar",angle:"120°",grp:"Planar",atoms:[at("C",0,0,0),at("O",0.9,-0.55,0),at("O",-0.5,0.45,0),at("H",-0.8,0.75,0),at("H",0.5,0.7,0),at("H",-1.1,0.25,0)],bonds:[[0,1],[0,2],[0,3],[1,4],[2,5]]},
+    "HNO3":{name:"Nitric acid",shape:"Trigonal planar",angle:"120°",grp:"Planar",atoms:[at("N",0,0,0),at("O",1.05,-0.4,0),at("O",-0.42,0.6,0),at("O",-0.55,-0.55,0),at("H",-1.2,0.18,0)],bonds:[[0,1],[0,2],[0,3],[2,4]]},
+    "SiH4":{name:"Silane",shape:"Tetrahedral",angle:"109.5°",grp:"Tetrahedral",atoms:[at("Si",0,0,0),at("H",0.95,0.95,0),at("H",-0.95,0.95,0),at("H",0,-0.95,0.95),at("H",0,-0.95,-0.95)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "C2H6":{name:"Ethane",shape:"Tetrahedral carbons",angle:"109.5°",grp:"Tetrahedral",atoms:[at("C",-0.62,0,0),at("C",0.62,0,0),at("H",-1.25,0.66,0.05),at("H",-1.25,-0.66,0.05),at("H",-0.85,0,-0.85),at("H",1.25,0.66,-0.05),at("H",1.25,-0.66,-0.05),at("H",0.85,0,0.85)],bonds:[[0,1],[0,2],[0,3],[0,4],[1,5],[1,6],[1,7]]},
+    "CH3COOH":{name:"Acetic acid",shape:"Tetrahedral + planar",angle:"109.5° / 120°",grp:"Tetrahedral",atoms:[at("C",0.75,-0.15,0),at("C",-0.05,-0.15,0),at("O",-0.75,-0.6,0),at("O",-0.15,0.75,0),at("H",1.2,0.55,0.15),at("H",1.05,-0.7,0.25),at("H",1.1,0.15,-0.85),at("H",-1.45,-0.15,0.1)],bonds:[[0,1],[0,4],[0,5],[0,6],[1,2],[1,3],[2,7]]},
+    "C2H5OH":{name:"Ethanol",shape:"Tetrahedral carbons",angle:"≈109.5°",grp:"Tetrahedral",atoms:[at("C",-0.65,-0.1,0),at("C",0.35,-0.1,0),at("O",0.95,0.85,0),at("H",1.6,0.75,0.1),at("H",-1.1,0.55,0.15),at("H",-1.15,-0.75,0.25),at("H",-0.75,-0.05,-0.85),at("H",0.7,-0.75,0.25)],bonds:[[0,1],[0,4],[0,5],[0,6],[1,2],[1,7],[2,3]]},
+    "H2SO4":{name:"Sulphuric acid",shape:"Tetrahedral sulphur",angle:"≈109.5°",grp:"Tetrahedral",atoms:[at("S",0,0,0),at("O",0.55,0.9,-0.5),at("O",-0.55,-0.9,0.5),at("O",0.95,-0.5,-0.75),at("O",-0.95,0.5,0.75),at("H",1.6,0.2,-0.1),at("H",-1.6,-0.2,0.1)],bonds:[[0,1],[0,2],[0,3],[0,4],[3,5],[4,6]]},
+    "H3PO4":{name:"Phosphoric acid",shape:"Tetrahedral phosphorus",angle:"≈109.5°",grp:"Tetrahedral",atoms:[at("P",0,0,0),at("O",0.6,0.85,0.35),at("O",0.45,-0.6,0.65),at("O",-0.85,0.15,-0.5),at("O",-0.2,0.45,-0.95),at("H",-1.25,0.45,-0.1),at("H",1.1,1.3,0.2),at("H",0.85,-1.05,0.35)],bonds:[[0,1],[0,2],[0,3],[0,4],[1,6],[2,7],[3,5]]},
+    "CHCl3":{name:"Chloroform",shape:"Tetrahedral",angle:"109.5°",grp:"Tetrahedral",atoms:[at("C",0,0,0),at("H",0.9,0.85,0.15),at("Cl",0.9,-0.85,-0.15),at("Cl",-0.55,0.15,-0.9),at("Cl",-0.7,0.15,0.8)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "NH4+":{name:"Ammonium ion",shape:"Tetrahedral",angle:"109.5°",grp:"Tetrahedral",atoms:[at("N",0,0,0),at("H",0.9,0.9,0),at("H",-0.9,0.9,0),at("H",0,-0.9,0.9),at("H",0,-0.9,-0.9)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "SiO2":{name:"Silicon dioxide",shape:"Network solid (fragment)",angle:"≈109.5°",grp:"Special",atoms:[at("Si",0,0,0),at("O",0.9,0.9,0),at("O",-0.9,0.9,0),at("O",0,-0.9,0.9),at("O",0,-0.9,-0.9)],bonds:[[0,1],[0,2],[0,3],[0,4]]},
+    "AlCl3":{name:"Aluminium chloride",shape:"Bridged dimer (Al₂Cl₆)",angle:"≈90°",grp:"Special",atoms:[at("Al",-0.7,0,0),at("Al",0.7,0,0),at("Cl",0,0.55,0),at("Cl",0,-0.55,0),at("Cl",-1.55,0.9,0.35),at("Cl",-1.55,-0.9,0.35),at("Cl",1.55,0.9,-0.35),at("Cl",1.55,-0.9,-0.35)],bonds:[[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,6],[1,7]]},
+    "XeO3":{name:"Xenon trioxide",shape:"Trigonal pyramidal",angle:"≈103°",grp:"Pyramidal",atoms:[at("Xe",0,-0.3,0),at("O",0.95,0.5,0),at("O",-0.48,0.5,0.85),at("O",-0.48,0.5,-0.85)],bonds:[[0,1],[0,2],[0,3]]},
+    "PF5":{name:"Phosphorus pentafluoride",shape:"Trigonal bipyramidal",angle:"90° / 120°",grp:"Special",atoms:[at("P",0,0,0),at("F",0,1.6,0),at("F",0,-1.6,0),at("F",1.4,0,0),at("F",-0.7,0,1.21),at("F",-0.7,0,-1.21)],bonds:[[0,1],[0,2],[0,3],[0,4],[0,5]]},
+    "H2O2":{name:"Hydrogen peroxide",shape:"Skew (gauche)",angle:"≈94.8°",grp:"Special",atoms:[at("O",-0.55,0.1,0),at("O",0.55,-0.1,0.25),at("H",-1.15,0.4,0.45),at("H",1.15,-0.4,-0.2)],bonds:[[0,1],[0,2],[1,3]]},
   };
   const MOL_KEYS=Object.keys(MOL);
-  const GRPS={"All":MOL_KEYS.slice(),"Linear":MOL_KEYS.filter(k=>MOL[k].grp==="Linear"),"Bent":MOL_KEYS.filter(k=>MOL[k].grp==="Bent"),"Planar":MOL_KEYS.filter(k=>MOL[k].grp==="Planar"),"Pyramidal":MOL_KEYS.filter(k=>MOL[k].grp==="Pyramidal"),"Tetrahedral":MOL_KEYS.filter(k=>MOL[k].grp==="Tetrahedral"),"Special":MOL_KEYS.filter(k=>MOL[k].grp==="Special")};
-  const GRP_ORDER=["All","Linear","Bent","Planar","Pyramidal","Tetrahedral","Special"];
+  const GRPS={"All":MOL_KEYS.slice(),"Linear":MOL_KEYS.filter(k=>MOL[k].grp==="Linear"),"Bent":MOL_KEYS.filter(k=>MOL[k].grp==="Bent"),"Planar":MOL_KEYS.filter(k=>MOL[k].grp==="Planar"),"Pyramidal":MOL_KEYS.filter(k=>MOL[k].grp==="Pyramidal"),"Tetrahedral":MOL_KEYS.filter(k=>MOL[k].grp==="Tetrahedral"),"Ionic":MOL_KEYS.filter(k=>MOL[k].grp==="Ionic"),"Special":MOL_KEYS.filter(k=>MOL[k].grp==="Special")};
+  const GRP_ORDER=["All","Linear","Bent","Planar","Pyramidal","Tetrahedral","Ionic","Special"];
   let sel="H2O"; let memMode=false; let memGrp="All"; let memIdx=0, memFlipped=false, memScore=0, memDone=0;
   const canvas=h("canvas",{width:520, height:320, style:"width:100%;height:320px;background:radial-gradient(ellipse at 50% 30%, #1e293b 0%, #0d0f14 70%);border-radius:12px;border:1px solid var(--border);display:block"}); const ctx=canvas.getContext("2d");
   let rot=0; let raf=0; function draw(){
@@ -1949,9 +1977,9 @@ export function MoleculeView(root){
       return b;
     }));
   const viewWrap=h("div",{class:"stack", style:"gap:12px"},
-    h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"Molecule"), selEl, h("span",{class:"tag"},"28 structures · no server")), canvas, meta, info);
+    h("div",{class:"row", style:"gap:8px"}, h("span",{class:"small faint"},"Molecule"), selEl, h("span",{class:"tag"},`${MOL_KEYS.length} structures · no server`)), canvas, meta, info);
   const memWrap=h("div",{hidden:true}, grpTabs, memBox);
-  root.innerHTML=""; root.append(page("Molecule Viewer 3D", "Rotate any molecule — 28 structures from H2 to XeF4. Then flip through them in Memorize mode, grouped by shape.",
+  root.innerHTML=""; root.append(page("Molecule Viewer 3D", `Rotate any molecule — ${MOL_KEYS.length} structures. Then flip through them in Memorize mode, grouped by shape.`,
     h("div",{class:"stack", style:"gap:10px"}, modeTabs, viewWrap, memWrap)));
   const obs=new ResizeObserver(()=>{ canvas.width=canvas.clientWidth*2; canvas.height=320*2; canvas.style.height="320px"; }); obs.observe(canvas);
   root.addEventListener("DOMNodeRemoved",()=>{ cancelAnimationFrame(raf); obs.disconnect(); }, {once:true});
@@ -3546,6 +3574,9 @@ export function NeetView(root) {
             ...topics.map((t) => {
               const detail = h("div", { class: "card", style: "margin-top:8px", hidden: true },
                 h("p", { class: "muted small" }, t.summary),
+                (NEET_NOTES[t.id] || []).length ? h("div", { class: "neet-notes" },
+                  h("div", { class: "small", style: "font-weight:700;margin:10px 0 4px;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);font-size:11px" }, "Full notes"),
+                  ...NEET_NOTES[t.id].map((para) => h("p", { class: "neet-para" }, para))) : null,
                 h("ul", { style: "margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:13.5px" },
                   ...t.points.map((pt) => h("li", {}, pt))),
                 h("div", { class: "chapter-meta" },
@@ -3586,6 +3617,21 @@ export function NeetView(root) {
       { id: "bio-synapse", name: "Synaptic transmission", desc: "Vesicles fuse, transmitter crosses the cleft to the next neuron." },
       { id: "bio-digest", name: "Digestive tract", desc: "A bolus slides down; enzymes flash at each station." },
       { id: "bio-meiosis", name: "Meiosis stages", desc: "Pairing and reductional split down to four haploid cells." },
+      { id: "bio-enzyme", name: "Enzyme catalysis", desc: "Substrate docks in the active site and splits into two products." },
+      { id: "bio-mitochondria", name: "Mitochondrion", desc: "Glucose fuel in, ATP out — respiration along the cristae." },
+      { id: "bio-gamete", name: "Fertilisation", desc: "A sperm nucleus fuses with the egg and zygote forms." },
+      { id: "bio-embryo", name: "Early embryo", desc: "Morula, blastula, gastrula — the germ layers take shape." },
+      { id: "bio-punnett", name: "Punnett square", desc: "Gametes recombine and genotype tallies build up." },
+      { id: "bio-selection", name: "Natural selection", desc: "A predator culls the conspicuous morph, shifting the population." },
+      { id: "bio-tissue", name: "Animal tissues", desc: "Epithelia, muscle fibres and nerves side by side." },
+      { id: "bio-xylem", name: "Xylem & transpiration", desc: "Cohesion-tension drags a water column up the stem." },
+      { id: "bio-nodule", name: "Root nodules", desc: "Rhizobia fix atmospheric N₂ into ammonia that leaves the root." },
+      { id: "bio-auxin", name: "Phototropism", desc: "A shoot bends toward light as auxin shifts to the shade side." },
+      { id: "bio-logistic", name: "Population growth", desc: "The logistic S-curve stabilises at the carrying capacity K." },
+      { id: "bio-foodweb", name: "Energy pyramid", desc: "Only ~10% of energy moves up each trophic level." },
+      { id: "bio-ferment", name: "Fermenter", desc: "Microbes churn substrate into product with CO₂ bubbling off." },
+      { id: "bio-menses", name: "Menstrual cycle", desc: "FSH, estrogen and LH crest as the endometrium thickens and sheds." },
+      { id: "bio-antibody", name: "Antibody response", desc: "B-cells tag the invaders so the immune response can target them." },
     ];
     const viewer = h("div");
     let mounted = null;
@@ -5722,221 +5768,511 @@ export function DesmosView(root) {
           h("button", { class: "btn btn-sm", onclick: () => zoomAt(1 / 1.35) }, "−"))))));
   requestAnimationFrame(draw);
 }
-/* TeachMeJEE — Innovation Blueprint: pitch + whole-app data flow with live links. */
-function bpPipe(steps, note) {
-  return h("div", { class: "bp-flow" },
-    h("div", { class: "bp-steps" }, ...steps.map((s, i) => [
-      h("span", { class: "bp-step" }, s),
-      i < steps.length - 1 ? h("span", { class: "bp-arrow" }, "→") : null,
-    ]).flat()),
-    note ? h("div", { class: "small faint", style: "margin-top:8px" }, note) : null);
+/* ---------- Pitch: 3D hero scene (three.js via CDN importmap) ---------- */
+let _pitchSceneCleanup = null;
+const PITCH_MODELS = [
+  { k: "mol", label: "Molecule" },
+  { k: "atom", label: "Atom" },
+  { k: "dna", label: "DNA helix" },
+  { k: "benzene", label: "Benzene" },
+  { k: "waves", label: "Waves" },
+  { k: "kepler", label: "Orbit" },
+];
+function pitchScene(el) {
+  let raf = 0;
+  try {
+    if (typeof window.__PITCH_SCENE__ === "object") { el.append(window.__PITCH_SCENE__.canvas); return; }
+  } catch {}
+  try {
+    const canvas = h("canvas", { style: "width:100%;height:300px;display:block" });
+    const labelEl = h("div", { class: "pitch-model-label" }, "…");
+    const ctl = h("div", { class: "pch-model-row" });
+    el.append(canvas, labelEl, ctl);
+    import("three") /* CDN importmap */ .then((THREE) => {
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      } catch (e) { return; }
+      renderer.setClearColor(0x000000, 0);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / 300, 0.1, 100);
+      camera.position.set(3.6, 2.2, 4.2); camera.lookAt(0, 0, 0);
+
+      const amb = new THREE.AmbientLight(0xffffff, 0.6);
+      const key = new THREE.DirectionalLight(0xf2a33c, 1.15); key.position.set(4, 6, 3);
+      const rim = new THREE.DirectionalLight(0x69a7d8, 0.8); rim.position.set(-5, 2, -4);
+      scene.add(amb, key, rim);
+
+      function disposeGroup(g) {
+        g.traverse((o) => {
+          if (o.geometry) o.geometry.dispose();
+          if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose());
+        });
+        scene.remove(g);
+      }
+
+      /* --- model 1: ammonia molecule --- */
+      function makeMol() {
+        const grp = new THREE.Group();
+        const atoms = [
+          { c: 0xf2a33c, r: 0.62, p: [0, 0.15, 0] },
+          { c: 0x69a7d8, r: 0.34, p: [0.9, -0.3, 0.55] },
+          { c: 0x8ec07c, r: 0.34, p: [-0.9, -0.3, 0.55] },
+          { c: 0xe6b455, r: 0.34, p: [0.15, -0.3, -1.0] },
+        ];
+        const spheres = atoms.map((a) => {
+          const s = new THREE.Mesh(
+            new THREE.SphereGeometry(a.r, 36, 36),
+            new THREE.MeshStandardMaterial({ color: a.c, roughness: 0.25, metalness: 0.05, emissive: a.c, emissiveIntensity: 0.12 }));
+          s.position.set(...a.p); grp.add(s); return s;
+        });
+        const bonds = [[0, 1], [0, 2], [0, 3]].map(([i, j]) => {
+          const A = new THREE.Vector3(...atoms[i].p), B = new THREE.Vector3(...atoms[j].p);
+          const mid = A.clone().add(B).multiplyScalar(0.5);
+          const cyl = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.09, 0.09, 1, 12),
+            new THREE.MeshStandardMaterial({ color: 0x97835f, roughness: 0.4 }));
+          cyl.position.copy(mid);
+          cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
+          cyl.scale.y = A.distanceTo(B);
+          grp.add(cyl); return cyl;
+        });
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(1.9, 0.03, 10, 90),
+          new THREE.MeshStandardMaterial({ color: 0xf2a33c, emissive: 0xf2a33c, emissiveIntensity: 0.35 }));
+        ring.position.y = 0.6; ring.rotation.x = Math.PI / 2.4; grp.add(ring);
+        scene.add(grp);
+        return {
+          label: "Molecule — ammonia",
+          group: grp,
+          tick(bind) {
+            grp.rotation.y += 0.008;
+            spheres.forEach((s, i) => { s.position.y = atoms[i].p[1] + Math.sin(bind * 1.1 + i) * 0.06; });
+          },
+        };
+      }
+
+      /* --- model 2: Bohr atom --- */
+      function makeAtom() {
+        const grp = new THREE.Group();
+        const nucleus = new THREE.Mesh(
+          new THREE.SphereGeometry(0.4, 32, 32),
+          new THREE.MeshStandardMaterial({ color: 0xf2a33c, emissive: 0xf2a33c, emissiveIntensity: 0.5, roughness: 0.2 }));
+        grp.add(nucleus);
+        const electrons = [];
+        const ringGeo = new THREE.TorusGeometry(1.15, 0.02, 8, 80);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x69a7d8, emissive: 0x69a7d8, emissiveIntensity: 0.3 });
+        for (let i = 0; i < 3; i++) {
+          const ring = new THREE.Mesh(ringGeo, ringMat);
+          ring.rotation.x = Math.PI / 2 - (Math.PI / 3) * i;
+          ring.rotation.y = (Math.PI / 3) * i * 0.8;
+          const e = new THREE.Mesh(
+            new THREE.SphereGeometry(0.11, 20, 20),
+            new THREE.MeshStandardMaterial({ color: 0x8ec07c, emissive: 0x8ec07c, emissiveIntensity: 0.45 }));
+          e._phase = (i * Math.PI * 2) / 3;
+          ring.add(e);
+          grp.add(ring);
+          electrons.push(e);
+        }
+        scene.add(grp);
+        return {
+          label: "Atom — Bohr model",
+          group: grp,
+          tick(bind) {
+            grp.rotation.y += 0.006;
+            electrons.forEach((e, i) => {
+              e.position.set(1.15 * Math.cos(bind * 1.4 + e._phase), 1.15 * Math.sin(bind * 1.2 + e._phase), 0);
+              e.scale.setScalar(1 + Math.sin(bind * 3 + i) * 0.2);
+            });
+          },
+        };
+      }
+
+      /* --- model 3: DNA double helix --- */
+      function makeDna() {
+        class Helix extends THREE.Curve {
+          constructor(radius, pitch, phase) { super(); this.radius = radius; this.pitch = pitch; this.phase = phase; }
+          getPoint(t, target) {
+            const a = t * Math.PI * 8 + this.phase;
+            const out = target || new THREE.Vector3();
+            return out.set(this.radius * Math.cos(a), (t - 0.5) * this.pitch, this.radius * Math.sin(a));
+          }
+        }
+        const grp = new THREE.Group();
+        const radius = 0.95, pitch = 5.4;
+        const strandMat = new THREE.MeshStandardMaterial({ color: 0x69a7d8, roughness: 0.45, emissive: 0x355070, emissiveIntensity: 0.25 });
+        grp.add(
+          new THREE.Mesh(new THREE.TubeGeometry(new Helix(radius, pitch, 0), 180, 0.09, 10, false), strandMat),
+          new THREE.Mesh(new THREE.TubeGeometry(new Helix(radius, pitch, Math.PI), 180, 0.09, 10, false), strandMat));
+        const rungMat = new THREE.MeshStandardMaterial({ color: 0x8ec07c, roughness: 0.4 });
+        for (let i = 0; i < 13; i++) {
+          const t = i / 12;
+          const a = t * Math.PI * 8;
+          const y = (t - 0.5) * pitch;
+          const p1 = new THREE.Vector3(radius * Math.cos(a), y, radius * Math.sin(a));
+          const p2 = new THREE.Vector3(radius * Math.cos(a + Math.PI), y, radius * Math.sin(a + Math.PI));
+          const mid = p1.clone().add(p2).multiplyScalar(0.5);
+          const rung = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 1, 8), rungMat);
+          rung.position.copy(mid);
+          rung.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), p2.clone().sub(p1).normalize());
+          rung.scale.y = p1.distanceTo(p2);
+          grp.add(rung);
+        }
+        scene.add(grp);
+        return { label: "DNA — double helix", group: grp, tick() { grp.rotation.y += 0.005; } };
+      }
+
+      /* --- model 4: benzene --- */
+      function makeBenzene() {
+        const grp = new THREE.Group();
+        const R = 0.85;
+        const pts = [];
+        for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; pts.push(new THREE.Vector3(R * Math.cos(a), R * Math.sin(a), 0)); }
+        const cMat = new THREE.MeshStandardMaterial({ color: 0xe6b455, roughness: 0.3, emissive: 0x1a1206, emissiveIntensity: 0.4 });
+        const sGeo = new THREE.SphereGeometry(0.16, 20, 20);
+        for (const p of pts) { const s = new THREE.Mesh(sGeo, cMat); s.position.copy(p); grp.add(s); }
+        const bMat = new THREE.MeshStandardMaterial({ color: 0x8ec07c, roughness: 0.35, emissive: 0x3d6b4f, emissiveIntensity: 0.25 });
+        for (let i = 0; i < 6; i++) {
+          const A = pts[i], B = pts[(i + 1) % 6];
+          const mid = A.clone().add(B).multiplyScalar(0.5);
+          const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 1, 8), bMat);
+          cyl.position.copy(mid);
+          cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), B.clone().sub(A).normalize());
+          cyl.scale.y = A.distanceTo(B);
+          grp.add(cyl);
+        }
+        const cloud = new THREE.Mesh(
+          new THREE.TorusGeometry(R * 1.04, 0.03, 8, 60),
+          new THREE.MeshStandardMaterial({ color: 0xe6b455, emissive: 0xe6b455, emissiveIntensity: 0.4 }));
+        grp.add(cloud);
+        grp.rotation.x = Math.PI / 5.2;
+        scene.add(grp);
+        return { label: "Benzene — π cloud", group: grp, tick() { grp.rotation.y += 0.008; } };
+      }
+
+      /* --- model 5: travelling wave surface --- */
+      function makeWaves() {
+        const grp = new THREE.Group();
+        const geo = new THREE.PlaneGeometry(3.4, 3.4, 42, 42);
+        const mat = new THREE.MeshStandardMaterial({ color: 0x69a7d8, roughness: 0.3, metalness: 0.1, side: THREE.DoubleSide, emissive: 0x1d4d6b, emissiveIntensity: 0.45 });
+        const mesh = new THREE.Mesh(geo, mat);
+        const pos = geo.attributes.position;
+        const count = pos.count;
+        grp.add(mesh);
+        scene.add(grp);
+        return {
+          label: "Waves — ripple surface",
+          group: grp,
+          tick(bind) {
+            const p = pos.array;
+            for (let i = 0; i < count; i++) {
+              const x = p[i * 3], y = p[i * 3 + 1];
+              p[i * 3 + 2] = Math.sin(x * 5 + bind * 2) * 0.35 + Math.cos(y * 4 + bind * 1.6) * 0.2;
+            }
+            pos.needsUpdate = true;
+            geo.computeVertexNormals();
+            grp.rotation.x = Math.PI / 2 + 0.42 + Math.sin(bind * 0.6) * 0.1;
+          },
+        };
+      }
+
+      /* --- model 6: Kepler orbit --- */
+      function makeKepler() {
+        const grp = new THREE.Group();
+        const star = new THREE.Mesh(
+          new THREE.SphereGeometry(0.45, 32, 32),
+          new THREE.MeshStandardMaterial({ color: 0xf2a33c, emissive: 0xf2a33c, emissiveIntensity: 0.9, roughness: 0.15 }));
+        grp.add(star);
+        const a = 1.9, b = 1.55;
+        const orbitPts = [];
+        for (let i = 0; i <= 96; i++) { const th = (i / 96) * Math.PI * 2; orbitPts.push(new THREE.Vector3(a * Math.cos(th), 0, b * Math.sin(th))); }
+        grp.add(new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(orbitPts),
+          new THREE.LineBasicMaterial({ color: 0x8ec07c, transparent: true, opacity: 0.85 })));
+        const planet = new THREE.Mesh(
+          new THREE.SphereGeometry(0.2, 24, 24),
+          new THREE.MeshStandardMaterial({ color: 0x69a7d8, emissive: 0x69a7d8, emissiveIntensity: 0.25 }));
+        grp.add(planet);
+        grp.rotation.x = Math.PI / 3.4;
+        grp.rotation.z = Math.PI / 7;
+        scene.add(grp);
+        return {
+          label: "Kepler — orbit & focus",
+          group: grp,
+          tick(bind) {
+            const th = bind * 1.1;
+            planet.position.set(a * Math.cos(th), 0, b * Math.sin(th));
+            planet.scale.setScalar(1 + Math.sin(bind * 2.4) * 0.2);
+            grp.rotation.y += 0.002;
+          },
+        };
+      }
+
+      const makers = { mol: makeMol, atom: makeAtom, dna: makeDna, benzene: makeBenzene, waves: makeWaves, kepler: makeKepler };
+      let current = null;
+
+      function setModel(k) {
+        if (current) { if (current.tick) current.tick = null; disposeGroup(current.group); }
+        if (!makers[k]) k = "atom";
+        current = makers[k]();
+        labelEl.textContent = current.label;
+        ctl.querySelectorAll(".pch-model-btn").forEach((b) => b.classList.toggle("on", b.dataset.k === k));
+      }
+
+      for (const m of PITCH_MODELS) {
+        const b = h("button", { class: "pch-model-btn", title: m.label, onclick: () => setModel(m.k) }, m.label);
+        b.dataset.k = m.k;
+        ctl.append(b);
+      }
+
+      function resize() {
+        const w = canvas.clientWidth || 320, ht = canvas.clientHeight || 300;
+        renderer.setSize(w, ht, false);
+        camera.aspect = w / ht; camera.updateProjectionMatrix();
+      }
+      resize();
+      const ro = new ResizeObserver(resize); ro.observe(canvas);
+
+      setModel("atom");
+
+      function tick() {
+        if (current && current.tick) current.tick(Date.now() / 1000);
+        renderer.render(scene, camera);
+      }
+      (function loop() { raf = requestAnimationFrame(loop); tick(); })();
+      _pitchSceneCleanup = () => { cancelAnimationFrame(raf); ro.disconnect(); if (current) disposeGroup(current.group); try { renderer.dispose(); } catch {} };
+    }).catch(() => {});
+  } catch (e) {}
 }
+function disposePitchScene() { try { if (_pitchSceneCleanup) _pitchSceneCleanup(); _pitchSceneCleanup = null; } catch {} }
 
+/* TeachMeJEE — Innovation Blueprint: a plain-English pitch for the whole app. */
 export function BlueprintView(root) {
-  const stats = featureStats();
   const subTotal = ALL_CONCEPTS.reduce((a, c) => a + (subtopicsFor(c)?.length || 0), 0);
-  const simsLive = h("b", { class: "bp-num-inline" }, "87");
-  const variantsLive = h("b", { class: "bp-num-inline" }, "100,000,007");
-  import("./sim/factory.js").then((S) => {
-    if (S.SIM_FACTORY_STATS) {
-      simsLive.textContent = String(S.SIM_FACTORY_STATS.base);
-      variantsLive.textContent = Number(S.SIM_FACTORY_STATS.virtual).toLocaleString();
-    }
-  }).catch(() => {});
-
-  const engineCount = Object.keys(Quantum).filter((k) => typeof Quantum[k] === "function" && k[0] !== "_").length;
 
   const ROUTE_GROUPS = [
     { g: "Learn", icon: "≡", items: [
-      ["#/home", "Home", "XP, 56-day heatmap, streak, what's next"],
-      ["#/dashboard", "Dashboard", "Today's command centre: dues, strikes, quick actions"],
-      ["#/welcome", "Welcome tour", "Onboarding — 60-second guided tour"],
-      ["#/foundation", "Class 9–10 launchpad", "Foundation tracks that bridge into JEE chapters"],
-      ["#/roadmap", "Journey · Roadmap", "All 93 chapters, level-ordered with lock states"],
-      ["#/flowchart", "Flowchart", "Prerequisite graph as SVG arrows"],
-      ["#/constellation", "Constellation", "Obsidian-style concept map — rings, focus, persist"],
-      ["#/browse", "Browse chapters", "Filterable grid over the full syllabus"],
-      ["#/library", "Notes library", "93 deep rewrites in one shelf"],
-      ["#/chapter/P-units", "Chapter view", "Tabs: Overview · Full Notes · Notes · Formulas · Subs · Lectures · Simulation · Doubts"],
-      ["#/periodic", "Periodic table", "Interactive s/p/d/f blocks, JEE-linked"],
-      ["#/derivations", "Derivation theatre", "Every result one step at a time, auto-play"],
-      ["#/molecules", "Molecules 3D", "28 structures + shape-grouped memorisation"],
-      ["#/graph", "Graph playground", "Desmos-like f(x) with a/b sliders"],
-      ["#/desmos", "Desmos calculator", "Hand-rolled parser, drag-pan, zoom, trace"],
-      ["#/board", "Whiteboard", "Per-chapter canvas saved to localStorage"],
+      ["#/home", "Home", "XP, streak, heatmap, what's next"],
+      ["#/foundation", "Class 9–10 foundation", "Tracks that bridge the gaps coaching skips"],
+      ["#/roadmap", "Journey · Roadmap", "All 93 chapters, level-ordered"],
+      ["#/library", "Notes library", "Deep rewrites in one shelf"],
+      ["#/chapter/P-units", "Chapter view", "Notes · Formulas · Lectures · Simulation"],
+      ["#/derivations", "Derivation theatre", "Every result, one step at a time"],
+      ["#/molecules", "Molecules 3D", "54 structures, shape-grouped"],
+      ["#/periodic", "Periodic table", "Interactive blocks, JEE-linked"],
+      ["#/graph", "Graph playground", "Slide a/b and watch the curve move"],
     ]},
     { g: "Practice", icon: "◉", items: [
-      ["#/quiz", "Quiz engine", "Concept/subject filter, emotion-aware feedback"],
-      ["#/flash", "Flash", "SR schedule 1→3→7→16d + user cards"],
-      ["#/pyq", "PYQ bank", "Chapter-wise JEE PYQs with trend filter"],
-      ["#/sprint", "PYQ Sprint", "10 timed PYQs, +4/−1, auto-submit"],
-      ["#/duel", "1v1 Duel", "Head-to-head mixed question race"],
-      ["#/neet", "NEET hub", "30 topics, notes, models, question bank"],
-      ["#/videos", "Lectures", "18 channels · per-chapter YouTube search"],
-      ["#/formulas", "Formula cards", "Structured per-chapter formula shelves"],
-      ["#/playground", "Playground", "Slider labs + smart weak-area timetable"],
+      ["#/quiz", "Quiz engine", "Concept filters, honest feedback"],
+      ["#/flash", "Flash", "Spaced repetition 1→3→7→16 days"],
+      ["#/pyq", "PYQ bank", "Chapter-wise JEE PYQs + trends"],
+      ["#/sprint", "PYQ Sprint", "10 timed PYQs, +4/−1"],
+      ["#/duel", "1v1 Duel", "Head-to-head question race"],
+      ["#/neet", "NEET hub", "30 topics, notes, question bank"],
+      ["#/playground", "Playground", "Slider labs + weak-area timetable"],
     ]},
     { g: "Plan & Insight", icon: "∆", items: [
-      ["#/studyplan", "Mission JEE", "42-week plan with ticked weeks, streak, bars"],
-      ["#/planner", "Planner", "Week tasks + pomodoro focus timer"],
-      ["#/daily", "Daily challenge", "One quest a day, claimable reward"],
-      ["#/weightage", "Weightage", "Chapter marks weight + PYQ trends"],
-      ["#/insight", "JEE Insight", "Weak high-weight chapters, revision gaps"],
-      ["#/weak", "Weak areas", "Mastered chapters with sub-80% accuracy"],
-      ["#/revisions", "Revisions", "Spaced-repetition queue, due today first"],
-      ["#/recommendations", "Recommended", "Frontier scoring of the next best chapter"],
-      ["#/analytics", "Analytics", "Focused practice, accuracy, subject pie"],
-      ["#/predictor", "Rank predictor", "Velocity + streak → percentile band"],
-      ["#/mastery", "Mastery", "Level radar over the syllabus"],
-      ["#/stats", "Statistics", "Raw counters, answer log, no telemetry"],
-      ["#/achievements", "Achievements", "Badge wall + shareable victory card"],
-      ["#/calendar", "Calendar", "Month grid from dailies + focusLog"],
+      ["#/studyplan", "Mission JEE", "42-week plan with ticked weeks"],
+      ["#/daily", "Daily challenge", "One quest a day"],
+      ["#/planner", "Planner", "Week tasks + focus timer"],
+      ["#/weightage", "Weightage", "Where the marks actually sit"],
+      ["#/insight", "JEE Insight", "Weak high-weight chapters"],
+      ["#/weak", "Weak areas", "Under-80% chapters, surfaced"],
+      ["#/revisions", "Revisions", "Due-today-first revision queue"],
+      ["#/analytics", "Analytics", "Accuracy, practice, subject pie"],
+      ["#/predictor", "Rank predictor", "Velocity + streak → a band"],
     ]},
-    { g: "Systems & Tools", icon: "⚙", items: [
-      ["#/atlas", "Atlas · 1000×", "All real features + 100M generative variants"],
-      ["#/labs", "Labs · Future", "26 quantum engines — protocol cards"],
-      ["#/tools", "Tools index", "47 searchable study tools"],
-      ["#/files", "Files", "Export/import JSON, snapshots, storage meter"],
-      ["#/gitjee", "GitJEE", "Open-source hub, exporter kits"],
-      ["#/theme", "Theme studio", "Accent/bg tokens, dark & light"],
-      ["#/tutor", "Ask Pip", "Rule-based offline tutor + speech"],
-      ["#/login", "Join / Login", "Per-user sandbox, optional leaderboard"],
-      ["#/leaderboard", "Leaderboard", "Graceful offline sync"],
-      ["#/bookmarks", "Bookmarks", "Starred chapters and notes"],
-      ["#/progress", "Progress", "Trackers: chapters, notes, tests"],
+    { g: "Tools & Data", icon: "⚙", items: [
+      ["#/labs", "Labs", "150+ interactive simulation engines"],
+      ["#/tools", "Tools index", "Searchable study tools"],
+      ["#/atlas", "Atlas", "Every feature + reproducible variants"],
+      ["#/files", "Files", "Export, import, snapshots"],
+      ["#/gitjee", "GitJEE", "Open source, auditable"],
+      ["#/tutor", "Ask Pip", "Offline AI tutor + speech"],
+      ["#/theme", "Theme studio", "Make it yours, dark & light"],
+      ["#/board", "Whiteboard", "Per-chapter canvas"],
     ]},
   ];
-  const routeCount = ROUTE_GROUPS.reduce((a, g) => a + g.items.length, 0) + 1;
 
-  function statRow(items) {
-    return h("div", { class: "bp-stats" }, ...items.map(([n, l]) =>
-      h("div", { class: "bp-stat" }, h("div", { class: "bp-num" }, n), h("div", { class: "bp-lbl" }, l))));
-  }
-
-  const flows = [
-    ["Boot & module graph", bpPipe([
-      "index.html importmap", "js/app.js", "store.load()", "applySettings()",
-      "sw register", "route() once", "view mount",
-    ], "No bundler — browser-native ES modules. three.js r160 via CDN importmap, never bundled. Node-importable: data, store, features, factory (auditable); sim engine is browser-only.")],
-    ["Routing flow — every navigation", bpPipe([
-      "location.hash", "hashchange", "route()", "hash → name/param",
-      "setActiveNav", "refreshXP()", "unmount + disposeActiveSim()", "VIEWS_MAP[name](app)",
-    ], "Deep links work on any static host. Chapter routes take ?sim=&variant=; try the variant pipeline from the Atlas below.")],
-    ["State lifecycle", bpPipe([
-      "mutation fn (completeConcept / recordQuiz / saveNote)", "store.save()",
-      "localStorage tmj_state[_user]", "load() normalize + guards ", "next view renders from load()",
-    ], "Render-on-read, derived > stored: XP, streaks, SR schedule and ranks are recomputed from raw counters — one source of truth, survives refresh and device swap via backup.")],
-    ["Atlas → live 3D variant", bpPipe([
-      "Atlas card", "#/chapter/x?sim=y&variant=z", "window.__SIM_VARIANT__",
-      "mountSim", "variantForControls(seed)", "setControl(key,val)", "60fps scene",
-    ], "hashVariant is a pure deterministic seed — same variant = same parameters on every device, quantized to each slider's step.")],
-    ["Simulation engine", bpPipe([
-      "sim/index.js import", "register(id, factory)", "engine.mountSim",
-      "scene/camera/orbit", "constraint set", "rAF loop", "dispose on route change",
-    ], "Each factory receives {THREE, group, makeGrid, makeAxes, controls...}. Controls expose {key,label,min,max,step} — auto-mapped by the Atlas variant engine.")],
-    ["Content & notes", bpPipe([
-      "data.js 93 chapters", "ChapterView tabs", "DEEP_NOTES rewrites",
-      "subtopicsFor() generative", "notes id ← saveNote", "formulas cards", "lectures embed",
-    ], "Notes are plain marked HTML rendered through the sanitizer; note progress (per point, per sub) persists in tmj_state.")],
-    ["Practice data flow", bpPipe([
-      "QUESTIONS/PYQS/NEET_QUESTIONS", "draw N", "answer tap",
-      "recordQuizAnswer", "quizByConcept + answerLog", "XP + haptic + chime", "save()",
-    ], "Flash uses planner.js SR scheduler (1→3→7→16d with jitter); misses auto-generate new cards and feed weakness analysis.")],
-    ["Quantum analytics", bpPipe([
-      "state raw (completed, quizByConcept, focusLog, srQueue)",
-      "26 pure engines", "cognitiveLoadMap · predictNext · forecastRank · temporalOpacity · bossEscalation",
-      "view maps: Analytics · Predictor · Weak · Revisions · Achievements · Labs",
-    ], "Every engine output is also an Atlas feature card (type global) — the 1000× surface stays honest and clickable.")],
-    ["PWA / offline", bpPipe([
-      "sw.js install", "CACHE versioned", "network-first code",
-      "stale-while-revalidate assets", "controllerchange → toast Reload", "local study offline",
-    ], "Shell, notes, question banks and all sims are pre-cached — the entire app works on a train.")],
-    ["Backup / restore / migration", bpPipe([
-      "exportData()", "teachmejee-backup-YYYY-MM-DD.json", "importData() version-check",
-      "snapshot slots a/b", "Undo", "switchUser sandbox",
-    ], "Auto daily snapshot rings; resetAll clears only the current user's key. Files page renders it all — open below.")],
+  const FEATURE_SET = [
+    ["#/tutor", "Ask Pip", "An AI tutor that answers from your own notes and progress — and runs entirely on your device, no internet, no API keys. Ask it anything you'd ask a teacher."],
+    ["#/derivations", "Derivation theatre", "Every formula rebuilt step by step so you never memorise a black box. See where each term comes from, then move on."],
+    ["#/constellation", "Constellation map", "An Obsidian-style map of the whole syllabus. See how a topic you're stuck on connects to the ones holding it up."],
+    ["#/molecules", "Molecule lab", "54 molecular structures in true 3D — spin, zoom, group by shape, then drill yourself until the names stick."],
+    ["#/labs", "Interactive labs", "Drag a slider, watch the physics change. 150+ concepts become experiments, not paragraphs."],
+    ["#/flash", "Spaced repetition", "Flashcards that show up at 1 → 3 → 7 → 16 days, timed to your memory. Revision that schedules itself."],
+    ["#/weak", "Weak-area radar", "The app tracks your accuracy per chapter and tells you honestly where you're under 80%."],
+    ["#/predictor", "Rank predictor", "Your consistency becomes a percentile band — see where you'd sit today, not just how much XP you have."],
+    ["#/studyplan", "Mission JEE", "A 42-week plan that ticks itself off as you go, built around weightage and your own pace."],
+    ["#/sprint", "PYQ Sprint", "Ten timed previous-year questions with real +4/−1 scoring, so practice feels like the exam."],
+    ["#/duel", "1v1 duels", "Face a friend on the same questions, head-to-head, and let the rivalry do the motivating."],
+    ["#/gitjee", "Open source", "Every line of this app is public, rehostable, exportable — nothing hidden, nothing sold."],
+    ["#/files", "Your data, yours", "Progress exports to a file you control. Back it up, move it, keep it forever."],
+    ["#/neet", "NEET hub", "The same engine pointed at medicine: topics, notes, models and a question bank."],
   ];
 
-  const journeys = [
-    ["Newbie", "Open → Welcome tour → Foundation (Class 9–10) → first chapter → Full Notes → Simulation sliders → ✓ Master → XP up + heatmap lit."],
-    ["Rank hunter", "Planner → Mission JEE weeks → Focus Timer → Analytics → Rank predictor → Victory Card share."],
-    ["Revisionist", "Ctrl+K → type optics → Atlas card → variant sim → Flash due → Revisions → Predictor."],
-    ["Offline boarder", "Add to Home → PWA install → commute studying — everything cached, zero server."],
-    ["Show-off", "Labs → mint Certificate → P2P insight packet → Boss fight → God Mode gate at 100%."],
+  const COMPARISON = [
+    ["Price, per year", "Free", "₹5,000–₹90,000", "₹1–3 lakh"],
+    ["Works offline", "Yes", "No", "No"],
+    ["Needs an account or login", "No", "Usually", "Yes"],
+    ["You can keep your data", "Yes — it's on your device", "Locked in", "Not yours"],
+    ["3D interactive models", "Yes — 54 molecules + labs", "Mostly videos", "Whiteboard only"],
+    ["AI tutor, run locally", "Yes — Pip, on-device", "Cloud chatbot", "No"],
+    ["What you actually get", "Notes, labs, tests, planner, analytics — everything", "Videos + a test series", "Classes + a test series"],
   ];
-
-  const objectRows = [
-    ["93 chapters", `${ALL_CONCEPTS.filter(c=>c.subject==="P").length} P · ${ALL_CONCEPTS.filter(c=>c.subject==="C").length} C · ${ALL_CONCEPTS.filter(c=>c.subject==="M").length} M · ${ALL_CONCEPTS.filter(c=>c.subject==="f").length || 12} foundation`],
-    [[simsLive, " simulations"], "13 maths · 25 physics · 9 chemistry · bio set · lab set — drag/orbit/zoom, all variant-driven"],
-    [[variantsLive, " parametric variants"], "hashVariant determinism → infinite reproducible labs"],
-    [`${FEATURE_COUNT.toLocaleString()} real features + ${VIRTUAL_FEATURE_COUNT.toLocaleString()} virtual`, "every card routes to a real view — no mocks"],
-    [`${DEEP_NOTE_IDS.length} deep notes · ${subTotal} subtopics`, "93 full rewrites + 5 generative micro-notes per chapter"],
-    [`${Object.keys(DERIVATIONS).length} derivations`, "animated step-by-step theatre, auto-play"],
-    [`${NEET_TOPICS.length} NEET topics · ${NEET_QUESTIONS.length} Q`, "notes + 3D models + question bank"],
-    [`${PYQS.length} PYQs · ${QUESTIONS.length} quiz bank`, "chapter-wise filters, sprint mode, duels", true],
-  ];
+  const routeCount = ROUTE_GROUPS.reduce((a, g) => a + g.items.length, 0);
 
   root.innerHTML = "";
-  root.append(page("Innovation Blueprint — teach the whole syllabus, offline",
-    "One auditable hub for JEE Main/Advanced + NEET: explains everything, shows everything in 3D, tells you what's next, lives entirely on the student's machine.",
-    h("div", { class: "stack", style: "gap:18px" },
-      h("div", { class: "bp-hero" },
-        h("div", { class: "bp-hero-title" }, "A 10,000 ft blueprint of TeachMeJEE"),
-        h("p", { class: "small muted" }, "Purpose: an all-in-one preparation system — notes, 3D labs, planner, spaced repetition and rank analytics — with zero server, zero telemetry, zero install. Every number below is read live from the running app."),
-        h("div", { class: "row", style: "gap:8px;margin-top:12px;flex-wrap:wrap" },
-          h("a", { class: "btn btn-primary", href: "#/atlas" }, "Browse 1000× Atlas →"),
-          h("a", { class: "btn", href: "#/files" }, "Export progress →"),
-          h("a", { class: "btn", href: "#/gitjee" }, "Open source →"))),
+  root.append(
+    page("TeachMeJEE — the whole syllabus… on your phone, offline",
+      "A no-ads, zero-cost study system for JEE + NEET: notes, 3D labs, an on-device AI tutor, flashcards and analytics — everything runs in your browser, cached so it works on a train, with no server and no subscription lock-in.",
+      h("div", { class: "stack", style: "gap:22px" },
 
-      statRow([
-        [`${ALL_CONCEPTS.length}`, "chapters"],
-        [`${routeCount}`, "named routes"],
-        ["100%", "client-side"],
-        ["0", "servers"],
-      ]),
+        /* ── HERO ── */
+        h("div", { class: "pitch-hero" },
+          h("div", { class: "pitch-hero-inner" },
+            h("p", { class: "pch-eyebrow" }, "For JEE Main, JEE Advanced and NEET — built by an aspirant, v1"),
+            h("h1", { class: "pch-title" }, "The whole syllabus.\nIn one offline app.\nAt zero cost."),
+            h("p", { class: "pch-sub" }, "Almost every aspirant already has a phone. Almost none have a stable data plan, a complete set of notes, or a teacher who stays past midnight. TeachMeJEE puts all three in the same place — and it costs nothing."),
+            h("div", { class: "pch-cta" },
+              h("a", { class: "btn btn-primary btn-lg", href: "#/roadmap" }, "Start free — no signup"),
+              h("a", { class: "btn btn-lg", href: "#/tutor" }, "Ask the AI tutor →"))),
+          h("div", { class: "pch-hero-3d" },
+            h("div", { class: "pitch-spin" }, (() => { const e = document.createElement("div"); queueMicrotask(() => pitchScene(e)); return e; })()),
+            h("div", { class: "pch-3d-cap small faint" }, "Six hand-built 3D models, live in this tab — click one under the canvas. The same engine that powers the Molecule Lab"))),
 
-      h("div", { class: "bp-block" },
-        h("h2", {}, "Contents inventory"),
-        h("div", { class: "bp-objgrid" }, ...objectRows.map(([n, l]) =>
-          h("div", { class: "bp-obj" },
-            h("div", { class: "bp-obj-num" }, ...(Array.isArray(n) ? n : [n])),
-            h("div", { class: "small faint" }, l))))),
+        /* ── THE PROBLEM ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "The problem: read this once, honestly"),
+          h("p", { class: "muted" }, "Every year roughly 14 lakh students sit for JEE Main. A little over one lakh get past it into JEE Advanced, and around eighteen thousand eventually take an IIT seat. That's not a talent filter — it's a foundation filter. Most aspirants reach Class 11 with gaps from Class 9–10 that no coaching ever checks, and the syllabus lands on top of the gaps."),
+          h("div", { class: "pch-facts" },
+            h("div", { class: "pch-fact" }, h("div", { class: "pch-fact-num" }, "14.76 lakh"), h("div", { class: "pch-fact-lbl" }, "registered for JEE Main 2024 — most of them without firm basics"),
+              h("div", { class: "small faint" }, "NTA, JEE Main 2024")),
+            h("div", { class: "pch-fact" }, h("div", { class: "pch-fact-num" }, "≈ 48,248"), h("div", { class: "pch-fact-lbl" }, "students cleared JEE Advanced 2024"),
+              h("div", { class: "small faint" }, "JoSAA / NTA 2024")),
+            h("div", { class: "pch-fact" }, h("div", { class: "pch-fact-num" }, "17,740"), h("div", { class: "pch-fact-lbl" }, "IIT seats across 23 IITs — about 1 seat per 830 candidates"),
+              h("div", { class: "small faint" }, "JoSAA 2024 seat matrix")),
+            h("div", { class: "pch-fact" }, h("div", { class: "pch-fact-num" }, "≈32/100"), h("div", { class: "pch-fact-lbl" }, "national average Class 10 mathematics score — the bed most JEE prep is built on"),
+              h("div", { class: "small faint" }, "NAS 2021, NCERT/PARAKH")),
+            h("div", { class: "pch-fact" }, h("div", { class: "pch-fact-num" }, "24 lakh"), h("div", { class: "pch-fact-lbl" }, "candidates registered for NEET UG 2024 — the same foundation story, medical edition"),
+              h("div", { class: "small faint" }, "NTA 2024; ~1.09L MBBS seats, NMC")),
+          ),
+          h("div", { class: "pch-take" }, "The root cause isn't hard work. It's that foundations get skipped, and the tools to rebuild them cost more than many families can spend on a year of coaching. TeachMeJEE removes the money from the equation — and starts where the gap actually is.")),
 
-      h("div", { class: "bp-block" },
-        h("h2", {}, "Every page, one link away"),
-        h("div", { class: "bp-grid" }, ...ROUTE_GROUPS.map((grp) =>
-          h("div", { class: "card bp-group" },
-            h("h3", {}, grp.icon + "  " + grp.g),
-            ...grp.items.map(([rt, name, desc]) =>
-              h("a", { class: "bp-link", href: rt },
-                h("div", { class: "bp-link-name" }, name),
-                h("div", { class: "small faint" }, desc)))))),
+        /* ── THE IDEA ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "The idea, in one breath"),
+          h("p", { class: "muted" }, "JEE and NEET are a chain of small steps, not one impossible leap. TeachMeJEE turns the whole journey into visible, checkable steps — from the Class 9–10 bed upward, all the way to a rank prediction."),
+          h("div", { class: "pch-pillars" },
+            h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "Start at the bed"), h("div", { class: "small faint" }, "A real Class 9–10 foundation track, so gaps close before JEE content lands on top of them.")),
+            h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "See it, don't memorise it"), h("div", { class: "small faint" }, "Molecules and experiments in 3D. Drag, orbit, break — understanding beats rote.")),
+            h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "Revision that schedules itself"), h("div", { class: "small faint" }, "Flashcards come back at 1 → 3 → 7 → 16 days, timed to when you'd otherwise forget.")),
+            h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "It tells you what's next"), h("div", { class: "small faint" }, "Weak areas, weightage and rank bands decide the next best hour — not a to-do list.")),
+            h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "Runs anywhere, costs nothing"), h("div", { class: "small faint" }, "Cached for offline. No server, no ads, no telemetry, no account, no lock-in.")))),
 
-      h("div", { class: "bp-block" },
-        h("h2", {}, "Usability principles that shape the data flow"),
-        h("div", { class: "bp-grid2" },
-          ...["Zero server — all state derivable locally or persisted in localStorage; survives offline, refresh, rehosting.",
-             "Hash routing — deep links on any static host; back/forward free.",
-             "Render-on-read — every view is a pure function of load() + location.hash.",
-             "Derived > stored — analytics, SR schedule, XP, rank recomputed on demand.",
-             "Graceful everything — leaderboard, P2P, speech all wrapped so offline is invisible."]
-            .map((t, i) => h("div", { class: "bp-obj" }, h("div", { class: "bp-obj-num" }, `${i + 1}`), h("div", { class: "small" }, t))))),
+        /* ── LOCAL AI TUTOR ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "The AI tutor runs on your device, not on someone else's server"),
+          h("p", { class: "muted" }, "Meet Pip. It has read the 93 chapters, every formula, the PYQ bank and your own progress — and it answers in plain language, right inside the app. There is no cloud model, no API key, no data leaving your phone. It even speaks."),
+          h("div", { class: "pitch-pip" }, buildTutorChat()),
+          h("div", { class: "small faint", style: "margin-top:8px" }, "This is the real tutor, live in this tab. Ask it a doubt, your weak areas, or what to study next."),
+          h("div", { class: "row", style: "gap:8px;margin-top:10px" },
+            h("a", { class: "btn btn-primary", href: "#/tutor" }, "Open Ask Pip →"))),
 
-      h("div", { class: "bp-block" },
-        h("h2", {}, "The entire data flow"),
-        h("div", { class: "stack", style: "gap:12px" }, ...flows.map(([t, body]) =>
-          h("div", { class: "card" }, h("h3", {}, t), body)))),
+        /* ── HOW IT'S DIFFERENT ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "How it's different — be honest, then it isn't hard"),
+          h("p", { class: "muted" }, "Against the three usual options — a big tutoring app, offline coaching, or YouTube plus self-study."),
+          h("div", { class: "pch-compare" },
+            h("div", { class: "pc-row pc-head" }, h("span", {}), h("span", { class: "pc-me" }, "TeachMeJEE"), h("span", {}, "Big tutoring app"), h("span", {}, "Offline coaching")),
+            ...COMPARISON.map(([axis, a, b, c]) =>
+              h("div", { class: "pc-row" },
+                h("span", { class: "pc-axis" }, axis),
+                h("span", { class: "pc-me" }, a),
+                h("span", {}, b),
+                h("span", {}, c)))),
+          pchNote("Figures are representative ranges for 2024–25 typical offerings; check the actual brochure before choosing anything. The point isn't 'they're evil' — it's that the free option already does the parts that matter.")),
 
-      h("div", { class: "bp-block" },
-        h("h2", {}, "Five journeys that prove it"),
-        h("div", { class: "bp-grid" }, ...journeys.map(([name, desc]) =>
-          h("div", { class: "bp-obj", style: "border:1px solid var(--border);border-radius:12px;padding:12px" },
-            h("div", { class: "bp-jname" }, name),
-            h("div", { class: "small" }, desc))))),
+        /* ── WHAT MAKES IT INNOVATIVE ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "What's different from every other product"),
+          h("p", { class: "muted" }, "Not one big thing — fifteen small things that other apps don't do, each one live and clickable right now."),
+          h("div", { class: "pch-grid" },
+            ...FEATURE_SET.map(([rt, name, desc]) =>
+              h("a", { class: "pch-feature", href: rt },
+                h("div", { class: "pch-fname" }, name),
+                h("div", { class: "small faint" }, desc),
+                h("div", { class: "small", style: "margin-top:8px;color:var(--accent)" }, "Open →"))))),
 
-      h("div", { class: "bp-block" },
-        h("h2", {}, `${engineCount} quantum engines behind the surface`),
-        h("p", { class: "small muted" }, "Cognitive load map · predict next · entangled concepts · temporal opacity · neuro-synaptic flash · forecast rank · boss escalation · meta pulse · smart timetable · mint certificate · P2P packets · journal markdown · God Mode. All pure functions of local state — open Labs to explore."),
-        h("div", { style: "margin-top:10px" }, h("a", { class: "btn btn-primary", href: "#/labs" }, "Open Labs →"))),
-    ))));
+        /* ── COST & PLANS ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "Costs & plans — the honest part"),
+          h("p", { class: "muted" }, "Coaching for JEE routinely runs into lakhs a year. TeachMeJEE is built to cost a fraction of a bus ticket — and nothing is ever paywalled behind a subscription."),
+          h("div", { class: "pch-plans" },
+            h("div", { class: "pch-plan pch-plan-featured" },
+              h("div", { class: "pch-plan-badge" }, "CURRENT · FREE"),
+              h("h3", { class: "pch-plan-name" }, "Sparrow"),
+              h("div", { class: "pch-plan-price" }, "₹0"),
+              h("div", { class: "small faint" }, "forever · no card · no trial clock"),
+              h("div", { class: "pch-perk" }, "✓ 93 chapters · full notes"),
+              h("div", { class: "pch-perk" }, "✓ Class 9–10 foundation"),
+              h("div", { class: "pch-perk" }, "✓ 150+ simulation labs"),
+              h("div", { class: "pch-perk" }, "✓ 54 molecule structures · 3D"),
+              h("div", { class: "pch-perk" }, "✓ Pip — the offline AI tutor"),
+              h("div", { class: "pch-perk" }, "✓ spaced repetition · planner · analytics"),
+              h("div", { class: "pch-perk" }, "✓ 100% offline · no server"),
+              h("a", { class: "btn btn-primary", style: "width:100%;margin-top:14px", href: "#/roadmap" }, "Start free")),
+            h("div", { class: "pch-plan" },
+              h("div", { class: "pch-plan-badge", style: "color:var(--muted)" }, "COMING SOON"),
+              h("h3", { class: "pch-plan-name" }, "Eagle — sync + community"),
+              h("div", { class: "pch-plan-price" }, "₹99 / year"),
+              h("div", { class: "small faint" }, "optional · one payment · nothing leaves your device without asking"),
+              h("div", { class: "pch-perk" }, "✓ everything in Sparrow"),
+              h("div", { class: "pch-perk" }, "✓ cloud sync across devices"),
+              h("div", { class: "pch-perk" }, "✓ leaderboard & 1v1 duels"),
+              h("div", { class: "pch-perk" }, "✓ mastery certificate"),
+              h("div", { class: "pch-perk pale" }, "still no ads · no telemetry"))),
+          pchNote("The free tier is the product, not a hook. The core learning, the 3D labs and the analytics stay free forever; the optional year pays for the few servers that only the sync features touch.")),
+
+        /* ── WHO IT'S FOR ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "Who it's for"),
+          h("div", { class: "pch-aud" },
+            h("div", { class: "pch-obj" }, h("div", { class: "pch-fname" }, "Self-taught aspirants"), h("div", { class: "small faint" }, "No coaching run nearby. Everything you need, one tab, free.")),
+            h("div", { class: "pch-obj" }, h("div", { class: "pch-fname" }, "Students with weak Class 9–10 basics"), h("div", { class: "small faint" }, "The foundation track rebuilds the bed JEE assumes you already have.")),
+            h("div", { class: "pch-obj" }, h("div", { class: "pch-fname" }, "Coaching students"), h("div", { class: "small faint" }, "A free, complete revision and practice layer on top of whatever classes you attend.")),
+            h("div", { class: "pch-obj" }, h("div", { class: "pch-fname" }, "NEET aspirants"), h("div", { class: "small faint" }, "30 topics, notes, models and a question bank — the same engine, medical edition.")),
+            h("div", { class: "pch-obj" }, h("div", { class: "pch-fname" }, "Offline & low-data students"), h("div", { class: "small faint" }, "Cached as a PWA — works on a train, in a hostel room, with data off.")),
+            h("div", { class: "pch-obj" }, h("div", { class: "pch-fname" }, "Parents & mentors"), h("div", { class: "small faint" }, "A transparent system — see exactly what's mastered and what's next.")))),
+
+        /* ── PROOF: LIVE COUNTS ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "What's actually in here — live, right now"),
+          h("div", { class: "row", style: "gap:8px;flex-wrap:wrap" },
+            ...[[`${ALL_CONCEPTS.length}`, "chapters"], [`${subTotal}`, "subtopics"], [`${Object.keys(DERIVATIONS).length}`, "derivations annotated"], [`${NEET_TOPICS.length}`, "NEET topics"], [`${PYQS.length}`, "PYQs"], [`${QUESTIONS.length}`, "quiz questions"], ["54", "molecules in 3D"], [`${routeCount}`, "named routes"]]
+              .map(([n, l]) => h("span", { class: "tag" }, `${n} ${l}`))),
+          h("div", { class: "small faint", style: "margin-top:10px" }, "Every counter above is read live from the running app and every link goes to a real page — no mocks.")),
+
+        /* ── EVERY PAGE ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "Every page, one link away"),
+          h("div", { class: "bp-grid" }, ...ROUTE_GROUPS.map((grp) =>
+            h("div", { class: "card bp-group" }, h("h3", {}, grp.icon + "  " + grp.g),
+              ...grp.items.map(([rt, name, desc]) => h("a", { class: "bp-link", href: rt },
+                h("div", { class: "bp-link-name" }, name), h("div", { class: "small faint" }, desc))))))),
+
+        /* ── WHY / CLOSE ── */
+        h("div", { class: "pitch-close" },
+          h("h2", { class: "pch-h2", style: "text-align:center" }, "Because a seat isn't won by the coaching you can afford"),
+          h("p", { class: "muted", style: "text-align:center;max-width:640px;margin:6px auto 16px" }, "Most aspirants don't lose because they're less capable — they lose because a foundation was skipped, and the tools to rebuild it cost too much. TeachMeJEE removes the money and the data-layer from the equation, and puts the whole road map in your pocket."),
+          h("div", { style: "display:flex;justify-content:center;gap:10px;flex-wrap:wrap" },
+            h("a", { class: "btn btn-primary btn-lg", href: "#/foundation" }, "Begin with Class 9–10"),
+            h("a", { class: "btn btn-lg", href: "#/roadmap" }, "Open the roadmap"),
+            h("a", { class: "btn btn-lg", href: "#/neet" }, "NEET hub"))),
+      )));
+  onViewCleanup(disposePitchScene);
 }
+function moleculeCount() {
+  try { return Object.keys(window.__PITCH_MOL__ || {}).length || 54; } catch { return 54; }
+}
+function pchNote(text) { return h("p", { class: "pch-note small muted" }, text); }

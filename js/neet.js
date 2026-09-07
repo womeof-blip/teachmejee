@@ -17,7 +17,7 @@ export const NEET_TOPICS = [
       "Cell wall: primary (pectin/cellulose, growing) vs secondary (lignin, dead xylem).",
     ],
     terms: ["Fluid mosaic", "Cristae", "Glycocalyx", "Tonoplast"] },
-  { id: "n-biomol", unit: "Cell biology", name: "Biomolecules", qcount: 10,
+  { id: "n-biomol", unit: "Cell biology", name: "Biomolecules", model: "bio-enzyme", qcount: 10,
     summary: "The chemistry of life: amino acids to proteins, nucleotides to nucleic acids, plus enzymes as catalysts.",
     points: [
       "20 standard amino acids; peptide bond is an amide linkage formed by dehydration.",
@@ -140,7 +140,7 @@ export const NEET_TOPICS = [
       "Twinning: monozygotic (one zygote splits) identical; dizygotic (two ova) fraternal.",
     ],
     terms: ["Acrosome", "Corpus luteum", "Blastocyst", "Placenta"] },
-  { id: "n-reprohealth", unit: "Human physiology", name: "Reproductive health", qcount: 9,
+  { id: "n-reprohealth", unit: "Human physiology", name: "Reproductive health", model: "bio-menses", qcount: 9,
     summary: "Family planning, contraception options, STIs and assisted reproductive technologies.",
     points: [
       "Reproductive health = complete physical, emotional, behavioural and social well-being in reproduction.",
@@ -186,7 +186,7 @@ export const NEET_TOPICS = [
     ],
     terms: ["Second messenger", "Cretinism", "Addison's disease", "Islets"] },
 
-  { id: "n-inherit", unit: "Genetics & evolution", name: "Principles of inheritance", qcount: 13,
+  { id: "n-inherit", unit: "Genetics & evolution", name: "Principles of inheritance", model: "bio-punnett", qcount: 13,
     summary: "Mendel's ratios, linkage deviations, pedigree analysis and human genetic disorders.",
     points: [
       "Dihybrid F2 phenotypic ratio 9:3:3:1; test cross confirms heterozygosity.",
@@ -216,7 +216,7 @@ export const NEET_TOPICS = [
       "DNA fingerprinting uses VNTR minisatellites; PCR amplifies with Taq polymerase.",
     ],
     terms: ["Okazaki", "Primosome", "cDNA", "Operon"] },
-  { id: "n-evolution", unit: "Genetics & evolution", name: "Evolution", qcount: 9,
+  { id: "n-evolution", unit: "Genetics & evolution", name: "Evolution", model: "bio-selection", qcount: 9,
     summary: "From Miller-Urey sparks to Darwin's finches and Hardy-Weinberg equilibria.",
     points: [
       "Miller-Urey (1953): electric discharge over CH4/NH4/H2/H2O yielded amino acids.",
@@ -232,7 +232,7 @@ export const NEET_TOPICS = [
     ],
     terms: ["Gene pool", "Stabilising selection", "Founder effect", "Convergence"] },
 
-  { id: "n-humanrep", unit: "Reproduction", name: "Human reproduction", qcount: 10,
+  { id: "n-humanrep", unit: "Reproduction", name: "Human reproduction", model: "bio-gamete", qcount: 10,
     summary: "Gametogenesis, the ovarian/menstrual cycle, fertilisation and gestational milestones.",
     points: [
       "Spermatogenesis under FSH + testosterone; Sertoli cells nurse sperm.",
@@ -247,7 +247,7 @@ export const NEET_TOPICS = [
       "Placenta secretes hCG (pregnancy test), progesterone, oestrogen; parturition triggered by oxytocin + foetal signals.",
     ],
     terms: ["Acrosome", "Morula", "Parturition", "Lactation"] },
-  { id: "n-reprohealth", unit: "Reproduction", name: "Reproductive health", qcount: 6,
+  { id: "n-reprohealth2", unit: "Reproduction", name: "Reproductive health", model: "bio-menses", qcount: 6,
     summary: "Contraception strategies, ART options and the public-health side of reproduction.",
     points: [
       "Natural, barrier (condom), IUDs (Cu-T), oral pills, surgical methods.",
@@ -324,7 +324,7 @@ export const NEET_TOPICS = [
       "CAM plants (cacti) fix CO2 at night (malic acid) and run Calvin by day with closed stomata.",
     ],
     terms: ["RuBisCO", "Bundle sheath", "Photolysis", "Z scheme"] },
-  { id: "n-respiration", unit: "Plant physiology", name: "Respiration in plants", qcount: 8,
+  { id: "n-respiration", unit: "Plant physiology", name: "Respiration in plants", model: "bio-mitochondria", qcount: 8,
     summary: "Glycolysis to Krebs to ETS — energy accounting of the cell and RQ values.",
     points: [
       "Glycolysis (cytoplasm): net 2 ATP + 2 NADH per glucose.",
@@ -339,7 +339,7 @@ export const NEET_TOPICS = [
       "Fermentation regenerates NAD+: lactic acid (muscle) or ethanol + CO2 (yeast).",
     ],
     terms: ["RQ", "Substrate-level phosphorylation", "Cytochrome", "Amphibolic"] },
-  { id: "n-growth", unit: "Plant physiology", name: "Plant growth & development", qcount: 7,
+  { id: "n-growth", unit: "Plant physiology", name: "Plant growth & development", model: "bio-auxin", qcount: 7,
     summary: "Auxins to abscisic acid — the five classic hormone families and their signatures.",
     points: [
       "Auxin: apical dominance, phototropism; synthetic 2,4-D a dicot weedicide.",
@@ -355,7 +355,7 @@ export const NEET_TOPICS = [
     ],
     terms: ["Apical dominance", "Bolting", "Senescence", "Triple response"] },
 
-  { id: "n-populations", unit: "Ecology", name: "Organisms & populations", qcount: 7,
+  { id: "n-populations", unit: "Ecology", name: "Organisms & populations", model: "bio-logistic", qcount: 7,
     summary: "Abiotic responses, adaptations, population growth models and interactions.",
     points: [
       "Homeostasis: regulate, conform, migrate or suspend (hibernation/aestivation).",
@@ -370,7 +370,7 @@ export const NEET_TOPICS = [
       "r-strategists (many small offspring) vs K-strategists (few, cared-for young).",
     ],
     terms: ["Carrying capacity", "Ecological niche", "Brood parasitism", "Mimicry"] },
-  { id: "n-ecosystem", unit: "Ecology", name: "Ecosystem & biodiversity", qcount: 8,
+  { id: "n-ecosystem", unit: "Ecology", name: "Ecosystem & biodiversity", model: "bio-foodweb", qcount: 8,
     summary: "Energy flow, pyramids, nutrient cycles and why biodiversity hotspots matter.",
     points: [
       "10% law (Lindeman): ~10% energy transfers to next trophic level.",
@@ -386,7 +386,7 @@ export const NEET_TOPICS = [
     ],
     terms: ["Standing crop", "Detritivore", "Endemic", "Red Data Book"] },
 
-  { id: "n-transport", unit: "Plant physiology", name: "Transport in plants", qcount: 8,
+  { id: "n-transport", unit: "Plant physiology", name: "Transport in plants", model: "bio-xylem", qcount: 8,
     summary: "How water climbs a 100-metre tree and how food moves both ways in phloem.",
     points: [
       "Water column: transpiration pull + cohesion-tension (Dixon); xylem vessels are dead tubes.",
@@ -401,7 +401,7 @@ export const NEET_TOPICS = [
       "Girdling experiment proves phloem carries food (bark ring removal starves roots).",
     ],
     terms: ["Transpiration pull", "Hydathode", "Pressure flow", "Sieve tube"] },
-  { id: "n-mineral", unit: "Plant physiology", name: "Mineral nutrition", qcount: 7,
+  { id: "n-mineral", unit: "Plant physiology", name: "Mineral nutrition", model: "bio-nodule", qcount: 7,
     summary: "Essential elements, their deficiency signatures, and nitrogen fixation partnerships.",
     points: [
       "Macronutrients: N P K Ca Mg S; micronutrients include Fe Mn Zn Cu B Mo Cl Ni.",
@@ -416,7 +416,7 @@ export const NEET_TOPICS = [
       "Mycorrhizae trade phosphorus for sugars; root nodules house nitrogen-fixing Rhizobium.",
     ],
     terms: ["Chlorosis", "Necrosis", "Leghaemoglobin", "Nitrification"] },
-  { id: "n-tissues", unit: "Animal tissues", name: "Structural organisation in animals", qcount: 6,
+  { id: "n-tissues", unit: "Animal tissues", name: "Structural organisation in animals", model: "bio-tissue", qcount: 6,
     summary: "The four tissue families and where each epithelium lives.",
     points: [
       "Epithelia: simple (squamous/cuboidal/columnar), compound for wear surfaces.",
@@ -431,7 +431,7 @@ export const NEET_TOPICS = [
       "Muscle: striated voluntary skeletal, unstriated involuntary visceral, branched cardiac (intercalated discs).",
     ],
     terms: ["Intercalated disc", "Areolar tissue", "Osteocyte", "Goblet cell"] },
-  { id: "n-microbes", unit: "Microbes & biotech", name: "Microbes in human welfare", qcount: 7,
+  { id: "n-microbes", unit: "Microbes & biotech", name: "Microbes in human welfare", model: "bio-ferment", qcount: 7,
     summary: "Fermentation friends, sewage engineers, biofertilisers and biocontrol agents.",
     points: [
       "Yeast (Saccharomyces cerevisiae) ferments to ethanol; Lactobacillus curdles milk.",
@@ -446,7 +446,7 @@ export const NEET_TOPICS = [
       "Vaccines: live-attenuated, inactivated, subunit, mRNA — all train adaptive immunity.",
     ],
     terms: ["Biogas", "Bt toxin", "Biofertiliser", "Statins"] },
-  { id: "n-health", unit: "Human health & disease", name: "Human health & disease", qcount: 9,
+  { id: "n-health", unit: "Human health & disease", name: "Human health & disease", model: "bio-antibody", qcount: 9,
     summary: "Pathogens, immunity basics and the major disease table every paper loves.",
     points: [
       "Immunity: innate (barriers, phagocytes) vs acquired (B/T lymphocytes, memory).",
@@ -613,3 +613,156 @@ export const NEET_QUESTIONS = [
     opts: ["Golgi apparatus", "Lysosome", "Chloroplast", "Peroxisome"], a: 2,
     why: "Chloroplasts (like mitochondria) carry circular DNA and 70S ribosomes — supporting the endosymbiont idea." },
 ];
+
+export const NEET_NOTES = {
+  "n-cell": [
+    "The cell is the base unit of NEET cell biology — nearly every paper opens with one direct question about organelle function or a statement from the cell theory. Cells range from 0.1–0.5 µm (mycoplasma, the smallest) to an ostrich egg (~17 cm) and metre-long nerve cells. The cell theory (Schleiden & Schwann; Virchow added omnis cellula-e cellula) holds that all living things are made of cells and that new cells arise only from existing cells.",
+    "Prokaryotes alone lack a nucleus and membrane-bound organelles; the giveaway details are 70S ribosomes (50S + 30S subunits), circular naked DNA in the nucleoid, and mesosomes — plasma-membrane infoldings. Plants differ through the cell wall (cellulose), a middle lamella of pectin that cements neighbours, and plasmodesmata that connect cytoplasms across walls, giving plants a shared symplast.",
+    "Exam traps: mitochondria and chloroplasts are semi-autonomous — they carry their own circular DNA and 70S ribosomes. Lysosomes (discovered by de Duve) are the suicidal bags full of acidic hydrolytic enzymes. The nucleolus makes rRNA; ribosomes themselves assemble in the cytoplasm. Peroxisomes carry catalase to break down H2O2; glyoxysomes in germinating seeds run the glyoxylate cycle, turning fats into sugars.",
+  ],
+  "n-biomol": [
+    "All 20 standard amino acids are L-enantiomers except glycine, which has no chiral centre. They link through peptide (amide) bonds formed by dehydration between the α-carboxyl and α-amino groups. Proteins fold in stages: primary sequence → secondary (α-helix and β-pleated sheet held by hydrogen bonds) → tertiary (globular; disulphide, ionic, H-bond and hydrophobic interactions) → quaternary (subunits, e.g., haemoglobin's α2β2).",
+    "Enzymes are mostly proteins that lower activation energy without shifting equilibrium. Km is the substrate concentration at half Vmax and is inversely related to substrate affinity; competitive inhibitors raise the apparent Km but leave Vmax alone, while non-competitive inhibitors cut Vmax. The apo-enzyme (protein alone) needs an inorganic cofactor (Zn2+, Mg2+) or organic coenzyme (NAD+, FAD, CoA) to become a working holoenzyme.",
+    "Exam traps: sucrose is a non-reducing disaccharide (no free aldehyde or ketone) and fails Benedict/Fehling; glucose, fructose, maltose and lactose reduce them. Fats pack ~9 kcal/g against ~4 for carbohydrates and proteins. Denaturation (heat, wrong pH) breaks secondary and tertiary structure but never the peptide bonds of the primary sequence. Saturated fatty acids pack straight and stay solid; cis-unsaturated chains kink and stay liquid as oils.",
+  ],
+  "n-celldiv": [
+    "The cell cycle is interphase (G1 growth, S DNA synthesis, G2 preparation) plus M phase (mitosis with cytokinesis). Interphase is the longest and biochemically busiest phase. G0 is the quiescent exit point — nerve and mature muscle cells stay in it permanently. The checkpoints (G1/S, G2/M, spindle-assembly) are driven by cyclin–Cdk complexes: cyclin levels oscillate while Cdk protein stays constant.",
+    "Mitosis: prophase (chromosomes condense; the spindle forms), metaphase (chromosomes align on the equator with kinetochores attached to spindle fibres), anaphase (A: kinetochore microtubules shorten and pull chromatids apart; B: the spindle elongates), telophase (nuclear envelope reforms, chromosomes decondense). Plants divide by building a cell plate out of Golgi vesicles; animals pinch a cleavage furrow using actin microfilaments.",
+    "Meiosis has two divisions. Meiosis-I is reductional: homologues pair into bivalents, the synaptonemal complex forms in zygotene, crossing over happens at pachytene, chiasmata stay visible into diplotene and terminalise by diakinesis, then homologues separate. Meiosis-II is equational: sister chromatids split, producing four haploid cells. NEET favourites: colchicine paralyses the spindle and arrests cells at metaphase; oocytes arrest at dictyate prophase-I and again at metaphase-II until fertilisation.",
+  ],
+  "n-digest": [
+    "Digestion is a relay of enzymes across pH zones. Salivary amylase starts starch at a pH near 6.8. In the stomach, HCl (about pH 1.8) activates pepsinogen → pepsin, sterilises food and denatures proteins. Chief cells make pepsinogen; parietal cells make HCl and intrinsic factor (the factor lost in pernicious anaemia). The stomach absorbs only water, electrolytes, alcohol and a few drugs.",
+    "In the duodenum, bile from the gall bladder emulsifies fats (no enzymes of its own), and pancreatic juice lands a full toolkit: trypsinogen (activated by enterokinase), chymotrypsinogen, amylase, lipase and nucleases. Succus entericus from the intestinal wall finishes the job — maltase, lactase and sucrase split disaccharides, dipeptidases and lipases handle the rest.",
+    "Absorption happens through villi and microvilli that multiply surface area about 600×. Glucose and amino acids enter the blood capillaries of the villus; fats travel as micelles into enterocytes, re-form as chylomicrons and move into lacteals and the lymphatic system before reaching blood. Hormonal control: secretin and GIP release bicarbonate, CCK releases bile and pancreatic enzymes. The colon absorbs most water and salts, and its flora synthesise vitamin K and some B12. Trap: fat is absorbed into lymph, not directly into blood.",
+  ],
+  "n-breathe": [
+    "Breathing runs on pressure differences. Inspiration is active — the diaphragm and external intercostals contract, thoracic volume rises, pressure falls. Quiet expiration is passive, from elastic recoil. Air passes nose → pharynx → larynx → trachea → bronchi → bronchioles to thin-walled alveoli, where the surface area is huge and the diffusion distance tiny.",
+    "Oxygen travels ~97% bound to haemoglobin, only ~3% dissolved. CO2: about 70% as bicarbonate made by carbonic anhydrase in RBCs, ~23% as carbaminohaemoglobin, ~7% dissolved. The Haldane effect says oxygen loading in the lungs pushes CO2 off; the Bohr effect says extra CO2/H+/heat in active tissues shifts the O2–haemoglobin curve right, unloading oxygen exactly where it is needed.",
+    "Lung volumes: tidal ~500 mL, inspiratory reserve ~3000 mL, expiratory reserve ~1200 mL, residual ~1200 mL (never leaves), vital capacity ~4500 mL. The rhythm is set by the medullary respiratory centres with the pneumotaxic centre of the pons fine-tuning rate; chemoreceptors answer mainly to CO2/H+. Traps: emphysema destroys alveolar walls; asthma narrows bronchioles; foetal HbF binds O2 more avidly than adult HbA (hint for why the placenta's low pO2 still oxygenates a baby).",
+  ],
+  "n-circulation": [
+    "Blood is ~55% plasma (92% water; proteins albumin, globulins, fibrinogen) and ~45% formed elements. Erythrocytes (~5–5.5 million/mm³) are anucleate, biconcave haemoglobin carriers. Leucocytes (~6000–8000/mm³): neutrophils (most common), eosinophils (allergy and parasites), basophils (histamine and heparin), lymphocytes (immunity), monocytes (macrophages). Platelets (~150,000–350,000/mm³) bud from megakaryocytes and lead the clotting plug.",
+    "The heart is myogenic (rhythm from within the muscle). The SA node fires fastest (~70–72/min) as pacemaker; the AV node delays the impulse ~0.1 s; the bundle of His and Purkinje fibres spread it across ventricles for a coordinated squeeze. Cardiac output = stroke volume × heart rate ≈ 70 × 72 ≈ 5 L/min. Circulation is double: the pulmonary circuit (right heart ⇄ lungs) and systemic circuit (left heart ⇄ body).",
+    "ECG landmarks: P = atrial depolarisation, QRS = ventricular depolarisation, T = ventricular repolarisation. Clotting ends when thrombin turns fibrinogen into fibrin; Ca2+ is needed at every step. Lymph returns tissue fluid via lymphatic vessels and nodes to the blood. Traps: universal donors O−, universal recipients AB+; blood pressure is 120/80 mmHg; heart sounds are valve closures (lub = AV, dub = semilunar).",
+  ],
+  "n-excretory": [
+    "Each kidney holds about a million nephrons. At the glomerulus, blood pressure ultrafilters plasma into Bowman's capsule at about 125 mL/min — roughly 180 L a day. The PCT reabsorbs 70–80% of it: all glucose and amino acids, most Na+ and water, HCO3−, and it secretes H+ and ammonia. Normal urine contains no glucose.",
+    "Henle's loop is the countercurrent multiplier: the descending limb lets water out (concentrating), the ascending limb pumps Na+ out but is water-tight (diluting), so a steep osmotic gradient builds in the medulla. ADH (vasopressin) opens aquaporins in the DCT and collecting duct to reabsorb final water; aldosterone drives Na+ (and hence water) reabsorption; ANF from the heart opposes both.",
+    "The liver runs the ornithine (urea) cycle, converting toxic ammonia to urea. Birds and reptiles excrete uric acid (uricotelism) to save water. Failing kidneys → uremia → dialysis or transplant. Traps: glucose and amino acids are reabsorbed in the PCT, so their presence in urine signals a problem; ADH deficiency (diabetes insipidus) means huge volumes of dilute urine; heavy alcohol suppresses ADH and makes you urinate.",
+  ],
+  "n-locomotion": [
+    "Muscle contraction is the sliding-filament story. The sarcomere — the segment between two Z-discs — is the functional unit. Myosin makes the thick A-band; actin makes the thin I-band; the H-zone is the myosin-only middle of the A-band. On contraction the A-band stays constant while the I-band and H-zone shrink — a classic NEET fact.",
+    "On excitation, Ca2+ floods the sarcoplasm and binds troponin, which rolls tropomyosin off the actin active sites; myosin heads attach, do a power stroke and ratchet the filaments inward. ATP both powers the stroke and detaches the cross-bridges; without ATP after death, the bridges lock — rigor mortis. Striation comes from the alternating thick/thin filaments: skeletal and cardiac muscle are striated, smooth is not.",
+    "Fibres: red (slow, myoglobin-rich, aerobic — posture and endurance) vs white (fast, glycolytic — sprinting). Joints: ball-and-socket (shoulder and hip, widest range), hinge (elbow, knee), pivot (neck atlas–axis), gliding (wrist, ankle). Disorders to name: myasthenia gravis (autoimmune attack on ACh receptors), tetany (low Ca2+, spasms), gout (uric-acid crystals), osteoporosis (low oestrogen), muscular dystrophy (hereditary wasting), rigor mortis (ATP-free locked bridges).",
+  ],
+  "n-repro": [
+    "Spermatogenesis in the seminiferous tubules: spermatogonia (2n) → primary spermatocytes (2n) → meiosis → secondary spermatocytes (n) → spermatids (n) → spermatozoa. Sertoli cells nurse and form the blood–testis barrier; Leydig cells make testosterone. One primary spermatocyte yields four functional sperm in about 64 days.",
+    "Oogenesis is the unequal story: oogonia multiply before birth; primary oocytes arrest in prophase-I (dictyate) until puberty. Each cycle one primary oocyte finishes meiosis after fertilisation — a secondary oocyte arrests at metaphase-II, and unequal cytokinesis saves the cytoplasm for one big ovum plus polar bodies. Around day 14, the LH surge triggers ovulation; the empty follicle becomes the corpus luteum, which secretes progesterone and is kept alive by embryonic hCG until the placenta matures.",
+    "Fertilisation occurs in the ampulla of the oviduct: the acrosomal reaction dissolves the zona pellucida, and the cortical reaction blocks polyspermy. The zygote cleaves (morula → blastocyst) and implants in the endometrium 6–10 days after fertilisation. The placenta (chorionic villi + uterine tissue) secretes hCG, hPL, oestrogens and relaxin. Parturition is oxytocin-driven; lactation is prolactin-driven. Twins: monozygotic = one zygote splits (identical); dizygotic = two ova (fraternal).",
+  ],
+  "n-reprohealth": [
+    "Reproductive health means complete physical, emotional and social well-being in reproduction. In NEET it carries a public-health frame: high maternal and infant mortality, low family-planning uptake and STI spread are tackled through the RCH (Reproductive and Child Health) programme and government clinics.",
+    "The contraception ladder: natural (rhythm/safe-period, withdrawal, lactational amenorrhea up to ~6 months) → barrier (condoms also block STIs; diaphragms and cervical caps with spermicides) → hormonal pills (oestrogen–progesterone inhibit ovulation via negative feedback on LH/FSH; Saheli is the non-hormonal pill) → IUDs (Cu-T releases Cu2+ as a spermicide; Mirena releases progestogen and thickens mucus) → surgical (vasectomy in males, tubectomy in females — permanent, some reversible).",
+    "Infertility fixes: IVF-ET (test-tube baby), ZIFT (zygote into the oviduct), GIFT (gametes into the oviduct), ICSI (one sperm injected into an egg) and artificial insemination. STIs: gonorrhoea, syphilis and chlamydia are bacterial and curable; HIV, genital herpes and HPV are viral and managed. Amniocentesis detects genetic defects but is banned for sex determination (PCPNDT Act, 1994). MTP (medical termination of pregnancy) is safest in the first trimester, legal under conditions up to 24 weeks (2021 amendment). Traps: only barrier methods protect against STIs; Cu-T is best for spacing.",
+  ],
+  "n-neural": [
+    "The neuron speaks in voltages. Resting potential is about −70 mV, maintained by a K+ leak plus the Na+/K+ pump (3 Na+ out, 2 K+ in per ATP). A stimulus above threshold opens voltage-gated Na+ channels: Na+ floods in, the membrane depolarises and overshoots near +30 mV — the all-or-none action potential. Then K+ efflux repolarises, and the refractory period pauses the firing.",
+    "Myelinated axons (Schwann cells in the PNS, oligodendrocytes in the CNS) conduct saltatorially: the impulse leaps between nodes of Ranvier, speeding conduction and saving energy. At the axon terminal, the action potential opens Ca2+ channels, vesicles fuse and release neurotransmitter into the cleft; acetylcholine excites the next neuron until cholinesterase clears it.",
+    "Brain map for NEET: cerebrum (thought, voluntary movement), cerebellum (balance, posture), medulla (vital centres — heart rate, breathing, vomiting), pons (relay and pneumotaxic), hypothalamus (endocrine master, thermostat), midbrain with corpora quadrigemina (visual and auditory reflexes). CSF cushions the whole brain. Traps: impulse speed rises with axon diameter and myelination; action potentials are same-sized everywhere — intensity is encoded as firing frequency.",
+  ],
+  "n-hormone": [
+    "Hormones are the slow mail system. The hypothalamus commands: releasing hormones (GnRH → FSH/LH) pass down the portal vein to the anterior pituitary, which releases tropic hormones. The posterior pituitary produces none of its own — it stores and releases oxytocin and ADH, both synthesised in the hypothalamus.",
+    "Key axes: GH (gigantism in children, acromegaly in adults, dwarfism in deficiency); TSH → thyroxine (needs iodine; deficiency = goitre and cretinism, Graves' disease = autoimmune hyperthyroid); ACTH → cortisol (adrenal cortex: aldosterone conserves Na+, cortisol manages stress and glucose); pancreatic insulin (β cells) vs glucagon (α cells) — the antagonistic duo keeping blood glucose in range.",
+    "Adrenaline and noradrenaline (adrenal medulla) drive fight-or-flight in seconds; cortisol (cortex) is the sustained stress hormone. Mechanism matters: steroid hormones (oestrogen, testosterone, cortisol) enter the cell and act through nuclear receptors on mRNA — slow; amine and peptide hormones (insulin, adrenaline, TSH) act through second messengers like cAMP — fast. Traps: ADH/oxytocin are made in the hypothalamus but released from the posterior pituitary; diabetes insipidus = ADH failure (dilute urine), mellitus = insulin failure (sugar in urine).",
+  ],
+  "n-inherit": [
+    "Mendel's laws: dominance, segregation (allelomorphic alternatives separate into gametes — gamete purity) and independent assortment (dihybrid F2 = 9:3:3:1). A test cross mates an unknown phenotype with a homozygous recessive to reveal genotype; a back cross uses a parent. The deviations are favourite NEET material: incomplete dominance (snapdragon, 1:2:1) and codominance (AB blood type).",
+    "Reading pedigrees: squares are males, circles females, filled symbols affected, carriers half-shaded. Autosomal dominant (polydactyly — every affected person has an affected parent), autosomal recessive (albinism, sickle-cell — appears when two carriers meet), X-linked recessive (haemophilia, colour blindness — mostly males; sons pick it up from carrier mothers), X-linked dominant (rare). Chromosomal disorders from non-disjunction: Down (trisomy 21), Klinefelter (XXY), Turner (XO — the only viable monosomy), and the notation keeps returning in papers.",
+    "Pleiotropy = one gene, many traits (sickle-cell: anaemia, joint pain, organ failure). Polygenic inheritance = many genes, one continuous trait (skin tone, height — the bell curve). Linkage breaks independent assortment: genes on one chromosome travel together, and recombination frequency (1 centimorgan = 1% crossing over) maps their separation. Traps: the ABO system is multiple-allelic on chromosome 9 — six genotypes, four phenotypes, and parents of type O can't have a type AB child.",
+  ],
+  "n-molecular": [
+    "The proof of DNA as genetic material: Griffith's transforming principle → Avery, MacLeod and McCarty showed the transforming agent is DNA (destroyed by DNase) → Hershey and Chase's blender experiment delivered the final word (32P-labelled DNA enters the bacterium, 35S protein stays in the ghost). Watson and Crick's double helix is antiparallel, obeys Chargaff (A = T, G ≡ C), runs 3.4 nm per turn with 10 base pairs, and stacks the bases inside sugar–phosphate rails.",
+    "Replication is semiconservative (Meselson and Stahl's 15N experiment). Helicase unwinds, single-strand binding proteins stabilise, primase lays RNA primers, DNA polymerase III builds 5'→3' — continuously on the leading strand, in Okazaki fragments on the lagging — ligase seals the nicks and topoisomerases relieve the strain. The central dogma (DNA → RNA → protein) has its exception in retroviruses, which use reverse transcriptase to make DNA from RNA.",
+    "The genetic code is triplet, degenerate, non-overlapping, commaless and universal; AUG both starts and codes for methionine; UAA, UAG and UGA are stops. Regulation is the operon story: the lac operon is inducible (allolactose removes the repressor), the trp operon is repressible. Tools: PCR (Taq polymerase, source = Thermus aquaticus), DNA fingerprinting (VNTR repeats), recombinant vaccines and RNAi. Traps: DNA polymerase cannot start from scratch — it needs a primer; RNA polymerase transcribes RNA with no base-pairing primer at all.",
+  ],
+  "n-evolution": [
+    "Chemical evolution earned experimental proof from Miller and Urey (1953): electric sparks over CH4, NH3, H2 and H2O produced amino acids, just as Oparin and Haldane had predicted. The RNA-world hypothesis explains how a molecule could store information and catalyse at once, bridging simple organics to protobionts to the first cells.",
+    "Darwin's engine: overproduction + heritable variation + natural selection = descent with modification. Fitness is reproductive success; selection works on phenotypes. Homologous organs (same origin, divergent function — the forelimbs of mammals) are evidence of common ancestry; analogous organs (same function, different origin — wings) demonstrate convergent evolution. Fossils, embryology, vestigial organs and molecular clocks all reinforce the picture.",
+    "Hardy–Weinberg (p² + 2pq + q² = 1) is the equilibrium of no evolution; it holds only without selection, mutation, migration, non-random mating or genetic drift. Adaptive radiation: Darwin's finches and the Australian marsupials. The human trail: Dryopithecus → Ramapithecus → Australopithecus → Homo habilis → H. erectus → H. sapiens (Cro-Magnon). Traps: stabilising selection holds the mean (the pigeon loving average beak sizes), directional selection moves it (industrial melanism of Biston betularia), disruptive selection pulls it apart.",
+  ],
+  "n-humanrep": [
+    "Sperm are built for the journey: head (nucleus plus acrosome packed with lytic enzymes), neck, middle piece full of mitochondria and a motile flagellar tail. Spermatogenesis runs in seminiferous tubules under FSH and testosterone and spans ~64 days; sperm mature in the epididymis. Ova ride inside ovarian follicles under FSH, and ovulation around day 14 releases a secondary oocyte already arrested at metaphase-II.",
+    "The menstrual cycle (~28 days): the proliferative phase rebuilds the endometrium under oestrogen; ovulation comes from the mid-cycle LH surge; the luteal phase under progesterone (from the corpus luteum) preps the lining; without pregnancy the endometrium sheds at menstruation. These hormones feed back on FSH and LH — which is exactly what combined contraceptive pills exploit.",
+    "Fertilisation happens at the ampullary-isthmic junction of the oviduct. Acrosomal enzymes breach the zona pellucida; the cortical reaction blocks polyspermy. The zygote cleaves through morula to blastocyst and implants ~6–10 days after fertilisation. The placenta (chorionic villi fused with uterine tissue) secretes hCG (the pregnancy-test hormone that keeps the corpus luteum alive), hPL, oestrogens and relaxin. At term, oxytocin drives parturition; prolactin drives lactation. Traps: implantation occurs in the endometrium, not the lumen, and maternal and foetal blood never mix across the placenta.",
+  ],
+  "n-reprohealth2": [
+    "This is the public-health and technology side of reproduction. When infertility stops being a private worry, it is often traced to infections, hormonal imbalance or delayed childbearing rather than fate. Sex education and freely available contraception are among the cheapest health interventions a country can make — the RCH programme and family-planning camps in India operationalise exactly that.",
+    "Assisted reproduction: IVF-ET collects oocytes and sets fertilisation in the lab, then transfers the embryo; ZIFT returns a zygote to the oviduct; GIFT returns gametes; ICSI injects a single sperm directly into an egg for severe male-factor cases; artificial insemination helps simpler ones. The law frames all of it — surrogacy and gamete commerce are regulated, and sex-selective misuse is banned.",
+    "The diagnostic window: amniocentesis samples amniotic fluid to test foetal genetic disorders, but is prohibited for sex determination under the PCPNDT Act. MTP is legal under stated conditions up to 24 weeks (2021 amendment). Traps: a 'test-tube baby' still grows in the uterus — only fertilisation happens in the tube; ICSI is the answer when sperm count or motility is the problem.",
+  ],
+  "n-plantking": [
+    "Algae come in three colour-based classes: Chlorophyceae (green; starch storage — Chlamydomonas, Spirogyra), Phaeophyceae (brown; laminarin, fucoxanthin — kelps), Rhodophyceae (red; floridean starch, phycoerythrin — Polysiphonia). Algae anchor aquatic food webs and produce a big share of the planet's oxygen; even the famous lichen 'plant' is part alga, part fungus.",
+    "Bryophytes are the amphibians of the plant kingdom: the haploid gametophyte is green and independent, the sporophyte is attached and dependent, and fertilisation needs water because antherozoids swim. Mosses (Funaria, the peat-forming Sphagnum) and liverworts (Marchantia). Pteridophytes arrive as the first vascular plants — true root, stem and leaf, dominant sporophyte, mostly homosporous, but Selaginella and Salvinia are heterosporous; their spores grow into the tiny free-living prothallus.",
+    "Gymnosperms carry naked seeds on cones — Cycas with its coralloid roots and cyanobacterial partners, Pinus with needle leaves; they are the seed-plant transition without fruit. Angiosperms rule by double fertilisation: one sperm fuses with the egg (zygote, 2n), the other with the polar nuclei (triploid endosperm), and both seeds and fruits are enclosed. Traps: among gymnosperms only Gnetum has vessels; double fertilisation, hard wood and enclosed seeds mark the angiosperm dynasty.",
+  ],
+  "n-morphology": [
+    "Root systems: tap (dicots — carrot stores food) vs fibrous (monocots — wheat) vs adventitious (anchoring). Modifications carry marks: storage taproots (carrot, radish) and adventitious roots (sweet potato); prop roots support the banyan; pneumatophores let mangroves breathe above the waterline; stilt roots brace maize; haustoria of Cuscuta steal from the host.",
+    "Stems are flagged by nodes and internodes; modifications: tendrils (cucumber, grape), thorns (citrus), phylloclades (Opuntia fleshy, photosynthetic stems), rhizomes (ginger), tubers (potato), corms (Colocasia) and bulbs (onion). Leaves: simple vs pinnately/palmately compound; phyllotaxy alternate, opposite or whorled; modified leaves — tendrils of the pea, spines of cacti, the pitcher of Nepenthes and the bladders of Utricularia.",
+    "Inflorescence: racemose (the main axis keeps elongating, flowers open acropetally) vs cymose (the axis ends in a flower, opens basipetally). Flower parts: calyx, corolla (with aestivation types — valvate, twisted, imbricate, vexillary), androecium (stamen) and gynoecium (carpel); placentation runs axile, marginal, parietal, basal or free-central. Fruits separate true from false; mango is a drupe (stony endocarp), tomato and banana are berries. Traps: floral formulas and family diagrams are free NEET marks — know mustard (Cruciferae) and Solanaceae well.",
+  ],
+  "n-anatomy": [
+    "Tissue families of plants: meristematic divide; permanent tissues differentiate — parenchyma (living storage), collenchyma (living support, pectin-thickened corners), sclerenchyma (dead, lignified — fibres and sclereids). Vascular tissue pairs: xylem (tracheids, vessels, fibres, parenchyma — dead at maturity, one-way water) and phloem (sieve tubes, companion cells, fibres, parenchyma — living sieve tubes with lost nuclei, managed by companion cells, two-way food).",
+    "Dicot architecture: root has radial, exarch xylem in 2–4 strands around a small pith; stem arranges open vascular bundles in a ring with fascicular cambium that drives secondary growth. Monocots differ: root shows many xylem strands and a large pith; stem scatters closed bundles with no cambium and therefore no secondary growth. Leaves: dorsiventral (dicot; palisade + spongy mesophyll) vs isobilateral (monocot).",
+    "Secondary growth (dicot stems and roots) comes from the vascular cambium cutting secondary xylem inward and phloem outward, and from cork cambium (phellogen) producing phellem, phelloderm and the periderm with lenticels for gas exchange. Annual rings pair light spring wood with dense autumn wood. Heartwood is dead but durable; sapwood still conducts. Traps: the Casparian strip of the endodermis forces water through the symplast; monocots and most herbs never do secondary growth.",
+  ],
+  "n-photo": [
+    "Photosynthesis balances 6CO2 + 12H2O → C6H12O6 + 6O2 + 6H2O, and the released O2 comes from water, not CO2 (van Niel and isotope experiments settled it). It runs in two acts: light reactions in the thylakoids (ATP + NADPH + O2) and the Calvin cycle in the stroma (CO2 → sugar, fuelled by that ATP and NADPH).",
+    "The light reactions follow the Z-scheme: PS-II (P680) splits water at the oxygen-evolving complex (a manganese cluster) — electrons, H+ and O2 out; electrons ride an ETC that pumps protons to make ATP (photophosphorylation); PS-I (P700) finally reduces NADP+ to NADPH. Cyclic photophosphorylation loops around PS-I and makes only ATP. The action spectrum peaks in red and blue; chlorophyll a is the universal reaction-centre pigment and accessory pigments widen the net.",
+    "The Calvin cycle: carboxylation (RuBisCO fixes CO2 onto RuBP → two 3-PGA), reduction (ATP and NADPH make G3P), regeneration (RuBP rebuilt). RuBisCO is the most abundant protein on Earth — and in hot, dry air it wastes ~25% of its throughput in photorespiration via its oxygenase side. C4 plants (Hatch–Slack: maize, sugarcane) first fix CO2 in mesophyll cells with PEP case, shuttle it to bundle-sheath cells and let RuBisCO run at high CO2 with no photorespiration — Kranz anatomy is the giveaway. CAM plants (cacti, pineapple) open stomata at night, store malic acid and run Calvin by day. Traps: C4 beats C3 in hot, dry climates, not in the dark.",
+  ],
+  "n-respiration": [
+    "Cellular respiration extracts glucose energy in safe instalments. Glycolysis (cytoplasm; oxygen not required) converts glucose to two pyruvates, netting 2 ATP and 2 NADH. The link reaction (PDH complex, mitochondrial matrix) turns pyruvate into acetyl-CoA, releasing CO2 and NADH. The Krebs cycle spins citrate back to oxaloacetate, yielding 2 CO2, 3 NADH, 1 FADH2 and 1 GTP per turn.",
+    "The electron transport chain sits on the inner mitochondrial membrane: Complexes I–IV accept electrons from NADH and FADH2, pump protons across, and the resulting gradient spins ATP synthase (Complex V) to phosphorylate ADP — about 3 ATP per NADH and 2 per FADH2. Oxygen is the terminal electron acceptor; that is the whole reason you breathe. Complete aerobic harvest is roughly 36–38 ATP per glucose (aerobic eukaryote totals depending on shuttle), and fats yield more energy per carbon than sugars.",
+    "RQ = CO2 produced ÷ O2 consumed: carbohydrates 1.0, proteins ~0.9, fats ~0.7 (they need more oxygen), organic acids above 1. With no oxygen, fermentation regenerates NAD+ cheaply: lactic acid in muscle or ethanol + CO2 in yeast — few ATP. Traps: substrate-level phosphorylation (direct ATP from glycolysis and Krebs) differs from oxidative phosphorylation (ETS-driven); cyanide blocks cytochrome oxidase, stalling the cascade and halting ATP even with glucose available.",
+  ],
+  "n-growth": [
+    "Growth curves: arithmetic (L = L0 + rt — constant, e.g., a leaf elongating) vs geometric (W = W0 e^rt — exponential, e.g., seedlings). The full picture is the sigmoid S-curve: lag, log (exponential), then stationary when resources or space bind. Plant growth is indeterminate because meristems keep dividing.",
+    "Auxins: apical dominance (tip auxin suppresses lateral buds), phototropism (auxin shifts to the shade side and drives elongation, bending the shoot to light), rooting (NAA/2,4-D at low doses promote roots; synthetic auxins at weed-killer strength kill broadleaves), parthenocarpy (seedless fruit). Gibberellins: internode growth and bolting, α-amylase induction in germinating barley, grape elongation. Cytokinins: cell division and the Richmond–Lang anti-senescence effect.",
+    "Ethylene is the gas hormone: fruit ripening, senescence, abscission and the famous seedling triple response (short, thick, horizontal hook under stress). Abscisic acid (ABA) is the stress and dormancy hormone — stomatal closure during drought, seed dormancy, leaf abscission, largely inhibitory effects. Traps: ABA induces dormancy while ethylene and gibberellins break it; the promoter trio (auxin, gibberellin, cytokinin) vs the inhibitor pair (ABA, ethylene-mostly) is a standing one-liner in papers.",
+  ],
+  "n-populations": [
+    "Population attributes: density, natality, mortality, immigration, emigration, sex ratio and age pyramid. Growth models: exponential (J-curve, dN/dt = rN — unlimited) vs logistic (S-curve, dN/dt = rN(1 − N/K) — pulled down by carrying capacity K). In nature, K, exhaustion and predation keep real curves logistic; 'r-strategists' throw many small progeny (insects), 'K-strategists' rear few, carefully tended ones (elephants, humans).",
+    "Interactions at a glance: mutualism (+/+; lichens, the fig–wasp, Rhizobium in root nodules), commensalism (+/0; barnacles on whales, orchids on trees), competition (−/−; Gause's Paramecium experiments showed identical-niche species cannot coexist — competitive exclusion), predation (+/−; classic predator–prey cycling), parasitism (+/−; host harmed but usually kept alive), amensalism (−/0; one side suppressed, e.g., a mould poisoning a neighbour).",
+    "How organisms face the environment: regulate (hold constancy — birds, mammals), conform (internal = external — most fish and invertebrates), migrate (seasonal bird flights, salmon runs), suspend (hibernation in mammals, aestivation in desert animals, diapause in insects). Biogeographic rules: Bergmann (bodies larger in cold), Allen (extremities shorter in cold), Gloger (darker in humid climates). Traps: eurythermal/euryhaline tolerates wide swings; stenothermal/stenohaline demands narrow ones.",
+  ],
+  "n-ecosystem": [
+    "An ecosystem is the energy-and-matter partnership of a biotic community with its abiotic habitat. Its cast: producers (plants and algae), consumers (herbivores → carnivores → apex) and decomposers (bacteria and fungi returning detritus to the pool). Lindeman's 10% law: only about a tenth of stored energy is transferred up a trophic level, which is why food chains rarely exceed four or five links.",
+    "Outputs: gross primary productivity (GPP, total fixed) minus the plant's own respiration gives net primary productivity (NPP) — the portion available to herbivores. Ecological pyramids: energy is always upright; biomass and numbers can invert (a single tree feeding vast insect populations; the plankton pyramid). Decomposition follows fragmentation → leaching → catabolism → humification → mineralisation, bound by temperature and moisture.",
+    "Nutrient cycling: gaseous cycles (carbon, water — reservoirs in the atmosphere) vs sedimentary (phosphorus — rocks, no gas phase; sulphur, calcium). Ecological succession climbs from pioneers (lichens on bare rock) through seral stages to a climax community — hydrarch (water to forest) or xerarch (rock to forest); the climax is comparatively stable. Conserving it: in-situ (national parks, sanctuaries, sacred groves) vs ex-situ (zoos, botanical gardens, seed banks, cryopreservation); the Western Ghats is a biodiversity hotspot. Traps: energy flows once and cannot be recycled — only matter cycles.",
+  ],
+  "n-transport": [
+    "Water reaches xylem by two roads: the apoplast (through cell walls — fast, no membrane control) and the symplast (through plasmodesmata — regulated). The route: root hairs → cortex → the endodermis, where the Casparian strip forces everything through the symplast, → xylem → leaf. The engine is the transpiration pull: evaporating leaf water creates negative pressure, and the cohesion of the water column holds against tension (Dixon's cohesion-tension theory) — enough to hoist sap up a 100-metre tree.",
+    "Root pressure pushes sap at night and causes guttation — liquid drops through hydathodes at dawn, which is NOT transpiration (that is vapour via stomata in daylight). Transpiration also cools leaves and drags minerals along. Stomata open by the K+ pump model: guard cells accumulate K+, water follows, turgid cells bow outward and open the pore.",
+    "Phloem moves food by pressure-flow (Münch): at the source (a leaf), sucrose is actively loaded into sieve tubes through companion cells, water follows in and pressure rises; at the sink (root, fruit), unloading drops the pressure, so sap streams down the gradient — and can reverse with changing needs. Girdling (removing a bark ring) is the classic proof: food stops, roots starve, leaves keep photosynthesising. Traps: xylem is a one-way, dead, tension-drawn column; phloem is a living, two-way, pressure-flow food road.",
+  ],
+  "n-mineral": [
+    "Essential elements split by need: macronutrients (N, P, K, Ca, Mg, S) and micronutrients (Fe, Mn, Zn, Cu, B, Mo, Cl, Ni). The criterion of essentiality is demonstrated with hydroponics — grow plants in a complete solution, withdraw one element, and if a true deficiency appears that no substitute can cure, it is essential. (Aeroponics, misting roots in air, adds oxygenation.)",
+    "Roles worth naming: Mg²⁺ sits at the centre of chlorophyll (deficiency → interveinal chlorosis); N feeds proteins and chlorophyll; P feeds ATP and nucleic acids; K runs stomatal opening and enzymes; Ca builds the middle lamella; S sits in methionine, cysteine and coenzyme A. Deficiency signatures: chlorosis (N, Mg, Fe), necrosis (Ca, Mg, K), stunting (N, P, K), and characteristic ones like hollow cauliflower heads or brown heart (boron).",
+    "Nitrogen fixation: Rhizobium works legume nodules, protected by leghaemoglobin which shields the oxygen-sensitive nitrogenase; Azotobacter fixes free-living, and blue-green algae fix N in paddy fields. The cycle: fixation → nitrification (Nitrosomonas oxidises NH4+ to NO2−, Nitrobacter carries to NO3−) → assimilation → ammonification and denitrification (Pseudomonas). The phosphorus cycle is sedimentary — there is no atmospheric leg. Mycorrhizal fungi trade phosphorus; mycorrhizae and nodules are both mutualisms. Traps: nitrogenase is oxygen-fatal, so nodules manufacture anoxia; legumes pour Fe, Mo and Mg into the fixation machinery.",
+  ],
+  "n-tissues": [
+    "The four tissue families: epithelial, connective, muscular, neural. Epithelia: simple squamous (diffusion — alveolar walls, vascular endothelium), simple cuboidal (secretion/absorption — tubules, glands), columnar (absorption with microvilli brush borders in the PCT; goblet cells cast mucus), ciliated (sweeping the trachea and fallopian tube), compound (multi-layered for abrasion — skin, oesophagus), transitional (stretching the urinary bladder).",
+    "Connective tissue is defined by its matrix: areolar (packing/fill under epithelia), adipose (fat storage and insulation), dense regular (tendon linking muscle to bone, ligament linking bones), cartilage (avascular chondrocytes in lacunae — hyaline at joints, elastic in the ear, fibrocartilage in discs), bone (mineralised matrix, osteocytes, Haversian canals, marrow) and blood (fluid connective — nucleate RBCs, WBCs, clotting platelets).",
+    "Muscle: skeletal (striated, voluntary, peripheral nuclei), visceral/smooth (non-striated, involuntary, single central nucleus), cardiac (striated AND involuntary, branched, with intercalated discs and gap junctions — beats myogenically). Neural tissue: neurons conduct; neuroglia support — oligodendrocytes myelinate the CNS, Schwann cells the PNS, microglia sweep debris. Traps: cardiac fibres are electrically coupled, so the heart contracts as one unit; cartilage heals slowly because it is avascular.",
+  ],
+  "n-microbes": [
+    "Microbes run quiet industries. Fermentation: Saccharomyces cerevisiae (yeast) makes ethanol and the CO2 that raises bread; Lactobacillus turns milk to curd and yogurt; Aspergillus niger supplies citric acid; Propionibacterium gives Swiss cheese its holes and flavour; Monascus purpureus yields the cholesterol-lowering statins. Sewage biology: aerobic activated-sludge flocs (bacteria + protozoa) plus anaerobic digesters, where methanogens produce methane-rich biogas.",
+    "Antibiotics: penicillin from Penicillium notatum (Fleming's lucky mould) was first; they attack bacteria and are useless against viruses, which is why antibiotic-seller culture drives resistance. Biocontrol: Bacillus thuringiensis (Bt) carries Cry proteins — the engine of Bt cotton — and Trichoderma and Baculoviruses (like the nucleopolyhedrovirus) are the fungal and viral biocontrol agents.",
+    "Biofertilisers: Rhizobium (symbiotic in legume nodules), Azospirillum (associated with wheat and grasses), Azotobacter (free-living, also mobilises phosphorus), blue-green algae in paddy fields and mycorrhizae trafficking phosphate. Vaccines span live-attenuated (BCG, MMR), inactivated (Salk polio), subunit/recombinant (hepatitis B) and the modern mRNA designs — all train adaptive immunity without the disease. Traps: you can't grow a virus on agar — it needs living cells; strongest biocontrol is also the most specific.",
+  ],
+  "n-health": [
+    "Learn your pathogens: viruses — HIV (the retrovirus that collapses CD4+ helper T cells; diagnosed by ELISA; its end-stage is AIDS), dengue and chikungunya (Aedes vectors), influenza, hepatitis; bacteria — typhoid (Salmonella typhi, the Widal test), pneumonia (Streptococcus or Haemophilus), cholera (Vibrio); protozoa — malaria (Plasmodium, spread by female Anopheles; sporozoites → liver → merozoites → RBCs; the haemozoin pigment causes the chills) and amoebiasis (Entamoeba histolytica, via contaminated food and water); worms — ascariasis, filariasis (Culex), tapeworm.",
+    "Immunity splits innate (non-specific: skin, mucus, lysozyme, phagocytes, inflammation) from acquired (specific and remembering): humoral = B cells → antibodies; cell-mediated = T cells. Clonal selection means the invading antigen picks its matching clone, which expands into plasma cells and memory cells. The classes: IgM (day-one responder), IgG (most abundant, crosses the placenta), IgA (milk, tears, saliva), IgE (allergy), IgD (B-cell activation). Active immunity is earned (vaccination, infection) and long-lasting; passive immunity is donated (colostrum, antitoxin) and immediate but brief.",
+    "Allergies fire on IgE + mast cells dumping histamine — antihistamines counter it. Autoimmunity turns the immune system on self: rheumatoid arthritis, Type-1 diabetes, multiple sclerosis, SLE. Cancer: benign stays put, malignant metastasises; oncogenes plus broken tumour-suppressor genes drive it. Drug abuse: stimulants (cocaine, amphetamines), depressants (heroin, alcohol), hallucinogens (LSD, mescaline, cannabis), ending in tolerance and withdrawal. Traps: antibiotics are bacterial-only; the entire point of vaccination is building memory cells so the second encounter is fast and mild.",
+  ],
+};
