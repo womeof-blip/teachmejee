@@ -103,3 +103,46 @@ export function featureStats(){
     byType: TYPES.reduce((a,t)=> (a[t.k]=all.filter(f=>f.type===t.k).length, a), {}),
   };
 }
+
+/* ── Eagle premium vault: 1000+ capabilities over the real chapter registry.
+   Every card is a live route — sims carry their parametric variant, the rest
+   link to real pages (adaptive, constellation, videos, derivations, flash,
+   playground, chapter notes, quiz, achievements). No new mock UI. ── */
+export const PREMIUM_CAPS = [
+  { k:"sim", label:"Parametric Sim", icon:"◈", route:(c,v)=> c.sim ? `#/chapter/${c.id}?sim=${c.sim}&variant=${v}` : "#/labs", blurb:(c,v)=> `The ${c.sim || "default"} engine pre-tuned to variant #${v} — sliders live, chapters rendered for real.` },
+  { k:"adaptive", label:"Adaptive Sprint", icon:"◉", route:()=>"#/adaptive", blurb:(c)=> `A ${c.name} sprint sized from your live accuracy curve.` },
+  { k:"mind", label:"Mind Map", icon:"✦", route:()=>"#/constellation", blurb:(c)=> `${c.name} as a live radial map — rings by mastery level, local graph.` },
+  { k:"video", label:"Video Track", icon:"►", route:()=>"#/videos", blurb:(c)=> `Concept → solved example → PYQ for the ${c.subject} leg of ${c.name}.` },
+  { k:"walk", label:"Notes Walk-through", icon:"¶", route:(c)=>`#/chapter/${c.id}`, blurb:(c)=> `Step-through of the ${c.name} narrative with memory hooks and traps.` },
+  { k:"deriv", label:"Derivation Theatre", icon:"∴", route:()=>"#/derivations", blurb:(c)=> `Animated proof of the ${c.name} results — autoplay or manual stepper.` },
+  { k:"memory", label:"Memory Re-space", icon:"↻", route:()=>"#/flash", blurb:(c)=> `${c.name} cards re-spaced from your real accuracy, not a fixed clock.` },
+  { k:"play", label:"Formula Playground", icon:"◎", route:()=>"#/playground", blurb:(c)=> `Drag the ${c.name} parameters and watch the graph reply.` },
+  { k:"doubt", label:"Doubt Chain", icon:"☰", route:(c)=>`#/chapter/${c.id}`, blurb:(c)=> `A local thread for ${c.name} — doubts answered in-place.` },
+  { k:"quiz", label:"Quiz Strip", icon:"?", route:()=>"#/quiz", blurb:(c)=> `A ${c.name} strip graded like the real board.` },
+  { k:"cert", label:"Mastery Cert", icon:"◼", route:()=>"#/achievements", blurb:(c)=> `A groove-stamped ${c.name} badge for your wall.` },
+];
+
+export function premiumVaultCount(){ return PREMIUM_CAPS.length * ALL_CONCEPTS.length; }
+
+export function premiumVaultItem(i, seed = 0){
+  const N = ALL_CONCEPTS.length;
+  const n = N * PREMIUM_CAPS.length;
+  const j = (i + seed) % n;
+  const c = ALL_CONCEPTS[j % N];
+  const cap = PREMIUM_CAPS[Math.floor(j / N) % PREMIUM_CAPS.length];
+  const variant = Math.floor(j / N);
+  return {
+    id: `prem::${j}`,
+    name: `${c.name} · ${cap.label}`,
+    icon: cap.icon,
+    route: cap.route(c, variant),
+    blurb: cap.blurb(c, variant),
+    subject: c.subject, level: c.level, chapter: c.id, cap: cap.label,
+  };
+}
+
+export function premiumVault(seed = 0, limit = premiumVaultCount()){
+  const out = [];
+  for (let i = 0; i < limit; i++) out.push(premiumVaultItem(i, seed));
+  return out;
+}

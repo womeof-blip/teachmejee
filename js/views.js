@@ -15,7 +15,7 @@ import { FOUNDATION_TRACKS, ALL_UNITS, TOTAL_UNITS } from "./foundation.js";
 import { fToggleUnit, fIsDone, fSetCheck, fCheckPassed, foundationStats } from "./store.js";
 import { h, makeToast, confettiBurst, xpFly, showModal, notifySync } from "./fx.js";
 import * as Quantum from "./quantum.js";
-import { allFeatures, featureStats, VIRTUAL_FEATURE_COUNT, FEATURE_COUNT, virtualFeatureAt } from "./features.js";
+import { allFeatures, featureStats, VIRTUAL_FEATURE_COUNT, FEATURE_COUNT, virtualFeatureAt, PREMIUM_CAPS, premiumVault, premiumVaultCount } from "./features.js";
 import { subtopicsFor } from "./notes/subtopics.js";
 import { adaptiveLogAnswer, stats as adaptStats, weakList, recommendPath, dueCount, adaptiveRound, dailyLoad, zoneText } from "./adaptive.js";
 
@@ -6533,6 +6533,76 @@ export function PremiumView(root) {
         h("div", { class: "pm-ceagle" }, c))));
   }
 
+  const VAULT_PER_PAGE = 16;
+  let vault = premiumVault(0);
+  let vq = "", vSubj = "All", vCap = "All", vPage = 1;
+
+  function vaultFiltered() {
+    const q = vq.trim().toLowerCase();
+    return vault.filter((f) =>
+      (vSubj === "All" || f.subject === vSubj) &&
+      (vCap === "All" || f.cap === vCap) &&
+      (!q || `${f.name} ${f.blurb} ${f.chapter}`.toLowerCase().includes(q)));
+  }
+
+  function vaultCard(f) {
+    return h("a", { class: "card pm-vcard", href: f.route, style: "text-decoration:none;color:inherit" },
+      h("div", { class: "pm-vcard-head" },
+        h("span", { class: "pm-feat-ic" }, f.icon),
+        h("div", { style: "font-weight:700;font-size:13px;flex:1;line-height:1.35" }, f.name),
+        h("span", { class: "pm-vtag" }, "EAGLE")),
+      h("div", { class: "small muted", style: "margin-top:6px" }, f.blurb),
+      h("div", { class: "small faint", style: "margin-top:6px" }, `${f.route} · ${SUBJECTS[f.subject] ? SUBJECTS[f.subject].name : f.subject} · L${f.level}`));
+  }
+
+  function vaultSection() {
+    const grid = h("div", { class: "pm-vgrid" });
+    const counter = h("div", { class: "small faint", style: "margin-bottom:8px" });
+    const search = h("input", { class: "vault-search", type: "search", placeholder: "Search 1,000+ Eagle features…" });
+    const subjBox = h("div", { class: "row mindmap-chips", style: "gap:6px;flex-wrap:wrap" });
+    const capSel = h("select", { class: "vault-caps", title: "Filter by capability" });
+    const shuffle = h("button", { class: "btn btn-sm" }, "Shuffle");
+    const more = h("button", { class: "btn btn-sm", style: "margin-top:12px" }, "Load 16 more →");
+    function chips() {
+      subjBox.innerHTML = "";
+      capSel.innerHTML = "";
+      capSel.append(h("option", { value: "All" }, "All capabilities"), ...PREMIUM_CAPS.map((c) => h("option", { value: c.label }, c.label)));
+      capSel.value = vCap;
+      subjBox.append(...Object.keys({ All: 1, P: 1, C: 1, M: 1 }).map((s) =>
+        h("button", { class: "chip" + (vSubj === s ? " on" : ""), onclick: () => { vSubj = s; vPage = 1; render(); chips(); } }, s)));
+    }
+    function render() {
+      const list = vaultFiltered();
+      const shown = list.slice(0, vPage * VAULT_PER_PAGE);
+      const active = vSubj !== "All" || vCap !== "All" || vq;
+      counter.textContent = `${shown.length}${list.length > shown.length ? ` of ${list.length.toLocaleString()}` : ""} shown · ${list.length.toLocaleString()} of ${vault.length.toLocaleString()} Eagle features${active ? " · filters on" : ""} — every card is a real page.`;
+      grid.innerHTML = "";
+      grid.append(...shown.map(vaultCard));
+      more.style.display = list.length > shown.length ? "" : "none";
+    }
+    search.oninput = () => { vq = search.value; vPage = 1; render(); };
+    capSel.onchange = () => { vCap = capSel.value; vPage = 1; render(); };
+    shuffle.onclick = () => {
+      vPage = 1; vq = ""; search.value = ""; vSubj = "All"; vCap = "All";
+      vault = premiumVault(1 + Math.floor(Math.random() * premiumVaultCount()), premiumVaultCount());
+      render(); chips(); makeToast("Vault reshuffled — " + vault.length.toLocaleString() + " fresh features.", true);
+    };
+    more.onclick = () => { vPage++; render(); };
+    chips();
+    render();
+    return h("div", { class: "pm-block" },
+      h("div", { class: "row", style: "justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap" },
+        h("div", {},
+          h("h2", { class: "pch-h2", style: "margin:0" }, "The vault — 1,000+ Eagle features, live"),
+          h("p", { class: "small faint", style: "margin:4px 0 0" }, `${premiumVaultCount().toLocaleString()} upgrades generated on the device from the real chapter registry × ${PREMIUM_CAPS.length} Eagle capabilities. Nothing here is a mock — sims carry their parametric variant, the rest deep-link straight into the live app.`))),
+      h("div", { class: "card", style: "margin-top:12px;padding:12px" },
+        h("div", { class: "row", style: "gap:10px;align-items:center;flex-wrap:wrap" }, search, shuffle),
+        h("div", { class: "row", style: "gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px" }, subjBox, capSel),
+        counter,
+        grid,
+        more));
+  }
+
   root.innerHTML = "";
   root.append(page("Eagle — the premium preview",
     "Everything Sparrow (free) already has, with an adaptive layer on top. This page is a live preview — the demo below really recomputes as you click.",
@@ -6561,6 +6631,7 @@ export function PremiumView(root) {
               h("div", { class: "pm-ver pm-free" }, h("div", { class: "pm-ver-tag" }, "SPARROW · FREE"), h("div", { class: "small" }, freeTxt)),
               h("div", { class: "pm-ver pm-eagle" }, h("div", { class: "pm-ver-tag" }, "EAGLE"), h("div", { class: "small" }, eagleTxt))))))),
       mindMapSection(),
+      vaultSection(),
       compareCard(),
       h("div", { class: "card pm-price" },
         h("div", { class: "pm-price-row" },

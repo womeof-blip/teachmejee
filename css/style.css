@@ -2530,3 +2530,12 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
   border-color: var(--accent);
 }
 .chip.on:hover { background: var(--accent); }
+
+.pm-vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(235px, 1fr)); gap: 10px; }
+.pm-vcard { display: flex; flex-direction: column; gap: 0; padding: 12px; transition: border-color 0.15s ease, transform 0.15s ease; }
+.pm-vcard:hover { border-color: color-mix(in srgb, var(--accent) 55%, transparent); transform: translateY(-1px); }
+.pm-vcard-head { display: flex; gap: 8px; align-items: center; }
+.pm-vtag { flex-shrink: 0; font-size: 9px; font-weight: 800; letter-spacing: 0.08em; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 999px; padding: 2px 7px; }
+.vault-search { flex: 1; min-width: 200px; height: 34px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--border-soft); background: var(--surface-2); color: var(--text); }
+.vault-search::placeholder { color: var(--faint); }
+.vault-caps { height: 34px; padding: 0 8px; border-radius: 9px; border: 1px solid var(--border-soft); background: var(--surface-2); color: var(--text); }
