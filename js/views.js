@@ -1083,8 +1083,137 @@ export function disposeActiveSim() {
   }
 }
 function ownSim(sim) {
-  activeSimCleanup = () => { if (sim && sim.dispose) sim.dispose(); };
+  activeSimCleanup = () => { if (sim && sim.dispose) sim.dispose(); }
 }
+
+/* External simulation links — PhET, thequantumminds.in, jee3d.online */
+const EXTERNAL_SIMS = {
+  "P-units": [
+    { name: "Units & Dimensions", url: "https://thequantumminds.in/simulations/units-dimensions", src: "Quantum Minds" },
+  ],
+  "P-kinematics": [
+    { name: "Projectile Motion", url: "https://phet.colorado.edu/en/simulations/projectile-motion", src: "PhET" },
+    { name: "Projectile Motion (3D)", url: "https://thequantumminds.in/simulations/projectile-motion", src: "Quantum Minds" },
+    { name: "Motion Graphs", url: "https://thequantumminds.in/simulations/motion-graphs", src: "Quantum Minds" },
+  ],
+  "P-forces": [
+    { name: "Friction on an Incline", url: "https://thequantumminds.in/simulations/friction-incline", src: "Quantum Minds" },
+    { name: "Vector Addition", url: "https://thequantumminds.in/simulations/vector-addition", src: "Quantum Minds" },
+  ],
+  "P-circular": [
+    { name: "Circular Motion & Banking", url: "https://thequantumminds.in/simulations/circular-motion", src: "Quantum Minds" },
+  ],
+  "P-work": [
+    { name: "Work, Energy & Power", url: "https://thequantumminds.in/simulations/work-energy-power", src: "Quantum Minds" },
+  ],
+  "P-rotation": [
+    { name: "Rolling & Rotational Dynamics", url: "https://thequantumminds.in/simulations/rotational-motion", src: "Quantum Minds" },
+  ],
+  "P-gravity": [
+    { name: "Satellite Orbits & Escape", url: "https://thequantumminds.in/simulations/gravitation-orbit", src: "Quantum Minds" },
+  ],
+  "P-fluids": [
+    { name: "Bernoulli & Continuity", url: "https://thequantumminds.in/simulations/fluid-bernoulli", src: "Quantum Minds" },
+  ],
+  "P-ktg": [
+    { name: "Kinetic Theory & Maxwell Speeds", url: "https://thequantumminds.in/simulations/thermal-kinetic-theory", src: "Quantum Minds" },
+  ],
+  "P-thermo": [
+    { name: "Thermodynamic Processes", url: "https://thequantumminds.in/simulations/thermodynamic-processes", src: "Quantum Minds" },
+    { name: "Ideal Gas Laws", url: "https://phet.colorado.edu/en/simulations/gas-properties", src: "PhET" },
+  ],
+  "P-shm": [
+    { name: "Simple Harmonic Motion", url: "https://thequantumminds.in/simulations/simple-harmonic", src: "Quantum Minds" },
+    { name: "Masses & Springs", url: "https://phet.colorado.edu/en/simulations/masses-and-springs", src: "PhET" },
+  ],
+  "P-waves": [
+    { name: "Wave Superposition", url: "https://thequantumminds.in/simulations/wave-superposition", src: "Quantum Minds" },
+    { name: "Standing Waves & Harmonics", url: "https://thequantumminds.in/simulations/standing-waves", src: "Quantum Minds" },
+    { name: "Wave on a String", url: "https://phet.colorado.edu/en/simulations/wave-on-a-string", src: "PhET" },
+  ],
+  "P-em": [
+    { name: "Electric Field & Coulomb", url: "https://thequantumminds.in/simulations/electric-field", src: "Quantum Minds" },
+    { name: "Charges in Magnetic Fields", url: "https://thequantumminds.in/simulations/magnetic-force", src: "Quantum Minds" },
+  ],
+  "P-ac": [
+    { name: "Series LCR Resonance", url: "https://thequantumminds.in/simulations/ac-circuits", src: "Quantum Minds" },
+  ],
+  "P-optics": [
+    { name: "Thin Lens & Image Formation", url: "https://thequantumminds.in/simulations/ray-optics-lens", src: "Quantum Minds" },
+    { name: "Young's Double Slit", url: "https://thequantumminds.in/simulations/wave-optics-ydse", src: "Quantum Minds" },
+    { name: "Bending Light", url: "https://phet.colorado.edu/en/simulations/bending-light", src: "PhET" },
+  ],
+  "P-modern": [
+    { name: "Photoelectric Effect", url: "https://thequantumminds.in/simulations/photoelectric-effect", src: "Quantum Minds" },
+    { name: "Photoelectric Effect (PhET)", url: "https://phet.colorado.edu/en/simulations/photoelectric-effect", src: "PhET" },
+    { name: "Radioactive Decay", url: "https://thequantumminds.in/simulations/radioactive-decay", src: "Quantum Minds" },
+    { name: "p–n Junction Diode", url: "https://thequantumminds.in/simulations/semiconductor-diode", src: "Quantum Minds" },
+  ],
+  "C-mole": [
+    { name: "Build an Atom", url: "https://phet.colorado.edu/en/simulations/build-an-atom", src: "PhET" },
+  ],
+  "C-bonding": [
+    { name: "Chemical Bonding Lab", url: "https://thequantumminds.in/simulations/chemical-bonding", src: "Quantum Minds" },
+    { name: "VSEPR 3D Geometry", url: "https://thequantumminds.in/simulations/vsepr-geometry", src: "Quantum Minds" },
+    { name: "Molecule Shapes", url: "https://phet.colorado.edu/en/simulations/molecule-shapes", src: "PhET" },
+  ],
+  "C-goc": [
+    { name: "Hybridization Mixer", url: "https://thequantumminds.in/simulations/hybridization", src: "Quantum Minds" },
+  ],
+  "C-thermo": [
+    { name: "Thermochemistry Lab", url: "https://thequantumminds.in/simulations/thermochemistry", src: "Quantum Minds" },
+  ],
+  "C-equilibrium": [
+    { name: "Chemical Equilibrium", url: "https://thequantumminds.in/simulations/chemical-equilibrium", src: "Quantum Minds" },
+    { name: "Reactions & Rates", url: "https://phet.colorado.edu/en/simulations/reactions-and-rates", src: "PhET" },
+  ],
+  "C-electro": [
+    { name: "Galvanic Cell Builder", url: "https://thequantumminds.in/simulations/galvanic-cell", src: "Quantum Minds" },
+    { name: "Electrolysis Lab", url: "https://thequantumminds.in/simulations/electrolysis-lab", src: "Quantum Minds" },
+  ],
+  "C-kinetics": [
+    { name: "Rate Laws", url: "https://thequantumminds.in/simulations/rate-laws", src: "Quantum Minds" },
+  ],
+  "C-halo": [
+    { name: "SN2 Reaction Mechanism", url: "https://thequantumminds.in/simulations/sn2-reaction", src: "Quantum Minds" },
+    { name: "SN1 Reaction Mechanism", url: "https://thequantumminds.in/simulations/sn1-reaction", src: "Quantum Minds" },
+  ],
+  "C-hydrocarbons": [
+    { name: "Addition to Alkenes", url: "https://thequantumminds.in/simulations/addition-reaction", src: "Quantum Minds" },
+  ],
+  "C-solutions": [
+    { name: "Concentration", url: "https://thequantumminds.in/simulations/concentration", src: "Quantum Minds" },
+    { name: "Titration Lab", url: "https://thequantumminds.in/simulations/titration-lab", src: "Quantum Minds" },
+  ],
+  "M-functions": [
+    { name: "Function Machine", url: "https://thequantumminds.in/simulations/function-machine", src: "Quantum Minds" },
+  ],
+  "M-quadratic": [
+    { name: "Quadratic Ball Trajectory", url: "https://thequantumminds.in/simulations/quadratic-trajectory", src: "Quantum Minds" },
+  ],
+  "M-trig": [
+    { name: "Trigonometric Transformer", url: "https://thequantumminds.in/simulations/sine-transform", src: "Quantum Minds" },
+  ],
+  "M-conics": [
+    { name: "Conic Section Explorer", url: "https://thequantumminds.in/simulations/conic-explorer", src: "Quantum Minds" },
+    { name: "Planet Orbit Ellipse", url: "https://thequantumminds.in/simulations/ellipse-orbit", src: "Quantum Minds" },
+  ],
+  "M-vectors": [
+    { name: "Vector Addition", url: "https://thequantumminds.in/simulations/vector-addition", src: "Quantum Minds" },
+  ],
+  "M-3dgeo": [
+    { name: "3D Solids & Sections", url: "https://thequantumminds.in/simulations/geometry-3d-solids", src: "Quantum Minds" },
+  ],
+  "M-calc": [
+    { name: "Derivative as Slope", url: "https://thequantumminds.in/simulations/derivative-slope", src: "Quantum Minds" },
+    { name: "Integration as a Filling Tank", url: "https://thequantumminds.in/simulations/integration-tank", src: "Quantum Minds" },
+    { name: "Limits by Zooming In", url: "https://thequantumminds.in/simulations/limits-zoom", src: "Quantum Minds" },
+  ],
+  "M-prob": [
+    { name: "Dice, Coins & Spinner", url: "https://thequantumminds.in/simulations/probability-dice", src: "Quantum Minds" },
+    { name: "Interactive Venn Diagram", url: "https://thequantumminds.in/simulations/venn-sets", src: "Quantum Minds" },
+  ],
+};
 
 /* ----------- CHAPTER TABS ----------- */
 
@@ -1188,6 +1317,18 @@ function subsPane(c) {
     ...c.subs.map((sb) => h("div", { class: "sub-item" }, h("div", { class: "t" }, sb.n), h("div", { class: "d" }, sb.d))));
 }
 
+function renderExternalSims(c) {
+  const links = EXTERNAL_SIMS[c.id];
+  if (!links || !links.length) return null;
+  return h("div", { style: "margin-top:10px" },
+    h("h4", { style: "margin:0 0 6px;font-size:13px;color:#888" }, "Related external simulations"),
+    h("div", { style: "display:flex;flex-wrap:wrap;gap:6px" },
+      ...links.map((l) => h("a", { href: l.url, target: "_blank", rel: "noopener",
+        style: "display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:12px;color:#aab;text-decoration:none;transition:background .15s" },
+        l.name,
+        h("span", { style: "font-size:10px;color:#666" }, l.src)))));
+}
+
 function simPane(c) {
   const shell = h("div", { class: "sim-shell", style: "height:430px" },
     h("canvas", { style: "position:absolute;inset:0;width:100%;height:100%" }),
@@ -1275,7 +1416,8 @@ function simPane(c) {
   });
 
   return h("div", { style: "margin-top:4px" }, shell, ctrlWrap,
-    h("p", { class: "hint", style: "margin-top:10px" }, "Interactive model — grab it with mouse or finger."));
+    h("p", { class: "hint", style: "margin-top:10px" }, "Interactive model — grab it with mouse or finger."),
+    renderExternalSims(c));
 }
 
 /* ----------- FLOWCHART ----------- */
@@ -6051,6 +6193,7 @@ function disposePitchScene() { try { if (_pitchSceneCleanup) _pitchSceneCleanup(
 export function BlueprintView(root) {
   const subTotal = ALL_CONCEPTS.reduce((a, c) => a + (subtopicsFor(c)?.length || 0), 0);
 
+  /* ── Route map (feature → destination) ── */
   const ROUTE_GROUPS = [
     { g: "Learn", icon: "≡", items: [
       ["#/home", "Home", "XP, streak, heatmap, what's next"],
@@ -6100,33 +6243,92 @@ export function BlueprintView(root) {
   ];
 
   const FEATURE_SET = [
-    ["#/tutor", "Ask Pip", "An AI tutor that answers from your own notes and progress — and runs entirely on your device, no internet, no API keys. Ask it anything you'd ask a teacher."],
-    ["#/derivations", "Derivation theatre", "Every formula rebuilt step by step so you never memorise a black box. See where each term comes from, then move on."],
+    ["#/tutor", "Ask Pip", "An AI tutor that answers from your own notes and progress — and runs entirely on your device, no internet, no API keys."],
+    ["#/derivations", "Derivation theatre", "Every formula rebuilt step by step so you never memorise a black box."],
     ["#/constellation", "Constellation map", "An Obsidian-style map of the whole syllabus. See how a topic you're stuck on connects to the ones holding it up."],
     ["#/molecules", "Molecule lab", "54 molecular structures in true 3D — spin, zoom, group by shape, then drill yourself until the names stick."],
     ["#/labs", "Interactive labs", "Drag a slider, watch the physics change. 150+ concepts become experiments, not paragraphs."],
-    ["#/flash", "Spaced repetition", "Flashcards that show up at 1 → 3 → 7 → 16 days, timed to your memory. Revision that schedules itself."],
+    ["#/flash", "Spaced repetition", "Flashcards that show up at 1 → 3 → 7 → 16 days, timed to your memory."],
     ["#/weak", "Weak-area radar", "The app tracks your accuracy per chapter and tells you honestly where you're under 80%."],
-    ["#/predictor", "Rank predictor", "Your consistency becomes a percentile band — see where you'd sit today, not just how much XP you have."],
+    ["#/predictor", "Rank predictor", "Your consistency becomes a percentile band — see where you'd sit today."],
     ["#/studyplan", "Mission JEE", "A 42-week plan that ticks itself off as you go, built around weightage and your own pace."],
     ["#/sprint", "PYQ Sprint", "Ten timed previous-year questions with real +4/−1 scoring, so practice feels like the exam."],
     ["#/duel", "1v1 duels", "Face a friend on the same questions, head-to-head, and let the rivalry do the motivating."],
     ["#/gitjee", "Open source", "Every line of this app is public, rehostable, exportable — nothing hidden, nothing sold."],
     ["#/files", "Your data, yours", "Progress exports to a file you control. Back it up, move it, keep it forever."],
     ["#/neet", "NEET hub", "The same engine pointed at medicine: topics, notes, models and a question bank."],
-    ["#/adaptive", "Adaptive path", "Eagle watches how you answer, how fast you finish chapters and where memory fades — then rewrites today's plan to match. Difficulty rises only when you're ready, reviews return right before they'd fade, and the daily load fits your pace."],
+    ["#/adaptive", "Adaptive path", "Eagle watches how you answer, how fast you finish chapters and where memory fades — then rewrites today's plan to match."],
   ];
 
+  /* ── Competitor comparison — 5 columns ── */
   const COMPARISON = [
-    ["Price, per year", "Free", "₹5,000–₹90,000", "₹1–3 lakh"],
-    ["Works offline", "Yes", "No", "No"],
-    ["Needs an account or login", "No", "Usually", "Yes"],
-    ["You can keep your data", "Yes — it's on your device", "Locked in", "Not yours"],
-    ["3D interactive models", "Yes — 54 molecules + labs", "Mostly videos", "Whiteboard only"],
-    ["AI tutor, run locally", "Yes — Pip, on-device", "Cloud chatbot", "No"],
-    ["What you actually get", "Notes, labs, tests, planner, analytics — everything", "Videos + a test series", "Classes + a test series"],
+    ["Price / year",              "Free forever",         "₹15,000 – ₹90,000",  "₹10,000 – ₹44,000",   "₹8,000 – ₹30,000",    "₹12,000 – ₹45,000",   "₹0 (no structure)"],
+    ["Works offline",             "Full PWA — cached",    "App, partial",        "App, partial",          "App, partial",         "App, partial",         "No — needs data"],
+    ["Account required",          "No",                   "Yes",                 "Yes",                   "Yes",                  "Yes",                  "Optional"],
+    ["You own your data",         "Yes — local only",     "Locked to their cloud","Locked in",            "Locked in",            "Locked in",            "N/A"],
+    ["3D interactive models",     "54 molecules + 150 labs","No — video only",   "No — video only",       "No — video only",      "Whiteboard only",      "No"],
+    ["AI tutor on-device",        "Pip — local, private", "Cloud chatbot",       "No",                    "No",                   "No",                   "No"],
+    ["Full syllabus coverage",    "93 JEE + 30 NEET",     "JEE only",            "JEE only",              "JEE + NEET (paid)",    "JEE + NEET (paid)",    "Fragments"],
+    ["Live progress analytics",   "Yes — per chapter",    "Basic",               "Basic",                 "Basic",                "Basic",                "No"],
+    ["Open source / auditable",   "Yes — GitJEE",         "No",                  "No",                    "No",                   "No",                   "No"],
+    ["Pricing transparency",      "Zero — no hidden fees","Hidden upsells",      "Hidden upsells",        "Hidden upsells",       "Hidden upsells",       "N/A"],
   ];
+  const COMPETITOR_NAMES = ["TeachMeJEE", "Allen Digital", "PW Vidyapeeth", "Unacademy Plus", "Vedantu Pro", "YouTube free"];
   const routeCount = ROUTE_GROUPS.reduce((a, g) => a + g.items.length, 0);
+
+  /* ── Pathshala Pad — device concept ── */
+  const DEVICE_SPECS = [
+    ["Display", "7.8\" E-ink Carta 1200, 1872×1404, front-light"],
+    ["Processor", "Allwinner B288 ARM Cortex-A53 quad-core 1.8 GHz"],
+    ["RAM", "2 GB LPDDR4"],
+    ["Storage", "32 GB eMMC + microSD slot"],
+    ["Connectivity", "Wi-Fi 5 (802.11ac) + Bluetooth 5.0"],
+    ["Battery", "4,000 mAh Li-Po — 4–6 weeks standby, 3 weeks study use"],
+    ["Audio", "Mono speaker + MEMS mic (Pip voice + lecture playback)"],
+    ["Ports", "USB-C (charge + data)"],
+    ["OS", "Android 12 (AOSP) — locked to TeachMeJEE kiosk mode"],
+    ["Weight", "210 g — lighter than most textbooks"],
+    ["Build", "Matte polycarbonate, matte screen (no glare, no fingerprints)"],
+  ];
+
+  const DEVICE_BOM = [
+    ["E-ink 7.8\" display + front-light + touch",  "₹3,500"],
+    ["Allwinner B288 SoC + PMIC",                  "₹900"],
+    ["2 GB LPDDR4",                                "₹350"],
+    ["32 GB eMMC",                                 "₹650"],
+    ["Wi-Fi 5 + BT 5.0 module",                    "₹250"],
+    ["4,000 mAh Li-Po battery",                    "₹400"],
+    ["Speaker + MEMS microphone",                  "₹200"],
+    ["PCB + passive components",                    "₹500"],
+    ["Matte polycarbonate enclosure",              "₹300"],
+    ["USB-C port + misc connectors",               "₹100"],
+  ];
+
+  const DEVICE_ADDITIONAL = [
+    ["Assembly + QC + packaging",                  "₹1,200"],
+    ["Software pre-load + kiosk lock + OTA setup", "₹350"],
+    ["Shipping to warehouse (per unit)",           "₹150"],
+  ];
+
+  const BOM_TOTAL = 7200;
+  const ADDN_TOTAL = 1700;
+  const LANDED_TOTAL = BOM_TOTAL + ADDN_TOTAL; // ₹8,900
+  const RETAIL_PRICE = 14999;
+
+  /* ── Market sizing ── */
+  const MARKET = [
+    ["JEE Main registrants (2024)",              "14.76 lakh"],
+    ["NEET UG registrants (2024)",               "24 lakh"],
+    ["Total addressable (overlapping)",           "~30 lakh"],
+    ["Serious aspirants (buy books, devices)",    "~6–8 lakh"],
+    ["Price-sensitive / no coaching access",      "~4 lakh"],
+  ];
+  const PROJECTIONS = [
+    { adoption: "0.5%", units: "20,000", revenue: "₹30 Cr", profit: "₹12.2 Cr", margin: "40.7%" },
+    { adoption: "1%",   units: "40,000", revenue: "₹60 Cr", profit: "₹24.4 Cr", margin: "40.7%" },
+    { adoption: "2%",   units: "80,000", revenue: "₹1.2 Cr", profit: "₹48.8 Cr", margin: "40.7%" },
+    { adoption: "5%",   units: "2,00,000", revenue: "₹300 Cr", profit: "₹1.22 Cr", margin: "40.7%" },
+  ];
 
   root.innerHTML = "";
   root.append(
@@ -6149,7 +6351,7 @@ export function BlueprintView(root) {
 
         /* ── THE PROBLEM ── */
         h("div", { class: "pitch-block" },
-          h("h2", { class: "pch-h2" }, "The problem: read this once, honestly"),
+          h("h2", { class: "pch-h2" }, "The problem — read this once, honestly"),
           h("p", { class: "muted" }, "Every year roughly 14 lakh students sit for JEE Main. A little over one lakh get past it into JEE Advanced, and around eighteen thousand eventually take an IIT seat. That's not a talent filter — it's a foundation filter. Most aspirants reach Class 11 with gaps from Class 9–10 that no coaching ever checks, and the syllabus lands on top of the gaps."),
           h("div", { class: "pch-facts" },
             h("div", { class: "pch-fact" }, h("div", { class: "pch-fact-num" }, "14.76 lakh"), h("div", { class: "pch-fact-lbl" }, "registered for JEE Main 2024 — most of them without firm basics"),
@@ -6176,7 +6378,148 @@ export function BlueprintView(root) {
             h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "It tells you what's next"), h("div", { class: "small faint" }, "Weak areas, weightage and rank bands decide the next best hour — not a to-do list.")),
             h("div", { class: "pch-pillar" }, h("div", { class: "pch-pname" }, "Runs anywhere, costs nothing"), h("div", { class: "small faint" }, "Cached for offline. No server, no ads, no telemetry, no account, no lock-in.")))),
 
-        /* ── LOCAL AI TUTOR ── */
+        /* ── COMPETITIVE LANDSCAPE ── */
+        h("div", { class: "pitch-block" },
+          h("h2", { class: "pch-h2" }, "Where TeachMeJEE sits in the market"),
+          h("p", { class: "muted" }, "Five familiar options, measured honestly. Not 'they're evil' — most coaching does good work. The point is what you get, what you pay, and who owns the data."),
+          h("div", { class: "pch-compare" },
+            h("div", { class: "pc-row pc-head" },
+              h("span", { class: "pc-head-col" }, "Feature"),
+              ...COMPETITOR_NAMES.map((n) => h("span", { class: `pc-head-col${n === "TeachMeJEE" ? " pc-me" : ""}` }, n))),
+            ...COMPARISON.map(([axis, ...vals]) =>
+              h("div", { class: "pc-row" },
+                h("span", { class: "pc-axis" }, axis),
+                ...vals.map((v, i) => h("span", { class: i === 0 ? "pc-me" : "" }, v))))),
+          pchNote("Figures are representative ranges for 2024–25 typical offerings. Check the brochure before choosing anything.")),
+
+        /* ── PATHSHALA PAD — the device ── */
+        h("div", { class: "pitch-block device-hero" },
+          h("h2", { class: "pch-h2" }, "The Pathshala Pad — a JEE-only study device"),
+          h("p", { class: "muted" }, "A purpose-built, distraction-free e-ink tablet preloaded with the entire TeachMeJEE platform. No browser. No games. No social media. Just the 93 chapters, 3D labs, the AI tutor, and everything else — running offline, weeks between charges, built to be the only device a serious aspirant needs."),
+
+          /* ── Specs + Why e-ink ── */
+          h("div", { class: "device-row" },
+            h("div", { class: "device-card" },
+              h("h3", {}, "Hardware specifications"),
+              h("div", { class: "device-specs" },
+                ...DEVICE_SPECS.map(([label, val]) =>
+                  h("div", { class: "device-spec-row" },
+                    h("span", { class: "spec-label" }, label),
+                    h("span", { class: "spec-val" }, val))))),
+            h("div", { class: "device-card" },
+              h("h3", {}, "Why e-ink for JEE"),
+              h("div", { class: "small" },
+                h("p", { style: "margin:0 0 8px" }, "E-ink is not a compromise — it's a deliberate design choice for serious study:"),
+                h("p", { style: "margin:0 0 6px" }, "1. Zero eye strain after 6 hours of continuous study — unlike OLED/LCD panels that fatigue the retina."),
+                h("p", { style: "margin:0 0 6px" }, "2. 3–6 weeks of battery life on a single charge — study through a full JEE sprint without hunting for a charger."),
+                h("p", { style: "margin:0 0 6px" }, "3. Readable in direct sunlight — the screen gets clearer as ambient light increases."),
+                h("p", { style: "margin:0 0 6px" }, "4. No backlight flicker — no blue-light-induced sleep disruption during late-night revision."),
+                h("p", { style: "margin:0" }, "5. Distraction-proof by design — e-ink refresh rates make video, gaming and social media impractical. The device resists being turned into a toy.")))),
+
+          /* ── Bill of Materials ── */
+          h("div", { class: "device-row" },
+            h("div", { class: "device-card" },
+              h("h3", {}, "Bill of materials — component costs"),
+              h("p", { class: "small", style: "margin:0 0 10px" }, "Real component pricing from Shenzhen + India assembly estimates (2024–25), at 10,000-unit MOQ."),
+              h("div", { class: "device-costs" },
+                ...DEVICE_BOM.map(([label, cost]) =>
+                  h("div", { class: "device-cost-row" },
+                    h("span", { class: "cost-label" }, label),
+                    h("span", { class: "cost-val" }, cost))),
+                h("div", { class: "device-total" },
+                  h("span", {}, "Total BOM"),
+                  h("span", {}, `₹${BOM_TOTAL.toLocaleString("en-IN")}`)))),
+
+            h("div", { class: "device-card" },
+              h("h3", {}, "Landed cost breakdown"),
+              h("div", { class: "device-costs" },
+                ...DEVICE_ADDITIONAL.map(([label, cost]) =>
+                  h("div", { class: "device-cost-row" },
+                    h("span", { class: "cost-label" }, label),
+                    h("span", { class: "cost-val" }, cost))),
+                h("div", { class: "device-cost-row", style: "border-top:1px solid var(--border-soft);padding-top:8px" },
+                  h("span", { class: "cost-label", style: "font-weight:600" }, "BOM carried forward"),
+                  h("span", { class: "cost-val" }, `₹${BOM_TOTAL.toLocaleString("en-IN")}`)),
+                h("div", { class: "device-total" },
+                  h("span", {}, "Total landed cost"),
+                  h("span", {}, `₹${LANDED_TOTAL.toLocaleString("en-IN")}`)))),
+
+          /* ── Pricing + Per-unit P&L ── */
+          h("div", { class: "device-row" },
+            h("div", { class: "device-card" },
+              h("h3", {}, "Retail pricing"),
+              h("p", { class: "small", style: "margin:0 0 10px" }, "Three possible price points — all well below any coaching annual fee."),
+              h("div", { class: "device-costs" },
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Landed cost"),
+                  h("span", { class: "cost-val" }, `₹${LANDED_TOTAL.toLocaleString("en-IN")}`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Retail price"),
+                  h("span", { class: "cost-val", style: "color:var(--accent);font-weight:700" }, `₹${RETAIL_PRICE.toLocaleString("en-IN")}`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Gross margin per unit"),
+                  h("span", { class: "cost-val" }, `₹${(RETAIL_PRICE - LANDED_TOTAL).toLocaleString("en-IN")} (${Math.round((RETAIL_PRICE - LANDED_TOTAL) / RETAIL_PRICE * 100)}%)`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "GST (18%)"),
+                  h("span", { class: "cost-val" }, `₹${Math.round(RETAIL_PRICE * 0.18).toLocaleString("en-IN")}`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Net price after GST"),
+                  h("span", { class: "cost-val" }, `₹${Math.round(RETAIL_PRICE / 1.18).toLocaleString("en-IN")}`)))),
+
+            h("div", { class: "device-card" },
+              h("h3", {}, "Per-unit economics"),
+              h("p", { class: "small", style: "margin:0 0 10px" }, "After distribution, marketing and platform costs."),
+              h("div", { class: "device-costs" },
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Retail price"),
+                  h("span", { class: "cost-val" }, `₹${RETAIL_PRICE.toLocaleString("en-IN")}`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Less: GST (18%)"),
+                  h("span", { class: "cost-val" }, `−₹${Math.round(RETAIL_PRICE * 0.18).toLocaleString("en-IN")}`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Less: landed cost"),
+                  h("span", { class: "cost-val" }, `−₹${LANDED_TOTAL.toLocaleString("en-IN")}`)),
+                h("div", { class: "device-cost-row" },
+                  h("span", { class: "cost-label" }, "Less: distribution + marketing (15%)"),
+                  h("span", { class: "cost-val" }, `−₹${Math.round(RETAIL_PRICE * 0.15).toLocaleString("en-IN")}`)),
+                h("div", { class: "device-total" },
+                  h("span", {}, "Net profit per unit"),
+                  h("span", { style: "color:var(--accent)" }, `₹${Math.round(RETAIL_PRICE / 1.18 - LANDED_TOTAL - RETAIL_PRICE * 0.15).toLocaleString("en-IN")}`))))),
+
+          /* ── Market projections ── */
+          h("h3", { style: "margin:20px 0 0" }, "Addressable market"),
+          h("div", { class: "device-proj-grid" },
+            ...MARKET.map(([lbl, val]) =>
+              h("div", { class: "device-proj-card" },
+                h("div", { class: "device-proj-num" }, val),
+                h("div", { class: "device-proj-lbl" }, lbl)))),
+
+          /* ── Adoption projections ── */
+          h("h3", { style: "margin:20px 0 0" }, "Revenue projections at ₹14,999 retail"),
+          h("div", { class: "pch-compare", style: "margin-top:10px" },
+            h("div", { class: "pc-row pc-head" },
+              h("span", { class: "pc-head-col" }, "Adoption"),
+              h("span", { class: "pc-head-col" }, "Units sold"),
+              h("span", { class: "pc-head-col" }, "Gross revenue"),
+              h("span", { class: "pc-head-col" }, "Net profit"),
+              h("span", { class: "pc-head-col" }, "Margin")),
+            ...PROJECTIONS.map((p) =>
+              h("div", { class: "pc-row" },
+                h("span", { class: "pc-axis" }, p.adoption),
+                h("span", {}, p.units),
+                h("span", {}, p.revenue),
+                h("span", { class: "pc-me" }, p.profit),
+                h("span", {}, p.margin)))),
+
+          /* ── Device pitch ── */
+          h("div", { class: "device-pitch" },
+            h("h3", {}, "Why this works"),
+            h("div", { class: "small" },
+              h("p", { style: "margin:0 0 8px" }, "Coaching for JEE costs ₹15,000–₹90,000 a year — and most of that goes to video lectures the student watches on a phone with a distracting notification bar. The Pathshala Pad replaces that phone with a dedicated, focused, offline study device at a one-time cost lower than a single month of coaching."),
+              h("p", { style: "margin:0 0 8px" }, "The device ships with the entire TeachMeJEE platform — notes, 3D molecular models, simulation labs, spaced repetition, analytics, and the AI tutor — all running locally. No internet required after the initial content sync. No subscription. No hidden fees."),
+              h("p", { style: "margin:0" }, "For students in tier-2 and tier-3 cities who can't afford ₹2 lakh coaching fees, this is the equaliser: a ₹15,000 device that gives them the same content, the same labs, and a smarter study plan than most ₹50,000 courses provide.")))),
+
+        /* ── AI TUTOR ── */
         h("div", { class: "pitch-block" },
           h("h2", { class: "pch-h2" }, "The AI tutor runs on your device, not on someone else's server"),
           h("p", { class: "muted" }, "Meet Pip. It has read the 93 chapters, every formula, the PYQ bank and your own progress — and it answers in plain language, right inside the app. There is no cloud model, no API key, no data leaving your phone. It even speaks."),
@@ -6185,30 +6528,16 @@ export function BlueprintView(root) {
           h("div", { class: "row", style: "gap:8px;margin-top:10px" },
             h("a", { class: "btn btn-primary", href: "#/tutor" }, "Open Ask Pip →"))),
 
-        /* ── HOW IT'S DIFFERENT ── */
-        h("div", { class: "pitch-block" },
-          h("h2", { class: "pch-h2" }, "How it's different — be honest, then it isn't hard"),
-          h("p", { class: "muted" }, "Against the three usual options — a big tutoring app, offline coaching, or YouTube plus self-study."),
-          h("div", { class: "pch-compare" },
-            h("div", { class: "pc-row pc-head" }, h("span", {}), h("span", { class: "pc-me" }, "TeachMeJEE"), h("span", {}, "Big tutoring app"), h("span", {}, "Offline coaching")),
-            ...COMPARISON.map(([axis, a, b, c]) =>
-              h("div", { class: "pc-row" },
-                h("span", { class: "pc-axis" }, axis),
-                h("span", { class: "pc-me" }, a),
-                h("span", {}, b),
-                h("span", {}, c)))),
-          pchNote("Figures are representative ranges for 2024–25 typical offerings; check the actual brochure before choosing anything. The point isn't 'they're evil' — it's that the free option already does the parts that matter.")),
-
         /* ── WHAT MAKES IT INNOVATIVE ── */
         h("div", { class: "pitch-block" },
-          h("h2", { class: "pch-h2" }, "What's different from every other product"),
-          h("p", { class: "muted" }, "Not one big thing — fifteen small things that other apps don't do, each one live and clickable right now."),
+          h("h2", { class: "pch-h2" }, "What's different — fifteen things other apps don't do"),
+          h("p", { class: "muted" }, "Not one big thing — fifteen small things, each one live and clickable right now."),
           h("div", { class: "pch-grid" },
             ...FEATURE_SET.map(([rt, name, desc]) =>
               h("a", { class: "pch-feature", href: rt },
                 h("div", { class: "pch-fname" }, name),
                 h("div", { class: "small faint" }, desc),
-                h("div", { class: "small", style: "margin-top:8px;color:var(--accent)" }, "Open →"))))),
+                h("span", { class: "route-badge" }, "Open →"))))),
 
         /* ── COST & PLANS ── */
         h("div", { class: "pitch-block" },
@@ -6239,7 +6568,19 @@ export function BlueprintView(root) {
               h("div", { class: "pch-perk" }, "✓ advanced sims, notes walk-throughs & video tracks"),
               h("div", { class: "pch-perk" }, "✓ cloud sync across devices + mastery certificate"),
               h("div", { class: "pch-perk pale" }, "still no ads · no telemetry"),
-              h("a", { class: "btn", style: "width:100%;margin-top:14px", href: "#/premium" }, "Preview Eagle →"))),
+              h("a", { class: "btn", style: "width:100%;margin-top:14px", href: "#/premium" }, "Preview Eagle →")),
+            h("div", { class: "pch-plan" },
+              h("div", { class: "pch-plan-badge", style: "color:var(--accent)" }, "PHYSICAL · LAUNCHING"),
+              h("h3", { class: "pch-plan-name" }, "Pathshala Pad"),
+              h("div", { class: "pch-plan-price" }, "₹14,999"),
+              h("div", { class: "small faint" }, "one-time · no subscription · ships with everything"),
+              h("div", { class: "pch-perk" }, "✓ 7.8\" e-ink — zero eye strain, weeks of battery"),
+              h("div", { class: "pch-perk" }, "✓ locked to TeachMeJEE — no browser, no distractions"),
+              h("div", { class: "pch-perk" }, "✓ all 93 chapters + labs + tutor pre-installed"),
+              h("div", { class: "pch-perk" }, "✓ Wi-Fi for content sync, then fully offline"),
+              h("div", { class: "pch-perk" }, "✓ 210 g — lighter than most textbooks"),
+              h("div", { class: "pch-perk pale" }, "30-day return policy · 1-year warranty"),
+              h("a", { class: "btn", style: "width:100%;margin-top:14px", href: "#/blueprint" }, "View device specs →"))),
           pchNote("The free tier is the product, not a hook. The core learning, the 3D labs and the analytics stay free forever; the optional year pays for the few servers that only the sync features touch.")),
 
         /* ── WHO IT'S FOR ── */
@@ -6268,15 +6609,13 @@ export function BlueprintView(root) {
             h("div", { class: "card bp-group" }, h("h3", {}, grp.icon + "  " + grp.g),
               ...grp.items.map(([rt, name, desc]) => h("a", { class: "bp-link", href: rt },
                 h("div", { class: "bp-link-name" }, name), h("div", { class: "small faint" }, desc))))))),
-
-        /* ── WHY / CLOSE ── */
         h("div", { class: "pitch-close" },
           h("h2", { class: "pch-h2", style: "text-align:center" }, "Because a seat isn't won by the coaching you can afford"),
           h("p", { class: "muted", style: "text-align:center;max-width:640px;margin:6px auto 16px" }, "Most aspirants don't lose because they're less capable — they lose because a foundation was skipped, and the tools to rebuild it cost too much. TeachMeJEE removes the money and the data-layer from the equation, and puts the whole road map in your pocket."),
           h("div", { style: "display:flex;justify-content:center;gap:10px;flex-wrap:wrap" },
             h("a", { class: "btn btn-primary btn-lg", href: "#/foundation" }, "Begin with Class 9–10"),
             h("a", { class: "btn btn-lg", href: "#/roadmap" }, "Open the roadmap"),
-            h("a", { class: "btn btn-lg", href: "#/neet" }, "NEET hub"))),
+            h("a", { class: "btn btn-lg", href: "#/neet" }, "NEET hub")))),
       )));
   onViewCleanup(disposePitchScene);
 }

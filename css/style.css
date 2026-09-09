@@ -2346,8 +2346,10 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
   background: var(--surface);
   border: 1px solid var(--border-soft);
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 14px;
+  transition: border-color 0.15s, transform 0.15s;
 }
+.pch-grid .pch-feature:hover { border-color: var(--accent); transform: translateY(-1px); }
 .pch-fname { font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .pch-aud {
   display: grid;
@@ -2414,6 +2416,8 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
   overflow: hidden;
   background: var(--surface);
 }
+
+/* ── COMPARISON TABLE (6 competitors) ── */
 .pch-compare {
   margin-top: 14px;
   overflow-x: auto;
@@ -2423,15 +2427,133 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
 }
 .pc-row {
   display: grid;
-  grid-template-columns: 190px 1.15fr 1fr 1fr;
-  min-width: 620px;
+  grid-template-columns: 160px repeat(5, 1fr);
+  min-width: 860px;
 }
-.pc-row span { padding: 10px 12px; font-size: 0.9rem; line-height: 1.45; border-top: 1px solid var(--border-soft); }
+.pc-row span {
+  padding: 10px 11px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  border-top: 1px solid var(--border-soft);
+  border-left: 1px solid var(--border-soft);
+}
+.pc-row span:first-child { border-left: 0; }
 .pc-row:first-child span { border-top: 0; font-weight: 700; }
-.pc-row .pc-me { color: var(--accent); font-weight: 650; }
-.pc-axis { color: var(--muted); }
-.pc-row .pc-me,
-.pc-row span:nth-child(3) { border-left: 1px solid var(--border-soft); }
+.pc-row .pc-me { color: var(--accent); font-weight: 650; background: color-mix(in srgb, var(--accent) 5%, transparent); }
+.pc-axis { color: var(--muted); font-weight: 600; white-space: nowrap; }
+.pc-row .pc-head-col { font-size: 0.75rem; letter-spacing: 0.03em; }
+.pc-row .pc-winner { background: color-mix(in srgb, #8ec07c 8%, transparent); }
+
+/* ── DEVICE SECTION (Pathshala Pad) ── */
+.device-hero {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 10%, var(--surface)) 0%, var(--surface) 60%);
+}
+.device-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+@media (max-width: 720px) { .device-row { grid-template-columns: 1fr; } }
+.device-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 18px;
+}
+.device-card h3 { margin: 0 0 12px; font-size: 1.05rem; }
+.device-card h4 { margin: 0 0 6px; font-size: 0.9rem; color: var(--accent); }
+.device-card .small { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.device-specs { margin-top: 8px; }
+.device-spec-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.85rem;
+}
+.device-spec-row:last-child { border-bottom: 0; }
+.device-spec-row .spec-label { color: var(--muted); }
+.device-spec-row .spec-val { font-weight: 650; color: var(--text); }
+.device-costs { margin-top: 8px; }
+.device-cost-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.85rem;
+}
+.device-cost-row:last-child { border-bottom: 0; }
+.device-cost-row .cost-label { color: var(--muted); }
+.device-cost-row .cost-val { font-variant-numeric: tabular-nums; color: var(--text); }
+.device-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-top: 2px solid var(--accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+.device-proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.device-proj-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+.device-proj-num {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.device-proj-lbl {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.device-pitch {
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, var(--border-soft));
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 14px;
+}
+.device-pitch h3 { margin: 0 0 10px; font-size: 1.05rem; }
+.device-pitch p { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
+
+/* ── ROUTE BADGES on feature cards ── */
+.pch-feature {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.pch-feature:hover { border-color: var(--accent); transform: translateY(-1px); }
+.pch-fname { font-weight: 650; }
+.route-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 9px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  text-transform: uppercase;
+}
 
 /* NEET full notes */
 .neet-notes { margin-top: 2px; }
