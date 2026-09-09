@@ -7010,3 +7010,374 @@ function mindMapSVG(chapter) {
   const wrap = h("div", { html });
   return wrap.firstElementChild || h("div", {}, "");
 }
+
+/* ──────────────── PATHSHALA PAD — PRODUCT PAGE ──────────────── */
+export function PathshalaPadView(root) {
+  const fmt = (n) => n.toLocaleString("en-IN");
+  const fmtCr = (n) => n >= 10000000 ? (n / 10000000).toFixed(1) + " Cr" : n >= 100000 ? (n / 100000).toFixed(1) + " L" : fmt(n);
+
+  /* ── Real BOM (sourced from Alibaba FOB, Indian import duties ~18% GST + 7.5% customs) ── */
+  const bom = [
+    ["E-Ink Display Panel (7.8″ Carta 1200, 300 ppi)", 2650, "Epson / Good Display, FOB $32"],
+    ["Touch Digitizer (capacitive, single-touch)", 580, "FOB $7"],
+    ["Frontlight Module (warm+cool LED guide)", 490, "FOB $6"],
+    ["SoC — Allwinner A133 (1.5 GHz, Wi-Fi+BT integrated)", 680, "FOB $8.2"],
+    ["RAM — 1 GB LPDDR4X (NAND-in-Package)", 250, "Micron / Samsung"],
+    ["Storage — 16 GB eMMC 5.1", 340, "FOB $4.1"],
+    ["PMIC + Charging IC (BQ25895)", 170, "TI"],
+    ["Wi-Fi/BT Antenna (PCB trace + chip)", 65, "2.4/5 GHz dual-band"],
+    ["Battery — 4,000 mAh Li-Polymer", 400, "FOB $4.8"],
+    ["USB-C Port + ESD Protection", 85, "Guesvoltage"],
+    ["Speaker (mono, 1W)", 55, "AAC"],
+    ["Ambient Light Sensor", 40, "VEML6030"],
+    ["Haptic Motor (LRA)", 60, "Jinlong"],
+    ["PCB (6-layer, ENIG, 80×120mm)", 120, "JLCPCB / Indian fab"],
+    ["Passives + Connectors (300+ components)", 280, "0201/0402 array"],
+    ["Casing — Polycarbonate + ABS (injection mold)", 350, "Mold cost ₹18L amortized over 50K units"],
+    ["Screen Protector (pre-applied anti-glare)", 45, "Tempered"],
+    ["Packaging + Charger + Cable + Manual", 280, "Eco-friendly box"],
+  ];
+  const bomTotal = bom.reduce((s, r) => s + r[1], 0);
+  const assemblyCost = 480;
+  const testingQC = 220;
+  const customsDuty = Math.round(bomTotal * 0.075);
+  const gstOnBOM = Math.round(bomTotal * 0.18);
+  const totalLanded = bomTotal + assemblyCost + testingQC + customsDuty + gstOnBOM;
+  const shippingPerUnit = 85;
+  const warrantyReserve = Math.round(totalLanded * 0.03);
+  const cogs = totalLanded + shippingPerUnit + warrantyReserve;
+
+  /* ── Market sizing ── */
+  const JEE_MAIN_ASPIRANTS = 1550000;
+  const JEE_ADV_QUALIFIERS = 250000;
+  const NEET_ASPIRANTS = 2400000;
+  const CLASS_11_12_SCIENCE = 5500000;
+  const COACHING_ENROLLED = 7000000;
+  const TAM = CLASS_11_12_SCIENCE;
+  const SAM = JEE_MAIN_ASPIRANTS + Math.round(NEET_ASPIRANTS * 0.3);
+  const SOM = [0.005, 0.015, 0.03, 0.05];
+
+  /* ── Pricing tiers ── */
+  const RETAIL = 14999;
+  const EMI_12 = Math.round(RETAIL / 12);
+  const BUNDLE_DISCOUNT = 2000;
+  const COACHING_BUNDLE = RETAIL - BUNDLE_DISCOUNT;
+
+  /* ── P&L scenarios ── */
+  const scenarios = [10000, 25000, 50000, 100000, 250000];
+  const annualDevCost = 4800000;
+  const annualMktg = [1200000, 2400000, 4800000, 8000000, 15000000];
+  const annualOps = [600000, 1200000, 2400000, 3600000, 6000000];
+
+  const pad = h("div", { class: "pp-page" });
+
+  /* ── HERO ── */
+  const heroText = h("div", { class: "pp-hero-text" },
+    h("div", { class: "pp-badge" }, "India's First JEE Device"),
+    h("h1", { class: "pp-title" }, "Pathshala Pad"),
+    h("p", { class: "pp-sub" }, "A locked-down e-ink tablet built for one purpose: getting you into an IIT. No YouTube. No Instagram. No distractions. Just 93 chapters, 156+ 3D labs, adaptive AI, and 1,000+ features — in your hands."),
+    h("div", { class: "pp-hero-price" },
+      h("span", { class: "pp-price-big" }, "₹14,999"),
+      h("span", { class: "pp-price-note" }, "one-time · lifetime content · no subscription"),
+      h("span", { class: "pp-price-emi" }, `or ₹${fmt(EMI_12)}/mo for 12 months`)),
+    h("div", { class: "pp-hero-btns" },
+      h("button", { class: "btn btn-accent", onclick: () => navigate("#/premium") }, "Pre-order Now"),
+      h("button", { class: "btn btn-ghost", onclick: () => document.querySelector(".pp-bom")?.scrollIntoView({ behavior: "smooth" }) }, "See BOM Breakdown")));
+
+  const heroVisual = h("div", { class: "pp-hero-visual" },
+    h("div", { class: "pp-device-mock" },
+      h("div", { class: "pp-device-screen" },
+        h("div", { class: "pp-device-notch" }),
+        h("div", { class: "pp-device-content" },
+          h("div", { class: "pp-device-chapter" }, "Electrostatics"),
+          h("div", { class: "pp-device-progress" },
+            h("div", { class: "pp-device-bar", style: "width:67%" })),
+          h("div", { class: "pp-device-stats" }, "67% mastered · 12 PYQs done · Streak: 14 days"))),
+      h("div", { class: "pp-device-label" }, "7.8″ E-Ink · 300 ppi · Eye-friendly")));
+
+  pad.append(h("div", { class: "pp-hero" },
+    h("div", { class: "pp-hero-inner" }, heroText, heroVisual)));
+
+  /* ── PROBLEM ── */
+  const problemCards = [
+    ["₹58,000 Cr", "coaching market — but 70% of students can't afford ₹2-3 lakh annual fees", "📉"],
+    ["15.5 Lakh", "students appear for JEE Main — only 54,000 qualify for Advanced", "🎯"],
+    ["8+ hrs/day", "screen time on phones — YouTube, Instagram kill prep focus", "📱"],
+    ["3.2 hrs", "average daily distraction on phones during study hours (screen-time data)", "⏱️"],
+    ["₹14,999", "Pathshala Pad — less than 1 month of coaching fees, lifetime content", "💡"],
+  ].map(([num, desc, icon]) =>
+    h("div", { class: "pp-problem-card" },
+      h("div", { class: "pp-problem-icon" }, icon),
+      h("div", { class: "pp-problem-num" }, num),
+      h("div", { class: "pp-problem-desc" }, desc)));
+  pad.append(h("div", { class: "pp-section" },
+    h("h2", { class: "pp-section-title" }, "The Problem We're Solving"),
+    h("div", { class: "pp-problem-grid" }, ...problemCards)));
+
+  /* ── DEVICE SPECS ── */
+  const specCards = [
+    ["Display", "7.8″ E-Ink Carta 1200, 1872×1404, 300 ppi", "Paper-like reading, zero eye strain"],
+    ["Processor", "Allwinner A133 — 1.5 GHz Quad-core ARM Cortex-A53", "Enough for 3D sims + AI tutor"],
+    ["Memory", "1 GB LPDDR4X + 16 GB eMMC", "Stores all 93 chapters + offline cache"],
+    ["Connectivity", "Wi-Fi 5 (802.11ac) + Bluetooth 5.0", "Fast content sync, no cellular distractions"],
+    ["Battery", "4,000 mAh Li-Po — 4–6 weeks standby", "E-ink sips power. Weeks between charges."],
+    ["Frontlight", "Warm + Cool adjustable LED", "Study at night without eye strain"],
+    ["Audio", "Mono speaker + 3.5mm jack", "Lecture playback, no speakerphone distractions"],
+    ["Sensors", "Ambient light + accelerometer", "Auto brightness, orientation lock"],
+    ["Haptics", "LRA vibration motor", "Page turn feedback, quiz vibrations"],
+    ["Build", "Polycarbonate + ABS, 230g", "Lighter than a paperback textbook"],
+    ["Ports", "USB-C (charging + data)", "Standard cable, fast charge"],
+    ["Software", "Locked Android 12 (AOSP), TeachMeJEE only", "No browser, no app store, no escape"],
+  ].map(([label, spec, note]) =>
+    h("div", { class: "pp-spec-card" },
+      h("div", { class: "pp-spec-label" }, label),
+      h("div", { class: "pp-spec-value" }, spec),
+      h("div", { class: "pp-spec-note" }, note)));
+  pad.append(h("div", { class: "pp-section pp-dark" },
+    h("h2", { class: "pp-section-title" }, "Device Specifications"),
+    h("div", { class: "pp-spec-grid" }, ...specCards)));
+
+  /* ── SOFTWARE FEATURES ── */
+  const featureCards = [
+    ["93 Chapters", "Complete JEE syllabus with sub-concept mapping"],
+    ["156+ 3D Labs", "Three.js simulations — pendulums, circuits, molecules, all interactive"],
+    ["Adaptive AI", "Tracks mastery, spacing repetition, recommends exactly what to study next"],
+    ["Pip AI Tutor", "Ask any JEE question, get step-by-step solutions with diagrams"],
+    ["1,000+ Features", "Eagle vault — every tool, every workflow, every edge case"],
+    ["PYQ Bank", "10 years of JEE Main + Advanced, searchable, with solutions"],
+    ["Mind Maps", "Auto-generated concept dependency graphs"],
+    ["Daily Challenge", "5 adaptive questions every morning, calibrated to your level"],
+    ["Constellation", "Visual progress across all 93 nodes — watch yourself level up"],
+    ["Flash Cards", "Spaced-repetition engine, exports to Anki"],
+    ["Formulas", "Searchable formula sheet per chapter with context"],
+    ["Graphing Calculator", "Desmos integration for functions and calculus"],
+    ["Periodic Table", "Interactive 3D periodic table with element deep-dives"],
+    ["Molecules 3D", "150+ molecular structures — organic, inorganic, bio"],
+    ["Lecture Browser", "18 channels curated for JEE, no YouTube rabbit holes"],
+    ["Offline Mode", "All content cached locally — study without internet"],
+    ["Progress Sync", "Cloud backup across devices (when connected to Wi-Fi)"],
+  ].map(([title, desc]) =>
+    h("div", { class: "pp-feature-card" },
+      h("div", { class: "pp-feature-title" }, title),
+      h("div", { class: "pp-feature-desc" }, desc)));
+  pad.append(h("div", { class: "pp-section" },
+    h("h2", { class: "pp-section-title" }, "What's Inside — Software"),
+    h("p", { class: "pp-section-sub" }, "Everything from TeachMeJEE Quantum, optimized for e-ink"),
+    h("div", { class: "pp-features-grid" }, ...featureCards)));
+
+  /* ── HARDWARE LOCKDOWN ── */
+  const lockdownCards = [
+    ["No Browser", "Chrome, Firefox, Safari — none of them exist here. Zero web access."],
+    ["No App Store", "No Play Store. No sideloading. Only TeachMeJEE apps."],
+    ["No Social Media", "Instagram, WhatsApp, Telegram — physically impossible to install."],
+    ["No YouTube", "Lectures are curated. No algorithmic rabbit holes."],
+    ["No Games", "This is a study device. Not a toy."],
+    ["Admin Mode", "Parents/teachers can set study schedules, lock chapters, view analytics."],
+    ["Focus Timer", "Pomodoro built in. Device locks during focus sessions."],
+    ["Usage Reports", "Daily screen-time analytics sent to parents via email."],
+  ].map(([title, desc]) =>
+    h("div", { class: "pp-lockdown-card" },
+      h("div", { class: "pp-lockdown-title" }, title),
+      h("div", { class: "pp-lockdown-desc" }, desc)));
+  pad.append(h("div", { class: "pp-section pp-dark" },
+    h("h2", { class: "pp-section-title" }, "Locked Down. Focused. Effective."),
+    h("div", { class: "pp-lockdown-grid" }, ...lockdownCards)));
+
+  /* ── BOM BREAKDOWN ── */
+  const bomRows = bom.map(([comp, cost, note]) =>
+    h("div", { class: "pp-bom-row" },
+      h("div", { class: "pp-bom-col pp-bom-comp" }, comp),
+      h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(cost)}`),
+      h("div", { class: "pp-bom-col pp-bom-source" }, note)));
+  pad.append(h("div", { class: "pp-section pp-bom" },
+    h("h2", { class: "pp-section-title" }, "Bill of Materials — Real Component Costs"),
+    h("p", { class: "pp-section-sub" }, "Sourced from Alibaba FOB pricing + Indian import duties (7.5% customs + 18% GST). At 10,000-unit MOQ."),
+    h("div", { class: "pp-bom-table" },
+      h("div", { class: "pp-bom-row pp-bom-header" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Component"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, "Cost (₹)"),
+        h("div", { class: "pp-bom-col pp-bom-source" }, "Source / Notes")),
+      ...bomRows,
+      h("div", { class: "pp-bom-row pp-bom-subtotal" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Components Subtotal"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(bomTotal)}`),
+        h("div", { class: "pp-bom-col pp-bom-source" })),
+      h("div", { class: "pp-bom-row" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Assembly + Testing + QC"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(assemblyCost + testingQC)}`),
+        h("div", { class: "pp-bom-col pp-bom-source" }, "Contract manufacturer, Noida")),
+      h("div", { class: "pp-bom-row" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Import Duties (7.5% customs + 18% GST)"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(customsDuty + gstOnBOM)}`),
+        h("div", { class: "pp-bom-col pp-bom-source" }, "On imported components")),
+      h("div", { class: "pp-bom-row" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Shipping to warehouse"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(shippingPerUnit)}`),
+        h("div", { class: "pp-bom-col pp-bom-source" }, "Delhi NCR warehouse")),
+      h("div", { class: "pp-bom-row" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Warranty Reserve (3%)"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(warrantyReserve)}`),
+        h("div", { class: "pp-bom-col pp-bom-source" }, "1-year warranty")),
+      h("div", { class: "pp-bom-row pp-bom-total" },
+        h("div", { class: "pp-bom-col pp-bom-comp" }, "Total COGS per Unit"),
+        h("div", { class: "pp-bom-col pp-bom-cost" }, `₹${fmt(cogs)}`),
+        h("div", { class: "pp-bom-col pp-bom-source" })))));
+
+  /* ── PRICING STRATEGY ── */
+  const priceCard1 = h("div", { class: "pp-price-card" },
+    h("div", { class: "pp-price-tag" }, "Pathshala Pad Device"),
+    h("div", { class: "pp-price-amount" }, "₹14,999"),
+    h("div", { class: "pp-price-period" }, "one-time purchase"),
+    h("ul", { class: "pp-price-list" },
+      h("li", {}, "7.8″ E-Ink tablet"), h("li", {}, "All 93 chapters pre-loaded"),
+      h("li", {}, "156+ 3D labs"), h("li", {}, "Adaptive AI engine"),
+      h("li", {}, "Pip AI tutor"), h("li", {}, "1,000+ Eagle features"),
+      h("li", {}, "Lifetime content updates (Wi-Fi)"), h("li", {}, "1-year hardware warranty")),
+    h("div", { class: "pp-price-margin" }, `Gross margin: ${Math.round(((RETAIL - cogs) / RETAIL) * 100)}%`));
+  const priceCard2 = h("div", { class: "pp-price-card pp-price-highlight" },
+    h("div", { class: "pp-price-tag" }, "Coaching Bundle"),
+    h("div", { class: "pp-price-amount" }, `₹${fmt(COACHING_BUNDLE)}`),
+    h("div", { class: "pp-price-period" }, "device + 2-year Eagle subscription"),
+    h("ul", { class: "pp-price-list" },
+      h("li", {}, "Pathshala Pad device"), h("li", {}, "2-year Eagle premium (₹198 value)"),
+      h("li", {}, "Priority AI tutor access"), h("li", {}, "Parent analytics dashboard"),
+      h("li", {}, "Monthly progress reports"), h("li", {}, "Free screen protector replacement")),
+    h("div", { class: "pp-price-badge" }, "Best Value"));
+  const priceCard3 = h("div", { class: "pp-price-card" },
+    h("div", { class: "pp-price-tag" }, "EMI Option"),
+    h("div", { class: "pp-price-amount" }, `₹${fmt(EMI_12)}/mo`),
+    h("div", { class: "pp-price-period" }, "12 months, 0% interest"),
+    h("ul", { class: "pp-price-list" },
+      h("li", {}, "Same device, same features"), h("li", {}, "Bajaj Finserv / Simpl EMI"),
+      h("li", {}, "No credit card required"), h("li", {}, "Device ships after first EMI"),
+      h("li", {}, "Ownership after 12 months")),
+    h("div", { class: "pp-price-note" }, "₹0 down payment"));
+  pad.append(h("div", { class: "pp-section" },
+    h("h2", { class: "pp-section-title" }, "Pricing & Plans"),
+    h("div", { class: "pp-pricing-grid" }, priceCard1, priceCard2, priceCard3)));
+
+  /* ── MARKET SIZING ── */
+  const marketCards = [
+    ["Total Addressable Market (TAM)", fmtCr(TAM), "Class 11–12 science students in India", "Source: UDISE+ 2025, MHRD"],
+    ["Serviceable Addressable Market (SAM)", fmtCr(SAM), "JEE Main aspirants + 30% NEET overlap", "Source: NTA 2026 data"],
+    ["Coaching Market Size", "₹1 Lakh Cr+", "India's private coaching industry (2026)", "Source: NDTV / industry reports"],
+    ["India Tablet Market (2025)", "43.4 Lakh", "units shipped, growing at 7.8% CAGR", "Source: IDC / CMR 2025-26"],
+  ].map(([label, num, desc, sub]) =>
+    h("div", { class: "pp-market-card" },
+      h("div", { class: "pp-market-label" }, label),
+      h("div", { class: "pp-market-num" }, num),
+      h("div", { class: "pp-market-desc" }, desc),
+      h("div", { class: "pp-market-sub" }, sub)));
+  const adoptHeader = ["Year", "Year 1", "Year 2", "Year 3", "Year 4"].map((y, i) =>
+    h("div", { class: `pp-adopt-cell ${i === 0 ? "pp-adopt-header" : ""}` }, y));
+  const adoptRows = [
+    ["Adoption Rate", ...SOM.map(s => (s * 100).toFixed(1) + "%")],
+    ["Units Sold", ...SOM.map(s => fmt(Math.round(SAM * s)))],
+    ["Revenue", ...SOM.map(s => fmtCr(Math.round(SAM * s) * RETAIL))],
+    ["Avg. Student Spend on Coaching", "₹2.5 L/yr", "₹2.8 L/yr", "₹3.1 L/yr", "₹3.5 L/yr"],
+    ["Pathshala Pad as % of Coaching Spend", "6%", "5.4%", "4.8%", "4.3%"],
+  ].map((row) => row.map((cell, ci) =>
+    h("div", { class: `pp-adopt-cell ${ci === 0 ? "pp-adopt-label" : ""}` }, cell)));
+  pad.append(h("div", { class: "pp-section pp-dark" },
+    h("h2", { class: "pp-section-title" }, "Market Sizing & Audience"),
+    h("div", { class: "pp-market-grid" }, ...marketCards),
+    h("div", { class: "pp-adoption-table" },
+      h("h3", {}, "Projected Adoption — Conservative Estimates"),
+      h("div", { class: "pp-adopt-grid" }, ...adoptHeader, ...adoptRows))));
+
+  /* ── P&L PROJECTIONS ── */
+  const plRows = [
+    ["Revenue (devices)", ...scenarios.map(s => fmtCr(s * RETAIL))],
+    ["COGS", ...scenarios.map(s => fmtCr(s * cogs))],
+    ["Gross Profit", ...scenarios.map(s => fmtCr(s * (RETAIL - cogs)))],
+    ["Gross Margin", ...scenarios.map(() => Math.round(((RETAIL - cogs) / RETAIL) * 100) + "%")],
+    ["R&D + Dev", ...scenarios.map(() => fmtCr(annualDevCost))],
+    ["Marketing", ...annualMktg.map(m => fmtCr(m))],
+    ["Operations", ...annualOps.map(o => fmtCr(o))],
+    ["Total OpEx", ...scenarios.map((s, i) => fmtCr(annualDevCost + annualMktg[i] + annualOps[i]))],
+    ["EBITDA", ...scenarios.map((s, i) => fmtCr(s * (RETAIL - cogs) - annualDevCost - annualMktg[i] - annualOps[i]))],
+    ["EBITDA Margin", ...scenarios.map((s, i) => {
+      const rev = s * RETAIL;
+      const ebitda = s * (RETAIL - cogs) - annualDevCost - annualMktg[i] - annualOps[i];
+      return Math.round((ebitda / rev) * 100) + "%";
+    })],
+  ].map((row, ri) =>
+    h("div", { class: `pp-pl-row ${ri >= 6 ? "pp-pl-bold" : ""} ${ri === 9 ? "pp-pl-highlight" : ""}` },
+      h("div", { class: "pp-pl-col pp-pl-label" }, row[0]),
+      ...row.slice(1).map(cell => h("div", { class: "pp-pl-col" }, cell))));
+  const plHeader = h("div", { class: "pp-pl-row pp-pl-header" },
+    h("div", { class: "pp-pl-col pp-pl-label" }, ""),
+    ...scenarios.map(s => h("div", { class: "pp-pl-col" }, `${fmtCr(s)} units`)));
+  pad.append(h("div", { class: "pp-section" },
+    h("h2", { class: "pp-section-title" }, "Profit & Loss Projections"),
+    h("p", { class: "pp-section-sub" }, `COGS: ₹${fmt(cogs)}/unit · Retail: ₹${fmt(RETAIL)} · Gross margin: ${Math.round(((RETAIL - cogs) / RETAIL) * 100)}%`),
+    h("div", { class: "pp-pl-table" }, plHeader, ...plRows)));
+
+  /* ── COMPETITIVE POSITIONING ── */
+  const compareData = [
+    ["Feature", "Pathshala Pad\n₹14,999", "Kindle Paperwhite\n₹14,999", "Samsung Tab A9\n₹14,999", "iPad 10th\n₹34,900"],
+    ["JEE Content Pre-loaded", "✅ 93 chapters", "❌ None", "❌ Must buy apps", "❌ Must buy apps"],
+    ["3D Lab Simulations", "✅ 156+ built-in", "❌ No", "⚠️ Separate apps", "⚠️ Separate apps"],
+    ["Adaptive AI Tutor", "✅ Built-in", "❌ No", "⚠️ Requires internet", "⚠️ Requires internet"],
+    ["Distraction-Free", "✅ Locked OS", "✅ Reading only", "❌ Full Android", "❌ Full iPadOS"],
+    ["Eye Comfort (E-Ink)", "✅ 300 ppi e-ink", "✅ 300 ppi e-ink", "❌ LCD (eye strain)", "❌ Liquid Retina"],
+    ["Battery Life", "✅ 4–6 weeks", "✅ 10 weeks", "❌ 1–2 days", "❌ 1–2 days"],
+    ["Weight", "✅ 230g", "✅ 211g", "❌ 333g", "❌ 477g"],
+    ["PYQ Bank + Solutions", "✅ 10 years", "❌ No", "⚠️ Separate apps", "⚠️ Separate apps"],
+    ["Parent Analytics", "✅ Usage reports", "❌ No", "⚠️ Digital Wellbeing", "⚠️ Screen Time"],
+    ["Price for JEE Prep", "₹14,999 all-in", "₹14,999 + ₹5K apps", "₹14,999 + ₹8K apps", "₹34,900 + ₹10K apps"],
+  ].map((row, ri) =>
+    h("div", { class: `pp-compare-row ${ri === 0 ? "pp-compare-header" : ""}` },
+      ...row.map((cell, ci) => h("div", {
+        class: `pp-compare-cell ${ci === 0 ? "pp-compare-label" : ""} ${ci === 1 ? "pp-compare-highlight" : ""}`,
+      }, cell))));
+  pad.append(h("div", { class: "pp-section pp-dark" },
+    h("h2", { class: "pp-section-title" }, "Why Not Just Buy a Kindle or Android Tablet?"),
+    h("div", { class: "pp-compare-grid" }, ...compareData)));
+
+  /* ── WHY THIS WORKS ── */
+  const whyCards = [
+    ["Parents Pay, Students Benefit", "Indian parents spend ₹2-5 lakh/year on coaching. ₹14,999 for a device that eliminates distractions is an easy sell."],
+    ["E-Ink = Zero Distraction", "Unlike LCD tablets, e-ink can't run games smoothly. The hardware itself enforces focus."],
+    ["Locked OS = Trust", "Parents know their child can't access YouTube, Instagram, or games. That trust justifies the purchase."],
+    ["Content Moat", "93 chapters + 156 sims + AI tutor — no other device ships with this much JEE-specific content."],
+    ["Battery Life = Consistency", "4-6 week battery means students don't forget to charge. No dead-device excuses."],
+    ["Coaching Replacement", "At ₹14,999 vs ₹2.5 lakh/year coaching, the ROI is 16:1 in year one alone."],
+  ].map(([title, desc]) =>
+    h("div", { class: "pp-why-card" },
+      h("div", { class: "pp-why-title" }, title),
+      h("div", { class: "pp-why-desc" }, desc)));
+  pad.append(h("div", { class: "pp-section" },
+    h("h2", { class: "pp-section-title" }, "Why This Works"),
+    h("div", { class: "pp-why-grid" }, ...whyCards)));
+
+  /* ── RISKS ── */
+  const riskCards = [
+    ["E-Ink refresh rate", "Slow page turns for 3D sims. Mitigation: optimize Three.js for e-ink, reduce frame rate targets.", "🟡"],
+    ["Parental trust", "First-time hardware brand. Mitigation: 30-day returns, coaching center partnerships, referral program.", "🟡"],
+    ["Content piracy", "Device could theoretically be rooted. Mitigation: signed boot, encrypted storage, OTA lock.", "🟢"],
+    ["Supply chain", "E-ink panel sourced from single supplier (Epson/Good Display). Mitigation: qualify 2nd source.", "🟡"],
+    ["Competition", "PW/Allen could build their own device. Mitigation: first-mover advantage, patent the locked-OS approach.", "🔴"],
+    ["Market education", "Parents may not understand e-ink. Mitigation: demo videos, coaching center try-before-buy.", "🟡"],
+  ].map(([title, desc, color]) =>
+    h("div", { class: "pp-risk-card" },
+      h("div", { class: "pp-risk-header" },
+        h("span", { class: "pp-risk-severity" }, color),
+        h("span", { class: "pp-risk-title" }, title)),
+      h("div", { class: "pp-risk-desc" }, desc)));
+  pad.append(h("div", { class: "pp-section pp-dark" },
+    h("h2", { class: "pp-section-title" }, "Risks & Mitigations"),
+    h("div", { class: "pp-risk-grid" }, ...riskCards)));
+
+  /* ── CTA ── */
+  pad.append(h("div", { class: "pp-section pp-cta" },
+    h("div", { class: "pp-cta-inner" },
+      h("h2", {}, "Ready to Build the Future of JEE Prep?"),
+      h("p", {}, "Pathshala Pad isn't just a tablet. It's a ₹58,000 Cr market waiting for a focused product."),
+      h("div", { class: "pp-hero-btns" },
+        h("button", { class: "btn btn-accent btn-lg", onclick: () => navigate("#/premium") }, "Pre-order — ₹14,999"),
+        h("button", { class: "btn btn-ghost btn-lg", onclick: () => navigate("#/blueprint") }, "Back to Blueprint")))));
+
+  root.innerHTML = "";
+  root.append(pad);
+}

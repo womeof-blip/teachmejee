@@ -2661,3 +2661,126 @@ table.tbl tr:nth-child(even) td { background:color-mix(in srgb, var(--surface-2)
 .vault-search { flex: 1; min-width: 200px; height: 34px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--border-soft); background: var(--surface-2); color: var(--text); }
 .vault-search::placeholder { color: var(--faint); }
 .vault-caps { height: 34px; padding: 0 8px; border-radius: 9px; border: 1px solid var(--border-soft); background: var(--surface-2); color: var(--text); }
+
+/* ── Pathshala Pad page ── */
+.pp-page { max-width: 1100px; margin: 0 auto; padding: 0 16px 60px; }
+.pp-hero { display: flex; gap: 32px; align-items: center; padding: 40px 0 32px; flex-wrap: wrap; }
+.pp-hero-text { flex: 1 1 400px; }
+.pp-hero-visual { flex: 0 0 300px; display: flex; justify-content: center; }
+.pp-badge { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); border-radius: 999px; padding: 4px 12px; margin-bottom: 12px; }
+.pp-title { font-size: clamp(28px, 5vw, 48px); font-weight: 900; line-height: 1.1; margin: 0 0 12px; }
+.pp-sub { font-size: 15px; color: var(--text-dim); line-height: 1.6; margin: 0 0 20px; max-width: 520px; }
+.pp-hero-price { display: flex; flex-direction: column; gap: 2px; margin-bottom: 20px; }
+.pp-price-big { font-size: 32px; font-weight: 900; color: var(--accent); }
+.pp-price-note { font-size: 13px; color: var(--faint); }
+.pp-price-emi { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+.pp-hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.pp-device-mock { width: 220px; height: 300px; background: #1a1a1a; border-radius: 14px; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.4); display: flex; flex-direction: column; }
+.pp-device-screen { flex: 1; background: #e8e4d8; border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.pp-device-notch { width: 40px; height: 4px; background: #bbb; border-radius: 2px; align-self: center; }
+.pp-device-content { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+.pp-device-chapter { font-size: 14px; font-weight: 700; color: #222; }
+.pp-device-progress { height: 6px; background: #ccc; border-radius: 3px; overflow: hidden; }
+.pp-device-bar { height: 100%; background: #2a7d4f; border-radius: 3px; }
+.pp-device-stats { font-size: 9px; color: #666; }
+.pp-device-label { text-align: center; font-size: 10px; color: var(--faint); margin-top: 8px; }
+
+.pp-section { padding: 40px 0; }
+.pp-section.pp-dark { background: color-mix(in srgb, var(--surface-2) 50%, var(--bg)); margin: 0 -16px; padding: 40px 16px; border-radius: 0; }
+.pp-section-title { font-size: 24px; font-weight: 800; margin: 0 0 8px; text-align: center; }
+.pp-section-sub { font-size: 14px; color: var(--text-dim); text-align: center; margin: 0 auto 24px; max-width: 600px; }
+
+.pp-problem-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.pp-problem-card { padding: 16px; border-radius: 10px; border: 1px solid var(--border-soft); background: var(--surface-1); text-align: center; }
+.pp-problem-icon { font-size: 28px; margin-bottom: 6px; }
+.pp-problem-num { font-size: 20px; font-weight: 800; color: var(--accent); }
+.pp-problem-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+
+.pp-spec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.pp-spec-card { padding: 14px; border-radius: 10px; border: 1px solid var(--border-soft); background: var(--surface-1); }
+.pp-spec-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 4px; }
+.pp-spec-value { font-size: 13px; font-weight: 600; }
+.pp-spec-note { font-size: 11px; color: var(--faint); margin-top: 4px; }
+
+.pp-features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.pp-feature-card { padding: 12px; border-radius: 8px; border: 1px solid var(--border-soft); background: var(--surface-1); }
+.pp-feature-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.pp-feature-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+
+.pp-lockdown-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.pp-lockdown-card { padding: 14px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border-soft)); background: var(--surface-1); }
+.pp-lockdown-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.pp-lockdown-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+
+.pp-bom-table { max-width: 800px; margin: 0 auto; border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; }
+.pp-bom-row { display: grid; grid-template-columns: 1fr 100px 180px; padding: 8px 12px; border-bottom: 1px solid var(--border-soft); font-size: 12px; }
+.pp-bom-row:last-child { border-bottom: none; }
+.pp-bom-header { background: var(--surface-2); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+.pp-bom-subtotal { background: color-mix(in srgb, var(--surface-2) 40%, var(--bg)); font-weight: 600; }
+.pp-bom-total { background: var(--accent); color: var(--bg); font-weight: 800; font-size: 13px; }
+.pp-bom-cost { text-align: right; font-variant-numeric: tabular-nums; }
+.pp-bom-source { color: var(--faint); font-size: 11px; }
+
+.pp-pricing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; }
+.pp-price-card { padding: 24px; border-radius: 12px; border: 1px solid var(--border-soft); background: var(--surface-1); display: flex; flex-direction: column; }
+.pp-price-highlight { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface-1)); }
+.pp-price-tag { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); margin-bottom: 8px; }
+.pp-price-amount { font-size: 28px; font-weight: 900; }
+.pp-price-period { font-size: 12px; color: var(--faint); margin-bottom: 16px; }
+.pp-price-list { list-style: none; padding: 0; margin: 0 0 16px; flex: 1; }
+.pp-price-list li { font-size: 12px; color: var(--text-dim); padding: 3px 0; }
+.pp-price-list li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+.pp-price-margin { font-size: 11px; color: var(--faint); text-align: center; }
+.pp-price-badge { text-align: center; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+.pp-price-note { text-align: center; font-size: 11px; color: var(--faint); }
+
+.pp-market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.pp-market-card { padding: 16px; border-radius: 10px; border: 1px solid var(--border-soft); background: var(--surface-1); text-align: center; }
+.pp-market-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--faint); margin-bottom: 6px; }
+.pp-market-num { font-size: 22px; font-weight: 900; color: var(--accent); }
+.pp-market-desc { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+.pp-market-sub { font-size: 10px; color: var(--faint); margin-top: 2px; }
+
+.pp-adoption-table { max-width: 700px; margin: 0 auto; }
+.pp-adoption-table h3 { font-size: 16px; text-align: center; margin-bottom: 12px; }
+.pp-adopt-grid { display: grid; grid-template-columns: 160px repeat(4, 1fr); border: 1px solid var(--border-soft); border-radius: 8px; overflow: hidden; font-size: 12px; }
+.pp-adopt-cell { padding: 8px 10px; border-bottom: 1px solid var(--border-soft); border-right: 1px solid var(--border-soft); }
+.pp-adopt-cell:last-child { border-right: none; }
+.pp-adopt-header { background: var(--surface-2); font-weight: 700; text-align: center; }
+.pp-adopt-label { font-weight: 600; background: color-mix(in srgb, var(--surface-2) 30%, var(--bg)); }
+.pp-adopt-grid > .pp-adopt-cell:nth-child(n+5) { border-bottom: none; }
+
+.pp-pl-table { max-width: 800px; margin: 0 auto; border: 1px solid var(--border-soft); border-radius: 10px; overflow: hidden; }
+.pp-pl-row { display: grid; grid-template-columns: 180px repeat(5, 1fr); padding: 7px 10px; border-bottom: 1px solid var(--border-soft); font-size: 12px; }
+.pp-pl-row:last-child { border-bottom: none; }
+.pp-pl-header { background: var(--surface-2); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+.pp-pl-bold { font-weight: 700; }
+.pp-pl-highlight { background: color-mix(in srgb, var(--accent) 10%, var(--bg)); }
+.pp-pl-col { text-align: right; }
+.pp-pl-label { text-align: left; font-weight: 600; }
+
+.pp-compare-grid { max-width: 900px; margin: 0 auto; border: 1px solid var(--border-soft); border-radius: 10px; overflow-x: auto; }
+.pp-compare-row { display: grid; grid-template-columns: 180px repeat(4, 1fr); padding: 8px 10px; border-bottom: 1px solid var(--border-soft); font-size: 12px; min-width: 700px; }
+.pp-compare-row:last-child { border-bottom: none; }
+.pp-compare-header { background: var(--surface-2); font-weight: 700; font-size: 11px; white-space: pre-line; }
+.pp-compare-label { font-weight: 600; }
+.pp-compare-highlight { color: var(--accent); font-weight: 700; background: color-mix(in srgb, var(--accent) 6%, transparent); }
+
+.pp-why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.pp-why-card { padding: 16px; border-radius: 10px; border: 1px solid var(--border-soft); background: var(--surface-1); }
+.pp-why-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.pp-why-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+.pp-risk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.pp-risk-card { padding: 14px; border-radius: 10px; border: 1px solid var(--border-soft); background: var(--surface-1); }
+.pp-risk-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.pp-risk-severity { font-size: 14px; }
+.pp-risk-title { font-size: 13px; font-weight: 700; }
+.pp-risk-desc { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+
+.pp-cta { text-align: center; }
+.pp-cta-inner { max-width: 600px; margin: 0 auto; }
+.pp-cta-inner h2 { font-size: 24px; margin-bottom: 10px; }
+.pp-cta-inner p { color: var(--text-dim); margin-bottom: 20px; }
+
+.btn-lg { padding: 12px 28px; font-size: 15px; font-weight: 700; }
