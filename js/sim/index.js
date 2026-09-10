@@ -19,6 +19,8 @@ import "./simsI.js";
 import { SIM_FOR_CONCEPT as MAP_I } from "./simsI.js";
 import "./simsJ.js";
 import { SIM_FOR_CONCEPT as MAP_J } from "./simsJ.js";
+import "./simsK.js";
+import { SIM_FOR_CONCEPT as MAP_K } from "./simsK.js";
 
-export { mountSim, hasSim } from "./engine.js";
-export const CONCEPT_SIM_MAP = { ...MAP_D, ...MAP_E, ...MAP_F, ...MAP_G, ...MAP_H, ...MAP_I, ...MAP_J };
+export { mountSim, hasSim, listSims } from "./engine.js";
+export const CONCEPT_SIM_MAP = { ...MAP_D, ...MAP_E, ...MAP_F, ...MAP_G, ...MAP_H, ...MAP_I, ...MAP_J, ...MAP_K };

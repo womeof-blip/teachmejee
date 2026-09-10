@@ -15,6 +15,10 @@ export function hasSim(name) {
   return !!SIMS[name];
 }
 
+export function listSims() {
+  return Object.keys(SIMS).sort();
+}
+
 export function makeTextSprite(text, { size = 0.6, color = "#d7dae0", bg = "rgba(13,15,19,0.75)" } = {}) {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -126,7 +130,8 @@ export function makeTrail(color = "#7aa2ff", maxPts = 200, width = 3) {
 function makeEnv(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setClearColor(0x0a0c10, 1);
+  const light = document.documentElement.getAttribute("data-theme") === "light";
+  renderer.setClearColor(light ? 0xf4f3ef : 0x0c0c0b, 1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();

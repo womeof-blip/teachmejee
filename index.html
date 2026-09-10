@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="referrer" content="no-referrer" />
 <meta name="robots" content="noindex" />
-<meta name="theme-color" content="#151109" />
+<meta name="theme-color" content="#0c0c0b" />
 <link rel="manifest" href="manifest.json" />
 <meta name="description" content="TeachMeJEE Quantum — The Future of JEE Learning by Tanush Saha. 1000+ micro-features, 93 chapters, Constellation graph, 18 lecture channels, 3D labs, zero-server sync. Built by aspirants. For aspirants." />
-<title>TeachMeJEE Quantum — The Future of JEE Learning</title>
+<title>TeachMeJEE</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f2a33c'/><path d='M50 24 L76 66 L24 66 Z' fill='%23151109'/></svg>" />
 <link rel="stylesheet" href="css/style.css" />
 <script type="importmap">
@@ -23,19 +23,20 @@
 <body>
 <a class="skip-link" href="#app">Skip to content</a>
 <div class="shell">
+  <div class="nav-scrim" id="navScrim"></div>
 
   <aside class="sidebar">
     <a class="brand" href="#/home" aria-label="TeachMeJEE home">
       <span class="brand-mark">T</span>
       <span class="brand-text">
         <strong>TeachMeJEE</strong>
-        <small>by Tanush Saha</small>
+        <small>study desk</small>
       </span>
     </a>
 
     <nav class="side-nav" id="sideNav" aria-label="Main navigation">
-      <div class="nav-group">
-        <div class="nav-heading">Learn</div>
+      <details class="nav-group" open>
+        <summary class="nav-heading">Learn</summary>
         <a href="#/home" data-route="home"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v9h5v-5h4v5h5v-9"/></svg>Home</a>
         <a href="#/dashboard" data-route="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 9v12"/></svg>Dashboard</a>
         <a href="#/foundation" data-route="foundation"><svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5z"/><path d="M6 10.5V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5"/><path d="M22 8v6"/></svg>Class 9–10</a>
@@ -46,14 +47,17 @@
         <a href="#/browse" data-route="browse"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Browse chapters</a>
          <a href="#/flowchart" data-route="flowchart"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M8.2 6h7.6M7 7.8l3.8 8.2M17 7.8l-3.8 8.2"/></svg>Flowchart</a>
          <a href="#/constellation" data-route="constellation"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><circle cx="5" cy="7" r="1.6"/><circle cx="19" cy="7" r="1.6"/><circle cx="5" cy="17" r="1.6"/><circle cx="19" cy="17" r="1.6"/><path d="M12 10.2 5.8 8M12 10.2l6.2-2.2M12 13.8 5.8 16M12 13.8l6.2 2.2M6.2 8.2 6.2 15.8M17.8 8.2l.1 7.6"/></svg>Constellation</a>
-          <a href="#/labs" data-route="labs"><svg viewBox="0 0 24 24"><path d="M9 3h6l-2 4 4 2-6 8 1-5H8l2-4-4-2 3-3z"/><circle cx="12" cy="18" r="1.2"/></svg>Labs · Future</a>
-          <a href="#/atlas" data-route="atlas"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M9 6.5h6M6.5 9v6"/></svg>Atlas · 1000×</a>
+          <a href="#/labs" data-route="labs"><svg viewBox="0 0 24 24"><path d="M9 3h6l-2 4 4 2-6 8 1-5H8l2-4-4-2 3-3z"/><circle cx="12" cy="18" r="1.2"/></svg>Labs</a>
+          <a href="#/studio" data-route="studio"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1l2.1-2.1M17 7l2.1-2.1"/></svg>Spline studio</a>
+          <a href="#/simlab" data-route="simlab"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4z"/><path d="M8 7V5h8v2"/></svg>3D labs</a>
+          <a href="#/clock" data-route="clock"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg>Exam clock</a>
+          <a href="#/atlas" data-route="atlas"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M9 6.5h6M6.5 9v6"/></svg>Atlas</a>
           <a href="#/welcome" data-route="welcome"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>Welcome tour</a>
           <a href="#/blueprint" data-route="blueprint"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/><path d="M12 12l3 3M15 12l-3 3"/></svg>Blueprint · pitch</a>
           <a href="#/pad" data-route="pad"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="18" x2="16" y2="18"/></svg>Pathshala Pad</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Practice</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Practice</summary>
         <a href="#/quiz" data-route="quiz"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9M12 3v9l6 6"/></svg>Quiz</a>
         <a href="#/flash" data-route="flash"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h4M7 14h6"/></svg>Flash</a>
          <a href="#/formulas" data-route="formulas"><svg viewBox="0 0 24 24"><path d="M5 4h14l-6 8 6 8H5l6-8z"/></svg>Formulas</a>
@@ -66,26 +70,26 @@
           <a href="#/pyq" data-route="pyq"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/><path d="M10 8h4M10 12h4"/></svg>PYQ bank</a>
         <a href="#/sprint" data-route="sprint"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>PYQ Sprint</a>
         <a href="#/videos" data-route="videos"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg>Lectures</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Plan</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Plan</summary>
         <a href="#/studyplan" data-route="studyplan"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM8 6v12M3 10.5h5M16 10.5h5M3 14.5h5M16 14.5h5"/></svg>Mission JEE</a>
         <a href="#/planner" data-route="planner"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 15h.01M12 15h.01M16 15h.01"/></svg>Planner</a>
         <a href="#/analytics" data-route="analytics"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg>Analytics</a>
         <a href="#/predictor" data-route="predictor"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/></svg>Predictor</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Medical</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Medical</summary>
         <a href="#/neet" data-route="neet"><svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/><circle cx="12" cy="12" r="9"/></svg>NEET hub</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Community</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Community</summary>
         <a href="#/duel" data-route="duel"><svg viewBox="0 0 24 24"><path d="m4.5 4.5 15 15M19.5 4.5l-15 15"/><path d="M6 16.5 4.5 19.5 7.5 18M18 16.5l1.5 3-3-1.5"/></svg>1v1 Duel</a>
         <a href="#/leaderboard" data-route="leaderboard"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 21v-4M7 4h10l1 7a6 6 0 0 1-12 0z"/></svg>Leaderboard</a>
         <a href="#/login" data-route="login"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.4 3.6-5.5 7-5.5s6.2 2.1 7 5.5"/></svg>Join / Login</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Tools</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Tools</summary>
         <a href="#/tutor" data-route="tutor"><svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/><path d="M9 11h.01M13 11h.01M17 11h.01"/></svg>Ask Pip</a>
         <a href="#/notes" data-route="notes"><svg viewBox="0 0 24 24"><path d="M11 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Notes</a>
         <a href="#/bookmarks" data-route="bookmarks"><svg viewBox="0 0 24 24"><path d="M5 3h14a2 2 0 0 1 2 2v16l-7-3.5L5 21V5a2 2 0 0 1 2-2z"/></svg>Bookmarks</a>
@@ -95,9 +99,9 @@
         <a href="#/tools" data-route="tools"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3z"/></svg>Tools</a>
         <a href="#/files" data-route="files"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h7M9 17h7"/></svg>Files</a>
         <a href="#/gitjee" data-route="gitjee"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 8.5v7M18 10.5c0 4-5 4-8 4"/></svg>GitJEE</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Insights</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Insights</summary>
         <a href="#/weak" data-route="weak"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2m1 15h-2v-2h2zm0-4h-2V7h2z"/></svg>Weak Areas</a>
         <a href="#/mastery" data-route="mastery"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Mastery</a>
         <a href="#/revisions" data-route="revisions"><svg viewBox="0 0 24 24"><path d="M4 19.5h16M6.5 4h11l1.5 3H5z"/></svg>Revisions</a>
@@ -107,21 +111,24 @@
         <a href="#/calendar" data-route="calendar"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendar</a>
         <a href="#/weightage" data-route="weightage"><svg viewBox="0 0 24 24"><path d="M12 4v16M5 8h14l-2 8H7z"/><path d="M4 21h16"/></svg>Weightage</a>
         <a href="#/insight" data-route="insight"><svg viewBox="0 0 24 24"><path d="M2 12h4l3-8 4 16 3-8h6"/><path d="M2 18h20"/></svg>Insight</a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-heading">Premium</div>
+      </details>
+      <details class="nav-group">
+        <summary class="nav-heading">Premium</summary>
         <a href="#/adaptive" data-route="adaptive"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10M12 12l5-5M12 12l-4-2M12 12l2 4"/><circle cx="12" cy="12" r="1.6"/></svg>Adaptive Path</a>
         <a href="#/premium" data-route="premium"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Eagle Preview</a>
-      </div>
+      </details>
     </nav>
 
     <div class="sidebar-foot">
-      <span class="foot-note">Universal study platform · works everywhere</span>
+      <span class="foot-note">Local-first. Offline capable.</span>
     </div>
   </aside>
 
   <div class="main">
     <header class="topbar">
+      <button class="menu-btn" id="menuBtn" title="Menu" aria-label="Open menu">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
       <button class="palette-btn" id="paletteBtn" title="Search (Ctrl+K)">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <span>Search chapters, formulas, views…</span>
@@ -154,7 +161,6 @@
 
 </div>
 
-<footer style="text-align:center;padding:18px 10px 22px;color:var(--faint);font-size:11px;letter-spacing:.04em">TeachMeJEE Quantum · The Future of JEE Learning · Built by aspirants. For aspirants. · Open Source DNA · <a href="#/labs" style="color:var(--accent)">Labs</a> · <a href="https://github.com" style="color:var(--accent)">GitHub</a></footer>
 <script type="module" src="js/app.js"></script>
 <script>
   if (location.protocol === "file:") {

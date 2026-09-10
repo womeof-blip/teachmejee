@@ -11,8 +11,9 @@ import {
   PredictorView, AnalyticsView, QuestsView, LeaderboardView, AuthView,
   NotesView, BookmarksView, WeakAreasView, RevisionsView, ProgressView,
   RecommendationsView, MasteryView, StatsView, AchievementsView, CalendarView,
-  PYQView, NeetView, WelcomeView, TutorView, buildTutorChat, VideosView, FoundationView, LibraryView, refreshXP, disposeActiveSim, ConstellationView, LabsView, PlaygroundView, PeriodicView, DerivationView, AtlasView, MoleculeView, GraphView, BoardView, ThemeView, StudyPlanView, WeightageView, InsightView, ToolsView, FilesView,   GitJEEView, DashboardView, SprintView, DesmosView, BlueprintView, AdaptiveView, PremiumView, PathshalaPadView,
+  PYQView, NeetView, WelcomeView, TutorView, buildTutorChat, VideosView, FoundationView, LibraryView, refreshXP, disposeActiveSim, ConstellationView, LabsView, PlaygroundView, PeriodicView, DerivationView, AtlasView, MoleculeView, GraphView, BoardView, ThemeView, StudyPlanView, WeightageView, InsightView, ToolsView, FilesView,   GitJEEView, DashboardView, SprintView, DesmosView,   BlueprintView, AdaptiveView, PremiumView, PathshalaPadView,
 } from "./views.js";
+import { StudioView, SimLabView, ClockView } from "./studio-views.js";
 import { DuelView, openSettings, zenToggle, feedDuelQuestions } from "./extras.js";
 import { isLoggedIn, getSession, logout, syncProgress } from "./api.js";
 
@@ -47,6 +48,9 @@ const VIEWS_MAP = {
   desmos: DesmosView,
   blueprint: BlueprintView,
   pad: PathshalaPadView,
+  studio: StudioView,
+  simlab: SimLabView,
+  clock: ClockView,
   adaptive: AdaptiveView,
   premium: PremiumView,
   flowchart: FlowchartView,
@@ -112,6 +116,8 @@ function route() {
   app.classList.remove("route-enter");
   void app.offsetWidth;
   app.classList.add("route-enter");
+
+  document.querySelector(".shell")?.classList.remove("nav-open");
 
   if (name === "leaderboard") syncProgress().catch(() => {});
 }
@@ -220,6 +226,11 @@ themeBtn.addEventListener("click", () => {
 });
 paintThemeBtn();
 
+const menuBtn = document.getElementById("menuBtn");
+const navScrim = document.getElementById("navScrim");
+if (menuBtn) menuBtn.addEventListener("click", () => document.querySelector(".shell")?.classList.toggle("nav-open"));
+if (navScrim) navScrim.addEventListener("click", () => document.querySelector(".shell")?.classList.remove("nav-open"));
+
 /* User chip */
 function refreshUserChip() {
   const chip = document.getElementById("userChip");
@@ -265,6 +276,9 @@ const PALETTE_VIEWS = [
   ["#/derivations", "Derivation Theatre (animated)"],
   ["#/atlas", "Feature Atlas — 1000× (searchable)"],
   ["#/molecules", "Molecule Viewer 3D"],
+  ["#/studio", "Spline studio"],
+  ["#/simlab", "3D lab catalog"],
+  ["#/clock", "Exam clock"],
   ["#/graph", "Graph Playground (Desmos-like)"],
   ["#/board", "Whiteboard (per chapter)"],
   ["#/theme", "Theme Studio"],
